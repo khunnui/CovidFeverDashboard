@@ -6,7 +6,7 @@ library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(DT)
-library(sf)
+
 library(ggpubr)
 
 server <- function(input, output, session) {

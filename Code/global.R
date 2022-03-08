@@ -5,6 +5,7 @@
 ##### Load packages #####
 library(tidyverse)
 library(lubridate)
+library(sf)
 
 shapefile_folder <- "../Maps/"
 
