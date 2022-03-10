@@ -11,7 +11,8 @@ library(DT)
 body <- dashboardBody(
   tabItems(
     tabItem(tabName = "site",
-            h3("Study Sites: 3 hospitals in each province", align = "center"),
+            h3("Study Sites: 3 hospitals in 2 provinces", align = "center"),
+            br(),
             plotOutput("map")
     ),
     tabItem(tabName = "screen",
