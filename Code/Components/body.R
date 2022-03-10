@@ -16,7 +16,10 @@ body <- dashboardBody(
             plotOutput("map")
     ),
     tabItem(tabName = "screen",
-            h2("Widgets tab content")
+            h3("Number Screened by Month", align = "center"),
+            br(),
+            plotlyOutput("ScreeningBar"),
+            plotOutput("ScreeningAgePie")
     ),
     tabItem(tabName = "enrol",
             h2("Widgets tab content")

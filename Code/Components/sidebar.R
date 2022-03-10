@@ -8,7 +8,7 @@ library(shinydashboard)
 
 sidebar <- dashboardSidebar(
   width = 180,
-  tags$style(HTML(".sidebar-menu li a {padding: 5px;}")),
+  tags$style(HTML(".sidebar-menu li a {padding-top: 5px; padding-bottom: 5px;}")),
   sidebarMenu(
     menuItem("Study sites", tabName = "site"),
     menuItem("Screening", tabName = "screen"),
