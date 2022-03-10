@@ -19,6 +19,16 @@ server <- function(input, output, session) {
       df <- tblSection1
     }
   })
+  
+  tt <- reactive({
+    if (input$Hospital != "All") {
+      tt <- paste0(input$Province, " - ", input$Hospital)
+    } else if (input$Province != "All") {
+      tt <- input$Province
+    } else {
+      tt <- ""
+    }
+  })
 
   observeEvent(input$Province, {
     if (input$Province == "All") {
@@ -42,13 +52,6 @@ server <- function(input, output, session) {
   })
 
   output$ScreeningBar <- renderPlotly({
-    if (input$Hospital != "All") {
-      tt <- paste0(input$Province, " - ", input$Hospital)
-    } else if (input$Province != "All") {
-      tt <- input$Province
-    } else {
-      tt <- ""
-    }
     plot <- ggplot(df(), aes(x = floor_date(S1ScreenDate, "month"),
                              text = after_stat(paste("Count: ", count)))) +
       geom_bar(
@@ -58,7 +61,7 @@ server <- function(input, output, session) {
         alpha = 0.5
       ) +
       labs(
-        title = tt,
+        title = tt(),
         x = "Screening Date",
         y = "Number Screened"
       ) +
@@ -83,7 +86,27 @@ server <- function(input, output, session) {
     ggplotly(plot, tooltip = "text")
   })
   
-  output$ScreeningAgePie <- renderPlotly({
+  output$ScreeningGender <- renderPlot({
+    pie(df(), S1Gender)
   })
 
+  output$ScreeningAge <- renderDT({
+    df() %>%
+      group_by(S1HospitalID) %>%
+      summarize(
+        min = min(S1Age_Year, na.rm = TRUE),
+        q1 = quantile(S1Age_Year, 0.25, na.rm = TRUE),
+        median = median(S1Age_Year, na.rm = TRUE),
+        mean = round(mean(S1Age_Year, na.rm = TRUE), 1),
+        q3 = quantile(S1Age_Year, 0.75, na.rm = TRUE),
+        max = max(S1Age_Year, na.rm = TRUE)
+      ) %>%
+      datatable(
+        rownames = FALSE,
+        colnames = c('Hospital' = 'S1HospitalID'),
+        options = list(
+        initComplete = JS("function(){$(this).addClass('compact');}"),
+        dom = 'rt'
+      ))
+  })
 }
