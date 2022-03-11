@@ -18,20 +18,21 @@ pie <- function(df, column) {
     arrange(desc(!!column)) %>%
     mutate(ypos = cumsum(prop) - 0.5*prop)
   
-  ggplot(data = dfsum,
-         mapping = aes(
-           x = "",
-           y = prop,
-           fill = !!column
-         ),
-         color = "white") +
-    geom_col() + # White border color
-    geom_text(aes(label = scales::percent(prop, 0.01)),
-              position = position_stack(vjust = 0.5),
-              color = "white") +
-    # geom_text(aes(y = ypos, 
-    #               label = scales::percent(prop, 0.01)), 
-    #color = "white") +
+  ggplot(data = dfsum) +
+    geom_col(
+      mapping = aes(x = "",
+                    y = prop,
+                    fill = !!column),
+      color = "white",
+      alpha = 0.5
+    ) +
+    geom_text(
+      mapping = aes(x = "",
+                    y = prop,
+                    label = scales::percent(prop, 0.01)),
+      position = position_stack(vjust = 0.5),
+      color = "white"
+    ) +
     scale_fill_lancet() +
     coord_polar(theta = "y", direction = -1) + # Pie chart
     labs(fill = "") + # Remove legend title

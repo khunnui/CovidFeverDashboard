@@ -92,8 +92,9 @@ server <- function(input, output, session) {
 
   output$ScreeningAge <- renderDT({
     df() %>%
-      group_by(S1HospitalID) %>%
+      # group_by(S1HospitalID) %>%
       summarize(
+        n = n(),
         min = min(S1Age_Year, na.rm = TRUE),
         q1 = quantile(S1Age_Year, 0.25, na.rm = TRUE),
         median = median(S1Age_Year, na.rm = TRUE),
@@ -103,10 +104,34 @@ server <- function(input, output, session) {
       ) %>%
       datatable(
         rownames = FALSE,
-        colnames = c('Hospital' = 'S1HospitalID'),
+        # colnames = c('Hospital' = 'S1HospitalID'),
         options = list(
         initComplete = JS("function(){$(this).addClass('compact');}"),
         dom = 'rt'
       ))
   })
+  
+  output$ScreeningEnrol <- renderPlot({
+    df() %>%
+      group_by(OLDCF, CF_Enrol) %>%
+      tally() %>%
+      ggplot(aes(x = OLDCF, y = n, fill = CF_Enrol)) +
+      geom_bar(position = 'dodge', 
+               stat = 'identity',
+               width = 0.5,
+               alpha = 0.5) +
+      geom_text(aes(label = n),
+                position = position_dodge(width = 0.5),
+                vjust = -0.5) +
+      scale_y_continuous(
+        limits = c(0, 7000),
+        expand = c(0, 0)
+      ) +
+      scale_fill_lancet() +
+      labs(x = 'Previously enrolled',
+           y = 'Count',
+           fill = 'Enrolled') +
+    theme_classic()
+  })
+
 }
