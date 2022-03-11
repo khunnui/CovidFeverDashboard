@@ -8,7 +8,7 @@ library(lubridate)
 library(sf)
 library(ggsci)
 
-shapefile_folder <- "../Maps/"
+shapefile_folder <- "./Maps/"
 source('./function.R')
 
 #############

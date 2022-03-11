@@ -38,7 +38,7 @@ body <- dashboardBody(
           box(
            title = "Gender",
            width = NULL,
-           plotOutput("ScreeningGender", height = 258)
+           plotOutput("ScreeningGender", height = 242)
           )
         ),
         column(

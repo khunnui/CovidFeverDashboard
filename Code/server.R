@@ -22,9 +22,9 @@ server <- function(input, output, session) {
   
   tt <- reactive({
     if (input$Hospital != "All") {
-      tt <- paste0(input$Province, " - ", input$Hospital)
+      tt <- paste0(input$Hospital, " Hospital")
     } else if (input$Province != "All") {
-      tt <- input$Province
+      tt <- paste0(input$Province, " Province")
     } else {
       tt <- ""
     }
@@ -80,6 +80,7 @@ server <- function(input, output, session) {
       ) +
       theme_classic() +
       theme(
+        plot.title = element_text(hjust = 0.5),
         axis.text.x = element_text(vjust = 0.75)
       )
     # ggplotly to convert ggplot object to plotly object
@@ -87,7 +88,9 @@ server <- function(input, output, session) {
   })
   
   output$ScreeningGender <- renderPlot({
-    pie(df(), S1Gender)
+    pie(df(), S1Gender) +
+    labs(title = tt()) +
+    theme(plot.title = element_text(hjust = 0.5))
   })
 
   output$ScreeningAge <- renderDT({
@@ -103,6 +106,8 @@ server <- function(input, output, session) {
         max = max(S1Age_Year, na.rm = TRUE)
       ) %>%
       datatable(
+        caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; color: black;", 
+                                          tt()),
         rownames = FALSE,
         # colnames = c('Hospital' = 'S1HospitalID'),
         options = list(
@@ -110,6 +115,11 @@ server <- function(input, output, session) {
         dom = 'rt'
       ))
   })
+  
+  # ggplot(tblSection1 %>%  filter(!is.na(S1Gender)), aes(S1Age_Year, S1Gender)) +
+  #   geom_boxplot() +
+  #   coord_flip() +
+  #   theme_classic()
   
   output$ScreeningEnrol <- renderPlot({
     df() %>%
@@ -128,10 +138,14 @@ server <- function(input, output, session) {
         expand = c(0, 0)
       ) +
       scale_fill_lancet() +
-      labs(x = 'Previously enrolled',
-           y = 'Count',
-           fill = 'Enrolled') +
-    theme_classic()
+      labs(
+        title = tt(),
+        x = 'Previously enrolled',
+        y = 'Count',
+        fill = 'Enrolled') +
+    theme_classic() +
+    theme(plot.title = element_text(hjust = 0.5),
+          legend.position = "bottom")
   })
 
-}
+  }
