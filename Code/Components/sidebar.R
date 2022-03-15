@@ -25,11 +25,11 @@ sidebar <- dashboardSidebar(
   selectInput(
     inputId = "Province",
     label = "Province:",
-    choices = c("All", unique(tblSection1$Province))
+    choices = c("All", unique(df_scr$Province))
   ),
   selectInput(
     inputId = "Hospital",
     label = "Hospital:",
-    choices = c("All", as.character(unique(tblSection1$S1HospitalID)))
+    choices = c("All", as.character(unique(df_scr$S1HospitalID)))
   )
 )

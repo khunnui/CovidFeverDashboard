@@ -10,16 +10,6 @@ library(cowplot)
 
 server <- function(input, output, session) {
 
-  df <- reactive({
-    if (input$Hospital != "All") {
-      df <- tblSection1 %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- tblSection1 %>% filter(Province == input$Province)
-    } else {
-      df <- tblSection1
-    }
-  })
-  
   tt <- reactive({
     if (input$Hospital != "All") {
       tt <- paste0(input$Hospital, " Hospital")
@@ -34,12 +24,12 @@ server <- function(input, output, session) {
     if (input$Province == "All") {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(tblSection1$S1HospitalID)))
+        choices = c("All", as.character(unique(df_scr$S1HospitalID)))
       )
     } else {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(tblSection1$S1HospitalID[tblSection1$Province == input$Province])))
+        choices = c("All", as.character(unique(df_scr$S1HospitalID[df_scr$Province == input$Province])))
       )
     }
   })
@@ -52,100 +42,295 @@ server <- function(input, output, session) {
   })
 
   output$ScreeningBar <- renderPlotly({
-    plot <- ggplot(df(), aes(x = floor_date(S1ScreenDate, "month"),
-                             text = after_stat(paste("Count: ", count)))) +
-      geom_bar(
-        col = "white",
-        fill = "steelblue",
-        width = 16,
-        alpha = 0.5
-      ) +
-      labs(
-        title = tt(),
-        x = "Screening Date",
-        y = "Number Screened"
-      ) +
-      annotate(geom = "text",
-               label = paste0("Total screening = ", format(nrow(df()), big.mark = ",")),
-               x = min(df()$S1ScreenDate, na.rm = TRUE),
-               y = 900,
-               hjust = 0) +
-      scale_x_date(
-        breaks = "1 month", # Place X axis tick mark at every month
-        date_labels = "%b %y"
-      ) +
-      scale_y_continuous(
-        limits = c(0, 1000),
-        expand = c(0, 0)
-      ) +
-      theme_classic() +
-      theme(
-        plot.title = element_text(hjust = 0.5),
-        axis.text.x = element_text(vjust = 0.75)
+    if (input$Hospital != "All") {
+      df <- df_scr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_scr %>% filter(Province == input$Province)
+    } else {
+      df <- df_scr
+    }
+    plot_ly(
+      data = df %>%
+        group_by(scrdate) %>%
+        summarise(count = sum(n)),
+      x = ~ scrdate,
+      y = ~ count,
+      name = "Screening",
+      type = "bar",
+      marker = list(color = 'rgb(158,202,225)'),
+      hoverinfo = 'y'
+    ) %>%
+      layout(
+        title = paste0(tt(), "<br><sup>Total screening = ", format(sum(df$n), big.mark = ","), "</sup>"),
+        xaxis = list(title = '',
+                     tickformat = "%b %y"),
+        yaxis = list(title = 'Number Screened',
+                     range = list(0, 1000)),
+        bargap = 0.5
       )
-    # ggplotly to convert ggplot object to plotly object
-    ggplotly(plot, tooltip = "text")
   })
   
-  output$ScreeningGender <- renderPlot({
-    pie(df(), S1Gender) +
-    labs(title = tt()) +
-    theme(plot.title = element_text(hjust = 0.5))
-  })
-
   output$ScreeningAge <- renderDT({
-    df() %>%
-      # group_by(S1HospitalID) %>%
-      summarize(
-        n = n(),
-        min = min(S1Age_Year, na.rm = TRUE),
-        q1 = quantile(S1Age_Year, 0.25, na.rm = TRUE),
-        median = median(S1Age_Year, na.rm = TRUE),
-        mean = round(mean(S1Age_Year, na.rm = TRUE), 1),
-        q3 = quantile(S1Age_Year, 0.75, na.rm = TRUE),
-        max = max(S1Age_Year, na.rm = TRUE)
-      ) %>%
-      datatable(
-        caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; color: black;", 
-                                          tt()),
-        rownames = FALSE,
-        # colnames = c('Hospital' = 'S1HospitalID'),
-        options = list(
+    if (input$Hospital != "All") {
+      df <- df_scrage2 %>% filter(S1HospitalID == input$Hospital) %>% 
+        select(-S1HospitalID)
+    } else if (input$Province != "All") {
+      df <- df_scrage1 %>% filter(Province == input$Province) %>% 
+        select(-Province)
+    } else {
+      df <- df_scrage0
+    }
+    datatable(
+      df,
+      caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; color: black; font-size: 20px;",
+                                        tt()),
+      rownames = FALSE,
+      options = list(
+        columnDefs = list(list(visible=FALSE, targets=1)),
         initComplete = JS("function(){$(this).addClass('compact');}"),
         dom = 'rt'
-      ))
+      )
+    )
   })
   
-  # ggplot(tblSection1 %>%  filter(!is.na(S1Gender)), aes(S1Age_Year, S1Gender)) +
-  #   geom_boxplot() +
-  #   coord_flip() +
-  #   theme_classic()
+  output$ScreeningGender <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_scrgender %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_scrgender %>% filter(Province == input$Province)
+    } else {
+      df <- df_scrgender
+    }
+    df %>%
+      group_by(S1Gender) %>% # Group by specified column
+      summarise(count = sum(n)) %>% # Number of observations in each group
+      plot_ly(
+        labels = ~ S1Gender,
+        values = ~ count,
+        type = 'pie',
+        texttemplate = "%{value:,d}<br>(%{percent:.1%})",
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+        hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
+      ) %>%
+      layout(title = tt(),
+             legend = list(x = 100, y = 0.5))
+  })
   
-  output$ScreeningEnrol <- renderPlot({
-    df() %>%
-      group_by(OLDCF, CF_Enrol) %>%
-      tally() %>%
-      ggplot(aes(x = OLDCF, y = n, fill = CF_Enrol)) +
-      geom_bar(position = 'dodge', 
-               stat = 'identity',
-               width = 0.5,
-               alpha = 0.5) +
-      geom_text(aes(label = n),
-                position = position_dodge(width = 0.5),
-                vjust = -0.5) +
-      scale_y_continuous(
-        limits = c(0, 7000),
-        expand = c(0, 0)
-      ) +
-      scale_fill_lancet() +
-      labs(
+  output$ScreeningEnrol <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_screnrol %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_screnrol %>% filter(Province == input$Province)
+    } else {
+      df <- df_screnrol
+    }
+    plot_ly(
+      data = df %>%
+        group_by(OLDCF, CF_Enrol) %>%
+        summarise(count = sum(n)),
+      x = ~ OLDCF,
+      y = ~ count,
+      color = ~ CF_Enrol,
+      type = "bar",
+      hoverinfo = 'y'
+    ) %>%
+      layout(
         title = tt(),
-        x = 'Previously enrolled',
-        y = 'Count',
-        fill = 'Enrolled') +
-    theme_classic() +
-    theme(plot.title = element_text(hjust = 0.5),
-          legend.position = "bottom")
+        xaxis = list(title = 'Previously Enrolled'),
+        yaxis = list(title = 'Count'),
+        bargap = 0.5,
+        legend = list(title=list(text='Enrolled'),
+                      x = 100, 
+                      y = 0.5)
+      )
   })
 
-  }
+  output$EnrollmentBar <- renderPlotly({
+    if (input$Hospital != "All") {
+      df1 <- df_eli %>% filter(S1HospitalID == input$Hospital)
+      df2 <- df_enr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df1 <- df_eli %>% filter(Province == input$Province)
+      df2 <- df_enr %>% filter(Province == input$Province)
+    } else {
+      df1 <- df_eli
+      df2 <- df_enr
+    }
+    plot_ly() %>% 
+      add_trace(data = df1 %>%
+                  group_by(scrdate) %>%
+                  summarise(count = sum(n)),
+                x = ~ scrdate,
+                y = ~ count,
+                name = "Eligible",
+                type = 'scatter', 
+                mode = 'lines',
+                hoverinfo = 'y') %>% 
+    add_trace(data = df2 %>%
+                group_by(enrdate, FinalResult) %>%
+                summarise(count = sum(n)),
+              x = ~ enrdate,
+              y = ~ count,
+              color = ~FinalResult,
+              type = 'bar',
+              hoverinfo = 'y') %>% 
+      layout(title = tt(),
+             xaxis = list(title = '',
+                          tickformat = "%b %y"),
+             yaxis = list(title = 'Number Eligible/Enrolled',
+                          range = list(0, 400)),
+             margin = list(l = 5, r = 5),
+             legend = list(orientation = "h",   # show entries horizontally
+                           xanchor = "center",  # use center of legend as anchor
+                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+  })
+  
+  output$eliBox <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_eli %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_eli %>% filter(Province == input$Province)
+    } else {
+      df <- df_eli
+    }
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Eligible",
+      color = "aqua"
+    )
+  })
+  
+  output$enrolBox <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enr %>% filter(Province == input$Province)
+    } else {
+      df <- df_enr
+    }
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Enrolled",
+      color = "teal"
+    )
+  })
+  
+  output$posBox <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enr %>% filter(Province == input$Province)
+    } else {
+      df <- df_enr
+    }
+    df <- filter(df, FinalResult == "Positive")
+    valueBox(
+      format(sum(df$n), big.mark= ","),
+      "SARS-CoV-2 Positive",
+      color = "yellow"
+    )
+  })
+  
+  output$pos3weekBox <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_pos3wk %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_pos3wk %>% filter(Province == input$Province)
+    } else {
+      df <- df_pos3wk
+    }
+    df <- filter(df, FinalResult == "Positive")
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Cases detected in last 3 weeks",
+      color = "purple"
+    )
+  })
+  
+  output$EnrollmentAge <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_enrage %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enrage %>% filter(Province == input$Province)
+    } else {
+      df <- df_enrage
+    }
+    df %>%
+      group_by(agegroup) %>% # Group by specified column
+      summarise(count = sum(n)) %>% # Number of observations in each group
+      plot_ly(
+        labels = ~ agegroup,
+        values = ~ count,
+        type = 'pie',
+        texttemplate = "%{percent:.1%}",
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+        hovertemplate = "%{percent:.1%}"
+      ) %>% 
+      layout(title = tt(),
+             margin = list(l = 5, r = 5),
+             legend = list(orientation = "h",   # show entries horizontally
+                           xanchor = "center",  # use center of legend as anchor
+                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+  })
+  
+  output$EnrollmentGender <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_enrgender %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enrgender %>% filter(Province == input$Province)
+    } else {
+      df <- df_enrgender
+    }
+    df %>%
+      group_by(S1Gender) %>% # Group by specified column
+      summarise(count = sum(n)) %>% # Number of observations in each group
+      plot_ly(
+        labels = ~ S1Gender,
+        values = ~ count,
+        type = 'pie',
+        texttemplate = "%{percent:.1%}",
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+        hovertemplate = "%{percent:.1%}"
+      ) %>% 
+      layout(title = tt(),
+             margin = list(l = 5, r = 5),
+             legend = list(orientation = "h",   # show entries horizontally
+                           xanchor = "center",  # use center of legend as anchor
+                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+  })
+  
+  output$EnrollmentOcc <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_enrocc %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enrocc %>% filter(Province == input$Province)
+    } else {
+      df <- df_enrocc
+    }
+    df %>%
+      group_by(S34Occupation) %>% # Group by specified column
+      summarise(count = sum(n)) %>% 
+      mutate(rank = rank(-count, ties.method = "first")) %>% 
+      mutate(S34Occupation = ifelse(rank <= 5, levels(S34Occupation)[S34Occupation], "Other")) %>% 
+      group_by(S34Occupation) %>% 
+      summarise(countgroup = sum(count)) %>% 
+      plot_ly(
+        labels = ~ S34Occupation,
+        values = ~ countgroup,
+        type = 'pie',
+        texttemplate = "%{percent:.1%}",
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+        hovertemplate = "%{percent:.1%}"
+      ) %>% 
+      layout(title = tt(),
+    margin = list(l = 5, r = 5),
+    legend = list(orientation = "h",   # show entries horizontally
+                  xanchor = "center",  # use center of legend as anchor
+                  x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+  })
+  
+}

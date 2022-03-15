@@ -38,7 +38,7 @@ body <- dashboardBody(
           box(
            title = "Gender",
            width = NULL,
-           plotOutput("ScreeningGender", height = 242)
+           plotlyOutput("ScreeningGender", height = 242)
           )
         ),
         column(
@@ -46,17 +46,46 @@ body <- dashboardBody(
           box(
             title = "Enrollment", 
             width = NULL,
-            plotOutput("ScreeningEnrol")
+            plotlyOutput("ScreeningEnrol")
           )
         )
       )
     ),
     tabItem(tabName = "enrol",
       fluidRow(
-        box(
-          title = "Box title", "Box content"
+        column(
+          width = 10,
+          box(
+            title = "Eligible and Enrollment by Month",
+            width = NULL,
+            plotlyOutput("EnrollmentBar", height = 430)
+          )
+        ),
+        column(
+          width = 2,
+          valueBoxOutput("eliBox", width = NULL),
+          valueBoxOutput("enrolBox", width = NULL),
+          valueBoxOutput("posBox", width = NULL),
+          valueBoxOutput("pos3weekBox", width = NULL)
         )
-      )
+      ),
+      fluidRow(
+        box(
+          title = "Age Group", 
+          width = 4, 
+          plotlyOutput("EnrollmentAge", height = 270)
+        ),
+        box(
+          title = "Gender", 
+          width = 4, 
+          plotlyOutput("EnrollmentGender", height = 270)
+        ),
+        box(
+          title = "Occupation", 
+          width = 4, 
+          plotlyOutput("EnrollmentOcc", height = 270)
+        ),
+      ),
     ),
     tabItem(tabName = "diag",
             fluidRow(
