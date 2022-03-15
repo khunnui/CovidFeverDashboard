@@ -89,7 +89,14 @@ body <- dashboardBody(
     tabItem(tabName = "vac",
             fluidRow(
               box(
-                title = "Box title", "Box content"
+                title = "COVID-19 Vaccination", 
+                width =4,
+                plotOutput("VaccinePie", height = 475)
+              ),
+              box(
+                title = "COVID-19 Vaccination vs. PCR Results", 
+                width =8,
+                plotOutput("VaccinePie", height = 475)
               )
             )
     ),
