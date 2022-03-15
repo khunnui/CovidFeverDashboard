@@ -332,5 +332,69 @@ server <- function(input, output, session) {
                   xanchor = "center",  # use center of legend as anchor
                   x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
   })
+ 
+  output$VaccinePie1 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_vac %>% filter(Province == input$Province)
+    } else {
+      df <- df_vac
+    }
+    df %>%
+      group_by(S33CovidVaccine) %>% # Group by specified column
+      summarise(count = sum(n)) %>% # Number of observations in each group
+      plot_ly(
+        labels = ~ S33CovidVaccine,
+        values = ~ count,
+        type = 'pie',
+        texttemplate = "%{value:,d}<br>(%{percent:.1%})",
+        marker = list(colors = colors,
+                      line = list(color = '#FFFFFF', width = 1)),
+        hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
+      ) %>%
+      layout(title = tt(),
+             legend = list(x = 100, y = 0.5))
+  }) 
   
+  output$VaccinePie2 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_vac %>% filter(Province == input$Province)
+    } else {
+      df <- df_vac
+    }
+    
+      fig1 <- plot_ly(
+        df %>%
+          filter(S33CovidVaccine == "Vaccinated") %>% 
+          group_by(FinalResult) %>% # Group by specified column
+          summarise(count = sum(n)),  # Number of observations in each group
+        labels = ~ FinalResult,
+        values = ~ count,
+        type = 'pie'
+        #texttemplate = "%{value:,d}<br>(%{percent:.1%})",
+      #  marker = list(colors = colors,
+       #               line = list(color = '#FFFFFF', width = 1)),
+        #hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
+      )
+      
+      fig2 <- plot_ly(
+        df %>%
+          filter(S33CovidVaccine == "Unvaccinated") %>% 
+          group_by(FinalResult) %>% # Group by specified column
+          summarise(count = sum(n)), # Number of observations in each group
+          labels = ~ FinalResult,
+        values = ~ count,
+        type = 'pie'
+        # texttemplate = "%{value:,d}<br>(%{percent:.1%})",
+        # marker = list(colors = colors,
+        #               line = list(color = '#FFFFFF', width = 1)),
+        # hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
+      )
+      
+      subplot(fig2,fig1) %>% 
+      layout(title = tt())
+  })
 }
