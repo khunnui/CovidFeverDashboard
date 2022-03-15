@@ -14,7 +14,7 @@ source('./function.R')
 #############
 # Data Load #
 #############
-githubURL <- "https://github.com/NartladaC/CovidFeverData/raw/main/Data/CFMast.Rdata"
+githubURL <- "https://github.com/NartladaC/CovidFeverData/raw/main/Data/CFDashboard.RData"
 load(url(githubURL))
 
 ###############
@@ -64,16 +64,3 @@ map_cf_np <- ggplot() +
   scale_fill_manual(values = c("orange", "mediumpurple1", "darkseagreen3")) +
   theme_void() +
   theme(legend.position = "none")
-
-###############
-# Screening   #
-###############
-dfeli <- tblSection1 %>%
-  filter(S1Eligible == 1) %>% # Eligible only
-  mutate(scrdate = floor_date(S1ScreenDate, "month")) # Shift dates to the first of each month
-
-dfenr <- tblSection1 %>%
-  filter(!is.na(S1EnrollDate)) %>% # Enrolled only
-  left_join(LabPCRResult, by = "CFID") %>% # Get PCR result from LABPCRResult
-  mutate(enrdate = floor_date(S1EnrollDate, "month")) # Shift dates to the first of each month
-
