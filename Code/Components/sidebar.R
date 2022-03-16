@@ -20,7 +20,8 @@ sidebar <- dashboardSidebar(
     menuItem("Vaccination", tabName = "vac"),
     menuItem("ATK Used", tabName = "atk"),
     menuItem("SARS-CoV-2 Detection", tabName = "detect"),
-    menuItem("Serology Testing", tabName = "sero")
+    menuItem("Serology Testing", tabName = "sero"),
+    menuItem("KAP", tabName = "KAP")
   ),
   selectInput(
     inputId = "Province",

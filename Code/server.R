@@ -293,38 +293,87 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac
     }
+
     df <- df %>%
       group_by(S33CovidVaccine, FinalResult) %>%
       summarise(count = sum(n))
-    plot_ly(
-      df %>%
-        filter(S33CovidVaccine == "Vaccinated"),
-      labels = ~FinalResult,
-      values = ~count,
-      name = "Vaccinated",
-      type = "pie",
-      domain = list(x = c(0, 0.45), y = c(0, 1))
-    ) %>%
-      add_trace(
-        data = df %>%
-          filter(S33CovidVaccine == "Unvaccinated"),
-        labels = ~FinalResult,
-        values = ~count,
+    df1 <- filter(df, S33CovidVaccine == "Vaccinated")
+    df2 <- filter(df, S33CovidVaccine == "Unvaccinated")
+    plot_ly(labels = ~ FinalResult,
+            values = ~ count) %>%
+      add_pie(
+        data = df1,
+        name = "Vaccinated",
+        scalegroup = 'one',
+        domain = list(row = 0, column = 0)
+      ) %>%
+      add_pie(
+        data = df2,
         name = "Unvaccinated",
-        type = "pie",
-        domain = list(x = c(0.55, 1), y = c(0, 1))
+        scalegroup = 'one',
+        domain = list(row = 0, column = 1)
       ) %>%
       layout(
         title = tt(),
-        margin = list(l = 5, r = 5),
+        grid = list(rows = 1, columns = 2),
         legend = list(
           orientation = "h",
           # show entries horizontally
           xanchor = "center",
           # use center of legend as anchor
           x = 0.5
+        ),
+        annotations = list(
+          list(
+            x = 0.18 ,
+            y = 1,
+            text = "Vaccinated",
+            showarrow = F,
+            xref = 'paper',
+            yref = 'paper'
+          ),
+          list(
+            x = 0.82 ,
+            y = 1,
+            text = "Unvaccinated",
+            showarrow = F,
+            xref = 'paper',
+            yref = 'paper'
+          )
         )
       )
-    
+    # df <- df %>%
+    #   group_by(S33CovidVaccine, FinalResult) %>%
+    #   summarise(count = sum(n))
+    # plot_ly(
+    #   df %>%
+    #     filter(S33CovidVaccine == "Vaccinated"),
+    #   labels = ~FinalResult,
+    #   values = ~count,
+    #   name = "Vaccinated",
+    #   type = "pie",
+    #   domain = list(x = c(0, 0.45), y = c(0, 1))
+    # ) %>%
+    #   add_trace(
+    #     data = df %>%
+    #       filter(S33CovidVaccine == "Unvaccinated"),
+    #     labels = ~FinalResult,
+    #     values = ~count,
+    #     name = "Unvaccinated",
+    #     type = "pie",
+    #     domain = list(x = c(0.55, 1), y = c(0, 1))
+    #   ) %>%
+    #   layout(
+    #     title = tt(),
+    #     margin = list(l = 5, r = 5),
+    #     legend = list(
+    #       orientation = "h",
+    #       # show entries horizontally
+    #       xanchor = "center",
+    #       # use center of legend as anchor
+    #       x = 0.5
+    #     )
+    #   )
+
   })
 }

@@ -129,6 +129,11 @@ body <- dashboardBody(
     tabItem(tabName = "sero",
             fluidRow(box(
               title = "Box title", "Box content"
+            ))),
+    tabItem(tabName = "KAP",
+            fluidRow(box(
+              title = "Knowledge, Attitude and Practices", 
+              "Box content"
             )))
   )
 )
