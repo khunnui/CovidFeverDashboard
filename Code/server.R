@@ -293,7 +293,6 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac
     }
-
     df <- df %>%
       group_by(S33CovidVaccine, FinalResult) %>%
       summarise(count = sum(n))
@@ -342,38 +341,63 @@ server <- function(input, output, session) {
           )
         )
       )
-    # df <- df %>%
-    #   group_by(S33CovidVaccine, FinalResult) %>%
-    #   summarise(count = sum(n))
-    # plot_ly(
-    #   df %>%
-    #     filter(S33CovidVaccine == "Vaccinated"),
-    #   labels = ~FinalResult,
-    #   values = ~count,
-    #   name = "Vaccinated",
-    #   type = "pie",
-    #   domain = list(x = c(0, 0.45), y = c(0, 1))
-    # ) %>%
-    #   add_trace(
-    #     data = df %>%
-    #       filter(S33CovidVaccine == "Unvaccinated"),
-    #     labels = ~FinalResult,
-    #     values = ~count,
-    #     name = "Unvaccinated",
-    #     type = "pie",
-    #     domain = list(x = c(0.55, 1), y = c(0, 1))
-    #   ) %>%
-    #   layout(
-    #     title = tt(),
-    #     margin = list(l = 5, r = 5),
-    #     legend = list(
-    #       orientation = "h",
-    #       # show entries horizontally
-    #       xanchor = "center",
-    #       # use center of legend as anchor
-    #       x = 0.5
-    #     )
-    #   )
-
   })
+  
+  output$kap1 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_kap %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_kap %>% filter(Province == input$Province)
+    } else {
+      df <- df_kap
+    }
+    df %>%
+      filter(
+        kap %in% c(
+          'S3604SickSpread',
+          'S3615CareLate',
+          'S3616',
+          'S3617',
+          'S3618',
+          'S3619',
+          'S3620'
+        )
+      ) %>%
+      mutate(
+        kap = recode(
+          kap,
+          'S3604SickSpread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
+          'S3615CareLate'   = 'I sought care today later than I usual\nbecause of COVID-19',
+          'S3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
+          'S3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
+          'S3618'           = 'Always wearing mask in public is a good thing to do',
+          'S3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
+          'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
+        )
+      ) %>%
+      scalebar(kap, tt())
+  })
+
+  output$kap2 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_kap %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_kap %>% filter(Province == input$Province)
+    } else {
+      df <- df_kap
+    }
+    df %>%
+      filter(kap %in% c('S3610MaskIn', 'S3613MaskOut', 'S3621', 'S3622')) %>%
+      mutate(
+        kap = recode(
+          kap,
+          'S3610MaskIn'     = 'During the past 2 weeks, did you wear a mask at home?',
+          'S3613MaskOut'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
+          'S3621'           = 'Do you practice social distancing from other persons\nin your household?',
+          'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
+        )
+      ) %>%
+      scalebar(kap, tt())
+  })
+  
 }

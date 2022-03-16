@@ -103,21 +103,19 @@ body <- dashboardBody(
             fluidRow(box(
               title = "Box title", "Box content"
             ))),
-    tabItem(
-      tabName = "vac",
-      fluidRow(
-        box(
-          title = "COVID-19 Vaccination",
-          width = 4,
-          plotlyOutput("VaccinePie1", height = 475)
-        ),
-        box(
-          title = "COVID-19 Vaccination vs. PCR Results",
-          width = 8,
-          plotlyOutput("VaccinePie2", height = 475)
-        )
-      )
-    ),
+    tabItem(tabName = "vac",
+            fluidRow(
+              box(
+                title = "COVID-19 Vaccination",
+                width = 4,
+                plotlyOutput("VaccinePie1", height = 475)
+              ),
+              box(
+                title = "COVID-19 Vaccination vs. PCR Results",
+                width = 8,
+                plotlyOutput("VaccinePie2", height = 475)
+              )
+            )),
     tabItem(tabName = "atk",
             fluidRow(box(
               title = "Box title", "Box content"
@@ -133,7 +131,9 @@ body <- dashboardBody(
     tabItem(tabName = "KAP",
             fluidRow(box(
               title = "Knowledge, Attitude and Practices", 
-              "Box content"
+              width = 12,
+              plotlyOutput("kap1"),
+              plotlyOutput("kap2")
             )))
   )
 )
