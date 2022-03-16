@@ -57,9 +57,11 @@ scalebar <- function(df, column) {
     type = "bar",
     orientation = 'h',
     color = ~ scale,
+    colors = 'BrBG',
     hoverinfo = 'x'
   ) %>% 
     layout(barmode = 'stack',
+           bargap = 0.3,
            xaxis = list(title = '',
                         tickformat = '.0%'),
            yaxis = list(title = '',

@@ -132,7 +132,7 @@ body <- dashboardBody(
             fluidRow(box(
               title = "Knowledge, Attitude and Practices", 
               width = 12,
-              plotlyOutput("kap1"),
+              plotlyOutput("kap1", height = 425),
               plotlyOutput("kap2", height = 255)
             )))
   )

@@ -345,24 +345,24 @@ server <- function(input, output, session) {
   
   output$kap1 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_kap %>% filter(S1HospitalID == input$Hospital)
+      df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_kap %>% filter(Province == input$Province)
+      df <- df_kap1 %>% filter(Province == input$Province)
     } else {
-      df <- df_kap
+      df <- df_kap1
     }
     df %>%
-      filter(
-        kap %in% c(
-          'S3604SickSpread',
-          'S3615CareLate',
-          'S3616',
-          'S3617',
-          'S3618',
-          'S3619',
-          'S3620'
-        )
-      ) %>%
+      # filter(
+      #   kap %in% c(
+      #     'S3604SickSpread',
+      #     'S3615CareLate',
+      #     'S3616',
+      #     'S3617',
+      #     'S3618',
+      #     'S3619',
+      #     'S3620'
+      #   )
+      # ) %>%
       mutate(
         kap = recode(
           kap,
@@ -381,14 +381,14 @@ server <- function(input, output, session) {
   
   output$kap2 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_kap %>% filter(S1HospitalID == input$Hospital)
+      df <- df_kap2 %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_kap %>% filter(Province == input$Province)
+      df <- df_kap2 %>% filter(Province == input$Province)
     } else {
-      df <- df_kap
+      df <- df_kap2
     }
     df %>%
-      filter(kap %in% c('S3610MaskIn', 'S3613MaskOut', 'S3621', 'S3622')) %>%
+      # filter(kap %in% c('S3610MaskIn', 'S3613MaskOut', 'S3621', 'S3622')) %>%
       mutate(
         kap = recode(
           kap,
