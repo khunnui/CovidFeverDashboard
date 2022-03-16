@@ -101,20 +101,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_scrgender
     }
-    df %>%
-      group_by(S1Gender) %>% # Group by specified column
-      summarise(count = sum(n)) %>% # Number of observations in each group
-      plot_ly(
-        labels = ~ S1Gender,
-        values = ~ count,
-        type = 'pie',
-        texttemplate = "%{value:,d}<br>(%{percent:.1%})",
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-        hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
-      ) %>%
-      layout(title = tt(),
-             legend = list(x = 100, y = 0.5))
+    pie(df, S1Gender, tt())
   })
   
   output$ScreeningEnrol <- renderPlotly({
@@ -256,23 +243,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_enrage
     }
-    df %>%
-      group_by(agegroup) %>% # Group by specified column
-      summarise(count = sum(n)) %>% # Number of observations in each group
-      plot_ly(
-        labels = ~ agegroup,
-        values = ~ count,
-        type = 'pie',
-        texttemplate = "%{percent:.1%}",
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-        hovertemplate = "%{percent:.1%}"
-      ) %>% 
-      layout(title = tt(),
-             margin = list(l = 5, r = 5),
-             legend = list(orientation = "h",   # show entries horizontally
-                           xanchor = "center",  # use center of legend as anchor
-                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+    pie(df, agegroup, tt())
   })
   
   output$EnrollmentGender <- renderPlotly({
@@ -283,23 +254,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_enrgender
     }
-    df %>%
-      group_by(S1Gender) %>% # Group by specified column
-      summarise(count = sum(n)) %>% # Number of observations in each group
-      plot_ly(
-        labels = ~ S1Gender,
-        values = ~ count,
-        type = 'pie',
-        texttemplate = "%{percent:.1%}",
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-        hovertemplate = "%{percent:.1%}"
-      ) %>% 
-      layout(title = tt(),
-             margin = list(l = 5, r = 5),
-             legend = list(orientation = "h",   # show entries horizontally
-                           xanchor = "center",  # use center of legend as anchor
-                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+    pie(df, S1Gender, tt())
   })
   
   output$EnrollmentOcc <- renderPlotly({
@@ -314,25 +269,11 @@ server <- function(input, output, session) {
       group_by(S34Occupation) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
       mutate(rank = rank(-count, ties.method = "first")) %>% 
-      mutate(S34Occupation = ifelse(rank <= 5, levels(S34Occupation)[S34Occupation], "Other")) %>% 
-      group_by(S34Occupation) %>% 
-      summarise(countgroup = sum(count)) %>% 
-      plot_ly(
-        labels = ~ S34Occupation,
-        values = ~ countgroup,
-        type = 'pie',
-        texttemplate = "%{percent:.1%}",
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-        hovertemplate = "%{percent:.1%}"
-      ) %>% 
-      layout(title = tt(),
-    margin = list(l = 5, r = 5),
-    legend = list(orientation = "h",   # show entries horizontally
-                  xanchor = "center",  # use center of legend as anchor
-                  x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+      mutate(S34Occupation = ifelse(rank <= 5, levels(S34Occupation)[S34Occupation], "Other")) %>%
+      rename(n = count) %>%      
+      pie(S34Occupation, tt())
   })
- 
+
   output$VaccinePie1 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_vac %>% filter(S1HospitalID == input$Hospital)
@@ -341,20 +282,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac
     }
-    df %>%
-      group_by(S33CovidVaccine) %>% # Group by specified column
-      summarise(count = sum(n)) %>% # Number of observations in each group
-      plot_ly(
-        labels = ~ S33CovidVaccine,
-        values = ~ count,
-        type = 'pie',
-        texttemplate = "%{value:,d}<br>(%{percent:.1%})",
-        marker = list(colors = colors,
-                      line = list(color = '#FFFFFF', width = 1)),
-        hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
-      ) %>%
-      layout(title = tt(),
-             legend = list(x = 100, y = 0.5))
+    pie(df, S33CovidVaccine, tt())
   }) 
   
   output$VaccinePie2 <- renderPlotly({
@@ -365,36 +293,38 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac
     }
+    df <- df %>%
+      group_by(S33CovidVaccine, FinalResult) %>%
+      summarise(count = sum(n))
+    plot_ly(
+      df %>%
+        filter(S33CovidVaccine == "Vaccinated"),
+      labels = ~FinalResult,
+      values = ~count,
+      name = "Vaccinated",
+      type = "pie",
+      domain = list(x = c(0, 0.45), y = c(0, 1))
+    ) %>%
+      add_trace(
+        data = df %>%
+          filter(S33CovidVaccine == "Unvaccinated"),
+        labels = ~FinalResult,
+        values = ~count,
+        name = "Unvaccinated",
+        type = "pie",
+        domain = list(x = c(0.55, 1), y = c(0, 1))
+      ) %>%
+      layout(
+        title = tt(),
+        margin = list(l = 5, r = 5),
+        legend = list(
+          orientation = "h",
+          # show entries horizontally
+          xanchor = "center",
+          # use center of legend as anchor
+          x = 0.5
+        )
+      )
     
-      fig1 <- plot_ly(
-        df %>%
-          filter(S33CovidVaccine == "Vaccinated") %>% 
-          group_by(FinalResult) %>% # Group by specified column
-          summarise(count = sum(n)),  # Number of observations in each group
-        labels = ~ FinalResult,
-        values = ~ count,
-        type = 'pie'
-        #texttemplate = "%{value:,d}<br>(%{percent:.1%})",
-      #  marker = list(colors = colors,
-       #               line = list(color = '#FFFFFF', width = 1)),
-        #hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
-      )
-      
-      fig2 <- plot_ly(
-        df %>%
-          filter(S33CovidVaccine == "Unvaccinated") %>% 
-          group_by(FinalResult) %>% # Group by specified column
-          summarise(count = sum(n)), # Number of observations in each group
-          labels = ~ FinalResult,
-        values = ~ count,
-        type = 'pie'
-        # texttemplate = "%{value:,d}<br>(%{percent:.1%})",
-        # marker = list(colors = colors,
-        #               line = list(color = '#FFFFFF', width = 1)),
-        # hovertemplate = "%{value:,d}<br>(%{percent:.1%})"
-      )
-      
-      subplot(fig2,fig1) %>% 
-      layout(title = tt())
   })
 }

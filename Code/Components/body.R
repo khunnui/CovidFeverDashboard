@@ -9,49 +9,49 @@ library(plotly)
 library(DT)
 
 body <- dashboardBody(
-  tags$head(tags$style(HTML("div.box-header {text-align: center;}"))),
+  tags$head(tags$style(
+    HTML("div.box-header {text-align: center;}")
+  )),
   tabItems(
     tabItem(tabName = "site",
-      fluidRow(
-        box(title = "Study Sites: 3 hospitals in 2 provinces",
-            width = 12,
-            plotOutput("map", height = 455)
-        )
-      )
-    ),
+            fluidRow(
+              box(
+                title = "Study Sites: 3 hospitals in 2 provinces",
+                width = 12,
+                plotOutput("map", height = 455)
+              )
+            )),
     tabItem(tabName = "screen",
-      fluidRow(
-        box(
-          title = "Number Screened by Month",
-          width = 12,
-          plotlyOutput("ScreeningBar", height = 475)
-        )
-      ),
-      fluidRow(
-        column(
-          width = 6,
-          box(
-            title = "Age",
-            width = NULL,
-            dataTableOutput("ScreeningAge")
-          ),
-          box(
-           title = "Gender",
-           width = NULL,
-           plotlyOutput("ScreeningGender", height = 242)
-          )
-        ),
-        column(
-          width = 6,
-          box(
-            title = "Enrollment", 
-            width = NULL,
-            plotlyOutput("ScreeningEnrol")
-          )
-        )
-      )
-    ),
-    tabItem(tabName = "enrol",
+            fluidRow(
+              box(
+                title = "Number Screened by Month",
+                width = 12,
+                plotlyOutput("ScreeningBar", height = 475)
+              )
+            ),
+            fluidRow(
+              column(
+                width = 6,
+                box(
+                  title = "Age",
+                  width = NULL,
+                  dataTableOutput("ScreeningAge")
+                ),
+                box(
+                  title = "Gender",
+                  width = NULL,
+                  plotlyOutput("ScreeningGender", height = 242)
+                )
+              ),
+              column(width = 6,
+                     box(
+                       title = "Enrollment",
+                       width = NULL,
+                       plotlyOutput("ScreeningEnrol")
+                     ))
+            )),
+    tabItem(
+      tabName = "enrol",
       fluidRow(
         column(
           width = 10,
@@ -71,84 +71,64 @@ body <- dashboardBody(
       ),
       fluidRow(
         box(
-          title = "Age Group", 
-          width = 4, 
+          title = "Age Group",
+          width = 4,
           plotlyOutput("EnrollmentAge", height = 270)
         ),
         box(
-          title = "Gender", 
-          width = 4, 
+          title = "Gender",
+          width = 4,
           plotlyOutput("EnrollmentGender", height = 270)
         ),
         box(
-          title = "Occupation", 
-          width = 4, 
+          title = "Occupation",
+          width = 4,
           plotlyOutput("EnrollmentOcc", height = 270)
         ),
       ),
     ),
     tabItem(tabName = "diag",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
     tabItem(tabName = "underlying",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
     tabItem(tabName = "risk",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
     tabItem(tabName = "sign",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
-    tabItem(tabName = "vac",
-            fluidRow(
-              box(
-                title = "COVID-19 Vaccination", 
-                width =4,
-                plotOutput("VaccinePie", height = 475)
-              ),
-              box(
-                title = "COVID-19 Vaccination vs. PCR Results", 
-                width =8,
-                plotOutput("VaccinePie", height = 475)
-              )
-            )
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
+    tabItem(
+      tabName = "vac",
+      fluidRow(
+        box(
+          title = "COVID-19 Vaccination",
+          width = 4,
+          plotlyOutput("VaccinePie1", height = 475)
+        ),
+        box(
+          title = "COVID-19 Vaccination vs. PCR Results",
+          width = 8,
+          plotlyOutput("VaccinePie2", height = 475)
+        )
+      )
     ),
     tabItem(tabName = "atk",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
     tabItem(tabName = "detect",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    ),
+            fluidRow(box(
+              title = "Box title", "Box content"
+            ))),
     tabItem(tabName = "sero",
-            fluidRow(
-              box(
-                title = "Box title", "Box content"
-              )
-            )
-    )
+            fluidRow(box(
+              title = "Box title", "Box content"
+            )))
   )
 )
