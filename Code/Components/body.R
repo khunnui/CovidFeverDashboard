@@ -133,7 +133,7 @@ body <- dashboardBody(
               title = "Knowledge, Attitude and Practices", 
               width = 12,
               plotlyOutput("kap1"),
-              plotlyOutput("kap2")
+              plotlyOutput("kap2", height = 255)
             )))
   )
 )

@@ -375,9 +375,10 @@ server <- function(input, output, session) {
           'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
         )
       ) %>%
-      scalebar(kap, tt())
+      scalebar(kap) %>%
+      layout(title = tt())
   })
-
+  
   output$kap2 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_kap %>% filter(S1HospitalID == input$Hospital)
@@ -397,7 +398,7 @@ server <- function(input, output, session) {
           'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
         )
       ) %>%
-      scalebar(kap, tt())
+      scalebar(kap)
   })
   
 }

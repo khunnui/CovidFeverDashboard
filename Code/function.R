@@ -40,7 +40,7 @@ pie <- function(df, column, tt) {
   
 }
 
-scalebar <- function(df, column, tt) {
+scalebar <- function(df, column) {
 
   # An R function with a parameter that accepts a data.frame column can't evaluate
   # the column argument until it is first 'quoted', followed by an 'unquote' within
@@ -50,17 +50,22 @@ scalebar <- function(df, column, tt) {
   plot_ly(
     data = df %>%
       group_by(!!column, scale) %>%
-      summarise(count = sum(n)),
+      summarise(count = sum(n)) %>% 
+      mutate(pct = count/sum(count)),
     y = column,
-    x = ~ count,
+    x = ~ pct,
     type = "bar",
     orientation = 'h',
-    color = ~ scale
+    color = ~ scale,
+    hoverinfo = 'x'
   ) %>% 
     layout(barmode = 'stack',
-           title = tt,
-           xaxis = list(title = ''),
-           yaxis = list(title = ''),
+           xaxis = list(title = '',
+                        tickformat = '.0%'),
+           yaxis = list(title = '',
+                        ticks = "outside", 
+                        tickcolor='white', 
+                        ticklen = 10),
            legend = list(orientation = "h",   # show entries horizontally
                          xanchor = "center",  # use center of legend as anchor
                          x = 0.5))
