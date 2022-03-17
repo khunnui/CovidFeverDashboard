@@ -129,11 +129,17 @@ body <- dashboardBody(
               title = "Box title", "Box content"
             ))),
     tabItem(tabName = "KAP",
-            fluidRow(box(
-              title = "Knowledge, Attitude and Practices", 
-              width = 12,
-              plotlyOutput("kap1", height = 425),
-              plotlyOutput("kap2", height = 255)
-            )))
+            fluidRow(
+              box(
+                title = "Knowledge, Attitude and Practices",
+                width = 12,
+                div(
+                  style = "text-align: center; font-size: 20px",
+                  textOutput("titletext")
+                ),
+                plotlyOutput("kap1"),
+                plotlyOutput("kap2", height = 267)
+              )
+            ))
   )
 )

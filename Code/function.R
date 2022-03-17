@@ -40,7 +40,7 @@ pie <- function(df, column, tt) {
   
 }
 
-scalebar <- function(df, column) {
+scalebar <- function(df, column, colors) {
 
   # An R function with a parameter that accepts a data.frame column can't evaluate
   # the column argument until it is first 'quoted', followed by an 'unquote' within
@@ -57,7 +57,7 @@ scalebar <- function(df, column) {
     type = "bar",
     orientation = 'h',
     color = ~ scale,
-    colors = 'BrBG',
+    colors = colors,
     hoverinfo = 'x'
   ) %>% 
     layout(barmode = 'stack',
@@ -68,8 +68,7 @@ scalebar <- function(df, column) {
                         ticks = "outside", 
                         tickcolor='white', 
                         ticklen = 10),
-           legend = list(orientation = "h",   # show entries horizontally
-                         xanchor = "center",  # use center of legend as anchor
-                         x = 0.5))
+           legend = list(traceorder = "normal",
+                         orientation = "h"))
 
 }

@@ -19,6 +19,16 @@ server <- function(input, output, session) {
       tt <- ""
     }
   })
+  
+  output$titletext <- renderText({
+    if (input$Hospital != "All") {
+      titletext <- paste0(input$Hospital, " Hospital")
+    } else if (input$Province != "All") {
+      titletext <- paste0(input$Province, " Province")
+    } else {
+      titletext <- ""
+    }
+  })
 
   observeEvent(input$Province, {
     if (input$Province == "All") {
@@ -375,8 +385,9 @@ server <- function(input, output, session) {
           'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
         )
       ) %>%
-      scalebar(kap) %>%
-      layout(title = tt())
+      scalebar(kap, c('#93C2A4', '#C8EABA', '#FFFEDF', '#FFCB81', '#EE9134'))
+    # %>%
+    #   layout(title = tt())
   })
   
   output$kap2 <- renderPlotly({
@@ -398,7 +409,7 @@ server <- function(input, output, session) {
           'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
         )
       ) %>%
-      scalebar(kap)
+      scalebar(kap, c('#66A38F', '#86C499', '#ADDFAA', '#D7F3C1', '#FFFEDF'))
   })
   
 }
