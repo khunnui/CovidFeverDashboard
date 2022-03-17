@@ -89,7 +89,9 @@ body <- dashboardBody(
     ),
     tabItem(tabName = "diag",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Diagnosis at OPD/ER", 
+              width = 12,
+              plotlyOutput("Diag", height = 1000)
             ))),
     tabItem(tabName = "underlying",
             fluidRow(box(

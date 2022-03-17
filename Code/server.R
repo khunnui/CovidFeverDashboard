@@ -411,5 +411,31 @@ server <- function(input, output, session) {
       ) %>%
       scalebar(kap, c('#66A38F', '#86C499', '#ADDFAA', '#D7F3C1', '#FFFEDF'))
   })
-  
+
+  output$Diag <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_dx %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_dx %>% filter(Province == input$Province)
+    } else {
+      df <- df_dx
+    }
+    plot_ly(
+      data = df %>% 
+        group_by(FinalResult, Diagnosis) %>% 
+        summarise(count = sum(n)),
+      y = ~ Diagnosis,
+      x = ~ count,
+      type = "bar",
+      orientation = 'h',
+      color = ~ FinalResult,
+      hoverinfo = 'x'
+    ) %>% 
+      layout(barmode = 'stack',
+             xaxis = list(title = 'Count',
+                          bargap = 0.5),
+             yaxis = list(title = '',
+                          categoryorder = "total ascending"))
+      
+  })  
 }
