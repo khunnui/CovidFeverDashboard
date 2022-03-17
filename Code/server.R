@@ -438,4 +438,32 @@ server <- function(input, output, session) {
                           categoryorder = "total ascending"))
       
   })  
+  
+  output$Underly <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_un %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_un %>% filter(Province == input$Province)
+    } else {
+      df <- df_un
+    }
+    plot_ly(
+      data = df %>% 
+        group_by(FinalResult, Diagnosis) %>% 
+        summarise(count = sum(n)),
+      y = ~ Diagnosis,
+      x = ~ count,
+      type = "bar",
+      orientation = 'h',
+      color = ~ FinalResult,
+      hoverinfo = 'x'
+    ) %>% 
+      layout(barmode = 'stack',
+             xaxis = list(title = 'Count',
+                          bargap = 0.5),
+             yaxis = list(title = '',
+                          categoryorder = "total ascending"))
+    
+  })  
+  
 }

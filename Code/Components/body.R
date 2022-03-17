@@ -95,7 +95,9 @@ body <- dashboardBody(
             ))),
     tabItem(tabName = "underlying",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Underlying Condition Among Febrile Patients",
+              width = 12,
+              plotlyOutput("Underly", height = 1000)
             ))),
     tabItem(tabName = "risk",
             fluidRow(box(
