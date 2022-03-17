@@ -449,9 +449,9 @@ server <- function(input, output, session) {
     }
     plot_ly(
       data = df %>% 
-        group_by(FinalResult, Diagnosis) %>% 
+        group_by(FinalResult, Underlying) %>% 
         summarise(count = sum(n)),
-      y = ~ Diagnosis,
+      y = ~ Underlying,
       x = ~ count,
       type = "bar",
       orientation = 'h',
