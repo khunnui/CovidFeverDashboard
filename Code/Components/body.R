@@ -101,7 +101,9 @@ body <- dashboardBody(
             ))),
     tabItem(tabName = "risk",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Risk Factors Within Past 14 Days",
+              width =12,
+              plotlyOutput("Risk", height = 475)
             ))),
     tabItem(tabName = "sign",
             fluidRow(box(
