@@ -91,13 +91,13 @@ body <- dashboardBody(
             fluidRow(box(
               title = "Diagnosis at OPD/ER", 
               width = 12,
-              plotlyOutput("Diag", height = 1000)
+              plotlyOutput("Diag", height = 766)
             ))),
     tabItem(tabName = "underlying",
             fluidRow(box(
               title = "Underlying Condition Among Febrile Patients",
               width = 12,
-              plotlyOutput("Underly", height = 1000)
+              plotlyOutput("Underly", height = 475)
             ))),
     tabItem(tabName = "risk",
             fluidRow(box(

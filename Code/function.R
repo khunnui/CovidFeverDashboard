@@ -19,6 +19,7 @@ pie <- function(df, column, tt) {
       values = ~ count,
       #name = column,
       type = 'pie',
+      sort = FALSE,
       marker = list(
         colors = colors,
         line = list(color = '#FFFFFF', width = 1)
@@ -37,6 +38,48 @@ pie <- function(df, column, tt) {
         x = 0.5
       )
     )
+  
+}
+
+hbar <- function(df, column, tt) {
+  
+  # An R function with a parameter that accepts a data.frame column can't evaluate
+  # the column argument until it is first 'quoted', followed by an 'unquote' within
+  # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
+  column = enquo(column)
+
+  plot_ly(
+    data = df %>% 
+      group_by(FinalResult, !!column) %>% 
+      summarise(count = sum(n)),
+    y = column,
+    x = ~ count,
+    type = "bar",
+    orientation = 'h',
+    color = ~ FinalResult,
+    hoverinfo = 'x'
+  ) %>% 
+    layout(
+      title = tt,
+      barmode = 'stack',
+      xaxis = list(title = 'Count',
+                   bargap = 0.5),
+      yaxis = list(title = '',
+                   categoryorder = "total ascending")
+    ) %>%
+    add_annotations(
+      text = "PCR Result",
+      xref = "paper",
+      yref = "paper",
+      x = 1.037,
+      xanchor = "left",
+      y = 0.9,
+      yanchor = "bottom",
+      # Same y as legend below
+      legendtitle = TRUE,
+      showarrow = FALSE
+    ) %>%
+    layout(legend = list(y = 0.9, yanchor = "top"))
   
 }
 

@@ -386,8 +386,6 @@ server <- function(input, output, session) {
         )
       ) %>%
       scalebar(kap, c('#93C2A4', '#C8EABA', '#FFFEDF', '#FFCB81', '#EE9134'))
-    # %>%
-    #   layout(title = tt())
   })
   
   output$kap2 <- renderPlotly({
@@ -420,25 +418,26 @@ server <- function(input, output, session) {
     } else {
       df <- df_dx
     }
-    plot_ly(
-      data = df %>% 
-        group_by(FinalResult, Diagnosis) %>% 
-        summarise(count = sum(n)),
-      y = ~ Diagnosis,
-      x = ~ count,
-      type = "bar",
-      orientation = 'h',
-      color = ~ FinalResult,
-      hoverinfo = 'x'
-    ) %>% 
-      layout(barmode = 'stack',
-             xaxis = list(title = 'Count',
-                          bargap = 0.5),
-             yaxis = list(title = '',
-                          categoryorder = "total ascending"))
-      
+    hbar(df, Diagnosis, tt())
+    # plot_ly(
+    #   data = df %>% 
+    #     group_by(FinalResult, Diagnosis) %>% 
+    #     summarise(count = sum(n)),
+    #   y = ~ Diagnosis,
+    #   x = ~ count,
+    #   type = "bar",
+    #   orientation = 'h',
+    #   color = ~ FinalResult,
+    #   hoverinfo = 'x'
+    # ) %>% 
+    #   layout(barmode = 'stack',
+    #          xaxis = list(title = 'Count',
+    #                       bargap = 0.5),
+    #          yaxis = list(title = '',
+    #                       categoryorder = "total ascending"))
+    #   
   })  
-  
+
   output$Underly <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_un %>% filter(S1HospitalID == input$Hospital)
@@ -447,22 +446,23 @@ server <- function(input, output, session) {
     } else {
       df <- df_un
     }
-    plot_ly(
-      data = df %>% 
-        group_by(FinalResult, Underlying) %>% 
-        summarise(count = sum(n)),
-      y = ~ Underlying,
-      x = ~ count,
-      type = "bar",
-      orientation = 'h',
-      color = ~ FinalResult,
-      hoverinfo = 'x'
-    ) %>% 
-      layout(barmode = 'stack',
-             xaxis = list(title = 'Count',
-                          bargap = 0.5),
-             yaxis = list(title = '',
-                          categoryorder = "total ascending"))
+    hbar(df, Underlying, tt())
+    # plot_ly(
+    #   data = df %>% 
+    #     group_by(FinalResult, Underlying) %>% 
+    #     summarise(count = sum(n)),
+    #   y = ~ Underlying,
+    #   x = ~ count,
+    #   type = "bar",
+    #   orientation = 'h',
+    #   color = ~ FinalResult,
+    #   hoverinfo = 'x'
+    # ) %>% 
+    #   layout(barmode = 'stack',
+    #          xaxis = list(title = 'Count',
+    #                       bargap = 0.5),
+    #          yaxis = list(title = '',
+    #                       categoryorder = "total ascending"))
     
   })  
   
