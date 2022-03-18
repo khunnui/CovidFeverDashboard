@@ -26,7 +26,13 @@ body <- dashboardBody(
               box(
                 title = "Number Screened by Month",
                 width = 12,
-                plotlyOutput("ScreeningBar", height = 475)
+                align="center",
+                plotlyOutput("ScreeningBar", height = 420),
+                radioButtons("type", 
+                             label = "",
+                             inline = TRUE,
+                             choices = list("Weekly" = 1, "Monthly" = 2), 
+                             selected = 1)
               )
             ),
             fluidRow(

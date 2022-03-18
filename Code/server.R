@@ -52,6 +52,20 @@ server <- function(input, output, session) {
   })
 
   output$ScreeningBar <- renderPlotly({
+    if (input$type == 1) {
+      df_scr <- df_scrw
+      l = list(title = '',
+               dtick = 1209600000,
+               tick0 = "2021-06-07",
+               tickformat = "%b %d, %y",
+               tickangle = -45
+      )
+    } else {
+      df_scr <- df_scrm
+      l = list(title = '',
+               dtick = "M1",
+               tickformat = "%b %y")
+    }
     if (input$Hospital != "All") {
       df <- df_scr %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
@@ -59,7 +73,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_scr
     }
-    plot_ly(
+    p <- plot_ly(
       data = df %>%
         group_by(scrdate) %>%
         summarise(count = sum(n)),
@@ -72,10 +86,8 @@ server <- function(input, output, session) {
     ) %>%
       layout(
         title = paste0(tt(), "<br><sup>Total screening = ", format(sum(df$n), big.mark = ","), "</sup>"),
-        xaxis = list(title = '',
-                     tickformat = "%b %y"),
-        yaxis = list(title = 'Number Screened',
-                     range = list(0, 1000)),
+        xaxis = l,
+        yaxis = list(title = 'Number Screened'),
         bargap = 0.5
       )
   })
