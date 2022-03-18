@@ -20,6 +20,10 @@ server <- function(input, output, session) {
     }
   })
   
+  output$Date <- renderText({
+    paste0("  Data as of ", ddate)
+  })
+  
   output$titletext <- renderText({
     if (input$Hospital != "All") {
       titletext <- paste0(input$Hospital, " Hospital")
@@ -50,7 +54,6 @@ server <- function(input, output, session) {
       draw_plot(map_cf_province, x = 0.25, y = 0,    width = 0.5,  height = 1) +
       draw_plot(map_cf_np,       x = 0.65, y = 0.2, width = 0.25, height = 0.6)
   })
-
 
 output$ScreeningBar <- renderPlotly({
   if (input$type == 1) {

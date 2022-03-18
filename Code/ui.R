@@ -10,6 +10,8 @@ source('./Components/sidebar.R')
 source('./Components/body.R')
 
 ui <- dashboardPage(
+  skin = "black",
   header = header,
   sidebar =  sidebar,
-  body = body)
+  body = body
+)

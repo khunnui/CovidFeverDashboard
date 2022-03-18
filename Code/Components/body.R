@@ -18,7 +18,7 @@ body <- dashboardBody(
               box(
                 title = "Study Sites: 3 hospitals in 2 provinces",
                 width = 12,
-                plotOutput("map", height = 455)
+                plotOutput("map")
               )
             )),
     tabItem(tabName = "screen",

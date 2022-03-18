@@ -10,19 +10,11 @@ sidebar <- dashboardSidebar(
   width = 180,
   tags$style(
     HTML(
-      ".sidebar-menu li a {padding-top: 5px; padding-bottom: 5px;}
+      "
+        .shiny-input-container > label {margin-bottom: -15px;}
+        .sidebar-menu li a {padding-top: 5px; padding-bottom: 5px;}
       "
     )
-  ),
-  selectInput(
-    inputId = "Province",
-    label = "Province:",
-    choices = c("All", unique(df_enr$Province))
-  ),
-  selectInput(
-    inputId = "Hospital",
-    label = "Hospital:",
-    choices = c("All", as.character(unique(df_enr$S1HospitalID)))
   ),
   sidebarMenu(
     menuItem("Study sites", tabName = "site"),
@@ -37,5 +29,18 @@ sidebar <- dashboardSidebar(
     menuItem("SARS-CoV-2 Detection", tabName = "detect"),
     menuItem("Serology Testing", tabName = "sero"),
     menuItem("KAP", tabName = "KAP")
-  )
+  ),
+  tags$div(id = "div_test", tags$style("#div_test div {margin-bottom: -2px}"),
+           selectInput(
+             inputId = "Province",
+             label = "Province:",
+             choices = c("All", unique(df_enr$Province))
+           )),
+  selectInput(
+    inputId = "Hospital",
+    label = "Hospital:",
+    choices = c("All", as.character(unique(df_enr$S1HospitalID)))
+  ),
+  
+  h6(textOutput("Date"), align = "center")
 )
