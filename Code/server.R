@@ -34,12 +34,12 @@ server <- function(input, output, session) {
     if (input$Province == "All") {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scr$S1HospitalID)))
+        choices = c("All", as.character(unique(df_enr$S1HospitalID)))
       )
     } else {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scr$S1HospitalID[df_scr$Province == input$Province])))
+        choices = c("All", as.character(unique(df_enr$S1HospitalID[df_enr$Province == input$Province])))
       )
     }
   })
@@ -51,46 +51,47 @@ server <- function(input, output, session) {
       draw_plot(map_cf_np,       x = 0.65, y = 0.2, width = 0.25, height = 0.6)
   })
 
-  output$ScreeningBar <- renderPlotly({
-    if (input$type == 1) {
-      df_scr <- df_scrw
-      l = list(title = '',
-               dtick = 1209600000,
-               tick0 = "2021-06-07",
-               tickformat = "%b %d, %y",
-               tickangle = -45
-      )
-    } else {
-      df_scr <- df_scrm
-      l = list(title = '',
-               dtick = "M1",
-               tickformat = "%b %y")
-    }
-    if (input$Hospital != "All") {
-      df <- df_scr %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_scr %>% filter(Province == input$Province)
-    } else {
-      df <- df_scr
-    }
-    p <- plot_ly(
-      data = df %>%
-        group_by(scrdate) %>%
-        summarise(count = sum(n)),
-      x = ~ scrdate,
-      y = ~ count,
-      name = "Screening",
-      type = "bar",
-      marker = list(color = 'rgb(158,202,225)'),
-      hoverinfo = 'y'
-    ) %>%
-      layout(
-        title = paste0(tt(), "<br><sup>Total screening = ", format(sum(df$n), big.mark = ","), "</sup>"),
-        xaxis = l,
-        yaxis = list(title = 'Number Screened'),
-        bargap = 0.5
-      )
-  })
+
+output$ScreeningBar <- renderPlotly({
+  if (input$type == 1) {
+    df_scr <- df_scrw
+    l = list(title = '',
+             dtick = 1209600000,
+             tick0 = "2021-06-07",
+             tickformat = "%b %d, %y",
+             tickangle = -45
+    )
+  } else {
+    df_scr <- df_scrm
+    l = list(title = '',
+             dtick = "M1",
+             tickformat = "%b %y")
+  }
+  if (input$Hospital != "All") {
+    df <- df_scr %>% filter(S1HospitalID == input$Hospital)
+  } else if (input$Province != "All") {
+    df <- df_scr %>% filter(Province == input$Province)
+  } else {
+    df <- df_scr
+  }
+  p <- plot_ly(
+    data = df %>%
+      group_by(scrdate) %>%
+      summarise(count = sum(n)),
+    x = ~ scrdate,
+    y = ~ count,
+    name = "Screening",
+    type = "bar",
+    marker = list(color = 'rgb(158,202,225)'),
+    hoverinfo = 'y'
+  ) %>%
+    layout(
+      title = paste0(tt(), "<br><sup>Total screening = ", format(sum(df$n), big.mark = ","), "</sup>"),
+      xaxis = l,
+      yaxis = list(title = 'Number Screened'),
+      bargap = 0.5
+    )
+})
   
   output$ScreeningAge <- renderDT({
     if (input$Hospital != "All") {

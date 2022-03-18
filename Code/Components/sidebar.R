@@ -17,12 +17,12 @@ sidebar <- dashboardSidebar(
   selectInput(
     inputId = "Province",
     label = "Province:",
-    choices = c("All", unique(df_scr$Province))
+    choices = c("All", unique(df_enr$Province))
   ),
   selectInput(
     inputId = "Hospital",
     label = "Hospital:",
-    choices = c("All", as.character(unique(df_scr$S1HospitalID)))
+    choices = c("All", as.character(unique(df_enr$S1HospitalID)))
   ),
   sidebarMenu(
     menuItem("Study sites", tabName = "site"),
