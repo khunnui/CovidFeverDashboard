@@ -476,4 +476,16 @@ server <- function(input, output, session) {
     }
     hbar(df, Risk, tt())
   })
+  
+  output$Sign <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_sign %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_sign %>% filter(Province == input$Province)
+    } else {
+      df <- df_sign
+    }
+    hbar(df, Signs, tt())
+  })
+  
 }

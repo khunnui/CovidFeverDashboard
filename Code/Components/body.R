@@ -101,13 +101,15 @@ body <- dashboardBody(
             ))),
     tabItem(tabName = "risk",
             fluidRow(box(
-              title = "Risk Factors Within Past 14 Days",
+              title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
               width =12,
               plotlyOutput("Risk", height = 475)
             ))),
     tabItem(tabName = "sign",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Clinical Signs and Symptoms among Febrile Patients ", 
+              width =12,
+              plotlyOutput("Sign", height = 475)
             ))),
     tabItem(tabName = "vac",
             fluidRow(
