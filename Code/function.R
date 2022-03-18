@@ -65,7 +65,10 @@ hbar <- function(df, column, tt) {
       xaxis = list(title = 'Count',
                    bargap = 0.5),
       yaxis = list(title = '',
-                   categoryorder = "total ascending")
+                   categoryorder = "total ascending",
+                   ticks = "outside", 
+                   tickcolor='white', 
+                   ticklen = 10)
     ) %>%
     add_annotations(
       text = "PCR Result",
