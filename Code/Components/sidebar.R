@@ -7,7 +7,7 @@
 library(shinydashboard)
 
 sidebar <- dashboardSidebar(
-  width = 180,
+  width = 160,
   tags$style(
     HTML(
       "

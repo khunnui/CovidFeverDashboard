@@ -17,7 +17,6 @@ pie <- function(df, column, tt) {
     add_trace(
       labels = column,
       values = ~ count,
-      #name = column,
       type = 'pie',
       sort = FALSE,
       marker = list(
@@ -25,11 +24,11 @@ pie <- function(df, column, tt) {
         line = list(color = '#FFFFFF', width = 1)
       ),
       texttemplate = "%{percent:.1%}",
-      hovertemplate = "%{percent:.1%}"
+      hovertemplate = '%{value:,}<extra></extra>'
     ) %>%
     layout(
       title = tt,
-      margin = list(l = 5, r = 5),
+      margin = list(l = 30, r = 30),
       legend = list(
         orientation = "h",
         # show entries horizontally

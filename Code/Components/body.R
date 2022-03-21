@@ -10,7 +10,8 @@ library(DT)
 
 body <- dashboardBody(
   tags$head(tags$style(
-    HTML("div.box-header {text-align: center;}")
+    HTML("div.box-header {text-align: center;}
+         .skin-black .main-sidebar {background-color: #49708B;}")
   )),
   tabItems(
     tabItem(tabName = "site",
@@ -18,7 +19,7 @@ body <- dashboardBody(
               box(
                 title = "Study Sites: 3 hospitals in 2 provinces",
                 width = 12,
-                plotOutput("map")
+                plotOutput("map", height = 455)
               )
             )),
     tabItem(tabName = "screen",
@@ -27,7 +28,7 @@ body <- dashboardBody(
                 title = "Number Screened by Month",
                 width = 12,
                 align="center",
-                plotlyOutput("ScreeningBar", height = 420),
+                plotlyOutput("ScreeningBar", height = 375),
                 radioButtons("type", 
                              label = "",
                              inline = TRUE,
@@ -122,12 +123,12 @@ body <- dashboardBody(
               box(
                 title = "COVID-19 Vaccination",
                 width = 4,
-                plotlyOutput("VaccinePie1", height = 475)
+                plotlyOutput("VaccinePie1")
               ),
               box(
                 title = "COVID-19 Vaccination vs. PCR Results",
                 width = 8,
-                plotlyOutput("VaccinePie2", height = 475)
+                plotlyOutput("VaccinePie2")
               )
             )),
     tabItem(tabName = "atk",

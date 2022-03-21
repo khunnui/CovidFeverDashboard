@@ -112,11 +112,12 @@ output$ScreeningBar <- renderPlotly({
                                         tt()),
       rownames = FALSE,
       options = list(
-        columnDefs = list(list(visible=FALSE, targets=1)),
         initComplete = JS("function(){$(this).addClass('compact');}"),
         dom = 'rt'
       )
-    )
+    ) %>%
+      formatCurrency(1, '') %>%
+      formatRound(1, 0)
   })
   
   output$ScreeningGender <- renderPlotly({
@@ -146,7 +147,8 @@ output$ScreeningBar <- renderPlotly({
       y = ~ count,
       color = ~ CF_Enrol,
       type = "bar",
-      hoverinfo = 'y'
+      hoverinfo = 'y',
+      hovertemplate = '%{y:,}<extra></extra>'
     ) %>%
       layout(
         title = tt(),
@@ -193,6 +195,7 @@ output$ScreeningBar <- renderPlotly({
                           tickformat = "%b %y"),
              yaxis = list(title = 'Number Eligible/Enrolled',
                           range = list(0, 400)),
+             barmode = 'stack',
              margin = list(l = 5, r = 5),
              legend = list(orientation = "h",   # show entries horizontally
                            xanchor = "center",  # use center of legend as anchor
@@ -341,6 +344,7 @@ output$ScreeningBar <- renderPlotly({
       layout(
         title = tt(),
         grid = list(rows = 1, columns = 2),
+        margin = list(l = 160, r = 160),
         legend = list(
           orientation = "h",
           # show entries horizontally
@@ -350,7 +354,7 @@ output$ScreeningBar <- renderPlotly({
         ),
         annotations = list(
           list(
-            x = 0.18 ,
+            x = 0.12,
             y = 1,
             text = "Vaccinated",
             showarrow = F,
@@ -358,7 +362,7 @@ output$ScreeningBar <- renderPlotly({
             yref = 'paper'
           ),
           list(
-            x = 0.82 ,
+            x = 0.88,
             y = 1,
             text = "Unvaccinated",
             showarrow = F,
