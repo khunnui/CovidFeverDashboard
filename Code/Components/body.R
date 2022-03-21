@@ -116,7 +116,7 @@ body <- dashboardBody(
             fluidRow(box(
               title = "Clinical Signs and Symptoms among Febrile Patients ", 
               width =12,
-              plotlyOutput("Sign", height = 475)
+              plotlyOutput("Sign", height = 612)
             ))),
     tabItem(tabName = "vac",
             fluidRow(
@@ -133,7 +133,9 @@ body <- dashboardBody(
             )),
     tabItem(tabName = "atk",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Antigen Test Kits (ATK) Used within Past 30 Days among Febrile Patients",
+              width = 8,
+              plotlyOutput("atkPie")
             ))),
     tabItem(tabName = "detect",
             fluidRow(box(

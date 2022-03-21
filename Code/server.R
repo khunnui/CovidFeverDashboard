@@ -508,4 +508,14 @@ output$ScreeningBar <- renderPlotly({
     hbar(df, Signs, tt())
   })
   
+  output$atkPie <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_atk %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_atk %>% filter(Province == input$Province)
+    } else {
+      df <- df_atk
+    }
+    pie(df, FinalResult, tt())
+  }) 
 }
