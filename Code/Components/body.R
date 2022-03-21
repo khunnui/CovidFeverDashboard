@@ -112,12 +112,25 @@ body <- dashboardBody(
               width =12,
               plotlyOutput("Risk", height = 475)
             ))),
+    
     tabItem(tabName = "sign",
-            fluidRow(box(
-              title = "Clinical Signs and Symptoms among Febrile Patients ", 
-              width =12,
-              plotlyOutput("Sign", height = 612)
-            ))),
+            fluidRow(
+              column(
+                width = 10,
+                box(
+                  title = "Clinical Signs and Symptoms among Febrile Patients",
+                  width = NULL,
+                  plotlyOutput("Sign", height = 612)
+                )
+              ),
+              column(
+                width = 2,
+                valueBoxOutput("posBoxSign", width = NULL),
+                valueBoxOutput("hospitalised", width = NULL),
+                valueBoxOutput("intub", width = NULL),
+                valueBoxOutput("deathBox", width = NULL)
+              )
+            )), 
     tabItem(tabName = "vac",
             fluidRow(
               box(
