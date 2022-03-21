@@ -134,16 +134,19 @@ body <- dashboardBody(
     tabItem(tabName = "atk",
             fluidRow(box(
               title = "Antigen Test Kits (ATK) Used within Past 30 Days among Febrile Patients",
-              width = 8,
+              width = 12,
               plotlyOutput("atkPie")
             ))),
     tabItem(tabName = "detect",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "SARS-CoV-2 Detection by Sample Type", 
+              plotlyOutput("DetectBar"),
+              plotlyOutput("DetectPie")
             ))),
     tabItem(tabName = "sero",
             fluidRow(box(
-              title = "Box title", "Box content"
+              title = "Serology Testing Among Febrile Patient", 
+              "Box content"
             ))),
     tabItem(tabName = "KAP",
             fluidRow(

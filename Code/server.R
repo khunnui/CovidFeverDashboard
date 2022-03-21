@@ -55,46 +55,52 @@ server <- function(input, output, session) {
       draw_plot(map_cf_np,       x = 0.65, y = 0.2, width = 0.25, height = 0.6)
   })
 
-output$ScreeningBar <- renderPlotly({
-  if (input$type == 1) {
-    df_scr <- df_scrw
-    l = list(title = '',
-             dtick = 1209600000,
-             tick0 = "2021-06-07",
-             tickformat = "%b %d, %y",
-             tickangle = -45
-    )
-  } else {
-    df_scr <- df_scrm
-    l = list(title = '',
-             dtick = "M1",
-             tickformat = "%b %y")
-  }
-  if (input$Hospital != "All") {
-    df <- df_scr %>% filter(S1HospitalID == input$Hospital)
-  } else if (input$Province != "All") {
-    df <- df_scr %>% filter(Province == input$Province)
-  } else {
-    df <- df_scr
-  }
-  p <- plot_ly(
-    data = df %>%
-      group_by(scrdate) %>%
-      summarise(count = sum(n)),
-    x = ~ scrdate,
-    y = ~ count,
-    name = "Screening",
-    type = "bar",
-    marker = list(color = 'rgb(158,202,225)'),
-    hoverinfo = 'y'
-  ) %>%
-    layout(
-      title = paste0(tt(), "<br><sup>Total screening = ", format(sum(df$n), big.mark = ","), "</sup>"),
-      xaxis = l,
-      yaxis = list(title = 'Number Screened'),
-      bargap = 0.5
-    )
-})
+  output$ScreeningBar <- renderPlotly({
+    if (input$type == 1) {
+      df_scr <- df_scrw
+      l = list(
+        title = '',
+        dtick = 1209600000,
+        tick0 = "2021-06-07",
+        tickformat = "%b %d, %y",
+        tickangle = -45
+      )
+    } else {
+      df_scr <- df_scrm
+      l = list(title = '',
+               dtick = "M1",
+               tickformat = "%b %y")
+    }
+    if (input$Hospital != "All") {
+      df <- df_scr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_scr %>% filter(Province == input$Province)
+    } else {
+      df <- df_scr
+    }
+    p <- plot_ly(
+      data = df %>%
+        group_by(scrdate) %>%
+        summarise(count = sum(n)),
+      x = ~ scrdate,
+      y = ~ count,
+      name = "Screening",
+      type = "bar",
+      marker = list(color = 'rgb(158,202,225)'),
+      hoverinfo = 'y'
+    ) %>%
+      layout(
+        title = paste0(
+          tt(),
+          "<br><sup>Total screening = ",
+          format(sum(df$n), big.mark = ","),
+          "</sup>"
+        ),
+        xaxis = l,
+        yaxis = list(title = 'Number Screened'),
+        bargap = 0.5
+      )
+  })
   
   output$ScreeningAge <- renderDT({
     if (input$Hospital != "All") {
@@ -172,34 +178,45 @@ output$ScreeningBar <- renderPlotly({
       df1 <- df_eli
       df2 <- df_enr
     }
-    plot_ly() %>% 
-      add_trace(data = df1 %>%
-                  group_by(scrdate) %>%
-                  summarise(count = sum(n)),
-                x = ~ scrdate,
-                y = ~ count,
-                name = "Eligible",
-                type = 'scatter', 
-                mode = 'lines',
-                hoverinfo = 'y') %>% 
-    add_trace(data = df2 %>%
-                group_by(enrdate, FinalResult) %>%
-                summarise(count = sum(n)),
-              x = ~ enrdate,
-              y = ~ count,
-              color = ~FinalResult,
-              type = 'bar',
-              hoverinfo = 'y') %>% 
-      layout(title = tt(),
-             xaxis = list(title = '',
-                          tickformat = "%b %y"),
-             yaxis = list(title = 'Number Eligible/Enrolled',
-                          range = list(0, 400)),
-             barmode = 'stack',
-             margin = list(l = 5, r = 5),
-             legend = list(orientation = "h",   # show entries horizontally
-                           xanchor = "center",  # use center of legend as anchor
-                           x = 0.5))             # put legend in center of x-axis)  # use center of legend as anchor)
+    plot_ly() %>%
+      add_trace(
+        data = df2 %>%
+          group_by(enrdate, FinalResult) %>%
+          summarise(count = sum(n)),
+        x = ~ enrdate,
+        y = ~ count,
+        color = ~ FinalResult,
+        type = 'bar',
+        hoverinfo = 'y'
+      ) %>%
+      add_trace(
+        data = df1 %>%
+          group_by(scrdate) %>%
+          summarise(count = sum(n)),
+        x = ~ scrdate,
+        y = ~ count,
+        name = "Eligible",
+        type = 'scatter',
+        mode = 'lines',
+        hoverinfo = 'y'
+      ) %>%
+      layout(
+        title = tt(),
+        xaxis = list(title = '',
+                     tickformat = "%b %y"),
+        yaxis = list(title = 'Number Eligible/Enrolled',
+                     range = list(0, 400)),
+        barmode = 'stack',
+        bargap = 0.5,
+        margin = list(l = 5, r = 5),
+        legend = list(
+          orientation = "h",
+          # show entries horizontally
+          xanchor = "center",
+          # use center of legend as anchor
+          x = 0.5
+        )
+      )             # put legend in center of x-axis)  # use center of legend as anchor)
   })
   
   output$eliBox <- renderValueBox({
@@ -297,137 +314,10 @@ output$ScreeningBar <- renderPlotly({
     df %>%
       group_by(S34Occupation) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
-      mutate(rank = rank(-count, ties.method = "first")) %>% 
+      mutate(rank = rank(-replace(count,S34Occupation=='Other',NA), ties.method = "first")) %>% 
       mutate(S34Occupation = ifelse(rank <= 5, levels(S34Occupation)[S34Occupation], "Other")) %>%
       rename(n = count) %>%      
-      pie(S34Occupation, tt())
-  })
-
-  output$VaccinePie1 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_vac %>% filter(Province == input$Province)
-    } else {
-      df <- df_vac
-    }
-    pie(df, S33CovidVaccine, tt())
-  }) 
-  
-  output$VaccinePie2 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_vac %>% filter(Province == input$Province)
-    } else {
-      df <- df_vac
-    }
-    df <- df %>%
-      group_by(S33CovidVaccine, FinalResult) %>%
-      summarise(count = sum(n))
-    df1 <- filter(df, S33CovidVaccine == "Vaccinated")
-    df2 <- filter(df, S33CovidVaccine == "Unvaccinated")
-    plot_ly(labels = ~ FinalResult,
-            values = ~ count) %>%
-      add_pie(
-        data = df1,
-        name = "Vaccinated",
-        scalegroup = 'one',
-        domain = list(row = 0, column = 0)
-      ) %>%
-      add_pie(
-        data = df2,
-        name = "Unvaccinated",
-        scalegroup = 'one',
-        domain = list(row = 0, column = 1)
-      ) %>%
-      layout(
-        title = tt(),
-        grid = list(rows = 1, columns = 2),
-        margin = list(l = 160, r = 160),
-        legend = list(
-          orientation = "h",
-          # show entries horizontally
-          xanchor = "center",
-          # use center of legend as anchor
-          x = 0.5
-        ),
-        annotations = list(
-          list(
-            x = 0.12,
-            y = 1,
-            text = "Vaccinated",
-            showarrow = F,
-            xref = 'paper',
-            yref = 'paper'
-          ),
-          list(
-            x = 0.88,
-            y = 1,
-            text = "Unvaccinated",
-            showarrow = F,
-            xref = 'paper',
-            yref = 'paper'
-          )
-        )
-      )
-  })
-  
-  output$kap1 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_kap1 %>% filter(Province == input$Province)
-    } else {
-      df <- df_kap1
-    }
-    df %>%
-      # filter(
-      #   kap %in% c(
-      #     'S3604SickSpread',
-      #     'S3615CareLate',
-      #     'S3616',
-      #     'S3617',
-      #     'S3618',
-      #     'S3619',
-      #     'S3620'
-      #   )
-      # ) %>%
-      mutate(
-        kap = recode(
-          kap,
-          'S3604SickSpread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
-          'S3615CareLate'   = 'I sought care today later than I usual\nbecause of COVID-19',
-          'S3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
-          'S3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
-          'S3618'           = 'Always wearing mask in public is a good thing to do',
-          'S3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
-          'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
-        )
-      ) %>%
-      scalebar(kap, c('#93C2A4', '#C8EABA', '#FFFEDF', '#FFCB81', '#EE9134'))
-  })
-  
-  output$kap2 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_kap2 %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_kap2 %>% filter(Province == input$Province)
-    } else {
-      df <- df_kap2
-    }
-    df %>%
-      # filter(kap %in% c('S3610MaskIn', 'S3613MaskOut', 'S3621', 'S3622')) %>%
-      mutate(
-        kap = recode(
-          kap,
-          'S3610MaskIn'     = 'During the past 2 weeks, did you wear a mask at home?',
-          'S3613MaskOut'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
-          'S3621'           = 'Do you practice social distancing from other persons\nin your household?',
-          'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
-        )
-      ) %>%
-      scalebar(kap, c('#66A38F', '#86C499', '#ADDFAA', '#D7F3C1', '#FFFEDF'))
+      pie(S34Occupation, tt(), TRUE)
   })
 
   output$Diag <- renderPlotly({
@@ -507,6 +397,85 @@ output$ScreeningBar <- renderPlotly({
     }
     hbar(df, Signs, tt())
   })
+
+  output$VaccinePie1 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_vac %>% filter(Province == input$Province)
+    } else {
+      df <- df_vac
+    }
+    pie(df, S33CovidVaccine, tt())
+  }) 
+  
+  output$VaccinePie2 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_vac %>% filter(Province == input$Province)
+    } else {
+      df <- df_vac
+    }
+    df <- df %>%
+      group_by(S33CovidVaccine, FinalResult) %>%
+      summarise(count = sum(n))
+    df1 <- filter(df, S33CovidVaccine == "Vaccinated")
+    df2 <- filter(df, S33CovidVaccine == "Unvaccinated")
+    plot_ly(labels = ~ FinalResult,
+            values = ~ count,
+            marker = list(
+              colors = colors,
+              line = list(color = '#FFFFFF', width = 1)
+            ),
+            texttemplate = "%{percent:.1%}",
+            hovertemplate = '%{value:,}<extra></extra>'
+    ) %>%
+      add_pie(
+        data = df1,
+        name = "Vaccinated",
+        scalegroup = 'one',
+        direction ='clockwise', 
+        domain = list(row = 0, column = 0)
+      ) %>%
+      add_pie(
+        data = df2,
+        name = "Unvaccinated",
+        scalegroup = 'one',
+        direction ='clockwise', 
+        domain = list(row = 0, column = 1)
+      ) %>%
+      layout(
+        title = tt(),
+        grid = list(rows = 1, columns = 2),
+        margin = list(l = 160, r = 160),
+        legend = list(
+          orientation = "h",
+          # show entries horizontally
+          xanchor = "center",
+          # use center of legend as anchor
+          x = 0.5
+        ),
+        annotations = list(
+          list(
+            x = 0.12,
+            y = 1,
+            text = "Vaccinated",
+            showarrow = F,
+            xref = 'paper',
+            yref = 'paper'
+          ),
+          list(
+            x = 0.88,
+            y = 1,
+            text = "Unvaccinated",
+            showarrow = F,
+            xref = 'paper',
+            yref = 'paper'
+          )
+        )
+      )
+  })
   
   output$atkPie <- renderPlotly({
     if (input$Hospital != "All") {
@@ -518,4 +487,82 @@ output$ScreeningBar <- renderPlotly({
     }
     pie(df, FinalResult, tt())
   }) 
+  
+  output$DetectBar <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_lab %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_lab %>% filter(Province == input$Province)
+    } else {
+      df <- df_lab
+    }
+    plot_ly(
+      df %>%
+        group_by(SpecType, FinalResult) %>%
+        summarise(count = sum(n)),
+      x = ~ SpecType,
+      y = ~ count,
+#      color = ~ FinalResult,
+      type = "bar",
+      hoverinfo = 'y',
+      hovertemplate = '%{y:,}<extra></extra>'
+    )
+      # layout(
+      #   title = tt(),
+      #   xaxis = list(title = 'Sample Type'),
+      #   yaxis = list(title = 'Count'),
+      #   bargap = 0.5,
+      #   legend = list(
+      #     title = list(text = 'Enrolled'),
+      #     x = 100,
+      #     y = 0.5
+      #   )
+      # )
+  })
+  
+  output$kap1 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_kap1 %>% filter(Province == input$Province)
+    } else {
+      df <- df_kap1
+    }
+    df %>%
+      mutate(
+        kap = recode(
+          kap,
+          'S3604SickSpread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
+          'S3615CareLate'   = 'I sought care today later than I usual\nbecause of COVID-19',
+          'S3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
+          'S3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
+          'S3618'           = 'Always wearing mask in public is a good thing to do',
+          'S3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
+          'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
+        )
+      ) %>%
+      scalebar(kap, c('#93C2A4', '#C8EABA', '#FFFEDF', '#FFCB81', '#EE9134'))
+  })
+  
+  output$kap2 <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_kap2 %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_kap2 %>% filter(Province == input$Province)
+    } else {
+      df <- df_kap2
+    }
+    df %>%
+      mutate(
+        kap = recode(
+          kap,
+          'S3610MaskIn'     = 'During the past 2 weeks, did you wear a mask at home?',
+          'S3613MaskOut'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
+          'S3621'           = 'Do you practice social distancing from other persons\nin your household?',
+          'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
+        )
+      ) %>%
+      scalebar(kap, c('#66A38F', '#86C499', '#ADDFAA', '#D7F3C1', '#FFFEDF'))
+  })
+  
 }

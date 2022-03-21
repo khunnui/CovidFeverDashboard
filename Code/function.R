@@ -3,7 +3,7 @@
 #
 ###################
 
-pie <- function(df, column, tt) {
+pie <- function(df, column, tt, sort = FALSE) {
 
   # An R function with a parameter that accepts a data.frame column can't evaluate
   # the column argument until it is first 'quoted', followed by an 'unquote' within
@@ -18,7 +18,8 @@ pie <- function(df, column, tt) {
       labels = column,
       values = ~ count,
       type = 'pie',
-      sort = FALSE,
+      direction ='clockwise',
+      sort = sort,
       marker = list(
         colors = colors,
         line = list(color = '#FFFFFF', width = 1)
