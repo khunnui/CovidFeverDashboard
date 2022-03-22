@@ -162,8 +162,9 @@ body <- dashboardBody(
     tabItem(tabName = "detect",
             fluidRow(box(
               title = "SARS-CoV-2 Detection by Sample Type", 
-              plotlyOutput("DetectBar"),
-              plotlyOutput("DetectPie")
+              "Temp"
+              # plotlyOutput("DetectBar"),
+              # plotlyOutput("DetectPie")
             ))),
     tabItem(tabName = "sero",
             fluidRow(box(
