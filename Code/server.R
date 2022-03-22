@@ -398,6 +398,7 @@ server <- function(input, output, session) {
     hbar(df, Signs, tt())
   })
 
+  
   output$posBoxSign <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_enr %>% filter(S1HospitalID == input$Hospital)
@@ -413,6 +414,7 @@ server <- function(input, output, session) {
       color = "aqua"
     )
   })
+  
   output$hospitalised <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
@@ -427,6 +429,7 @@ server <- function(input, output, session) {
       color = "teal"
     )
   })
+  
   output$intub <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
