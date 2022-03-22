@@ -38,12 +38,12 @@ server <- function(input, output, session) {
     if (input$Province == "All") {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_enr$S1HospitalID)))
+        choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
       )
     } else {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_enr$S1HospitalID[df_enr$Province == input$Province])))
+        choices = c("All", as.character(unique(df_scrgender$S1HospitalID[df_scrgender$Province == input$Province])))
       )
     }
   })
@@ -98,7 +98,8 @@ server <- function(input, output, session) {
         ),
         xaxis = l,
         yaxis = list(title = 'Number Screened'),
-        bargap = 0.5
+        bargap = 0.5,
+        margin = list(l = 80, r = 80)
       )
   })
   
@@ -260,11 +261,11 @@ server <- function(input, output, session) {
   
   output$eliBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_eli %>% filter(S1HospitalID == input$Hospital)
+      df <- df_elim %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_eli %>% filter(Province == input$Province)
+      df <- df_elim %>% filter(Province == input$Province)
     } else {
-      df <- df_eli
+      df <- df_elim
     }
     valueBox(
       format(sum(df$n), big.mark= ","), 
@@ -275,11 +276,11 @@ server <- function(input, output, session) {
   
   output$enrolBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_enr %>% filter(Province == input$Province)
+      df <- df_enrm %>% filter(Province == input$Province)
     } else {
-      df <- df_enr
+      df <- df_enrm
     }
     valueBox(
       format(sum(df$n), big.mark= ","), 
@@ -290,11 +291,11 @@ server <- function(input, output, session) {
   
   output$posBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_enr %>% filter(Province == input$Province)
+      df <- df_enrm %>% filter(Province == input$Province)
     } else {
-      df <- df_enr
+      df <- df_enrm
     }
     df <- filter(df, FinalResult == "Positive")
     valueBox(
@@ -405,16 +406,16 @@ server <- function(input, output, session) {
 
   output$posBoxSign <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_enr %>% filter(Province == input$Province)
+      df <- df_enrm %>% filter(Province == input$Province)
     } else {
-      df <- df_enr
+      df <- df_enrm
     }
     df <- filter(df, FinalResult == "Positive")
     valueBox(
-      format(sum(df$n), big.mark= ","),
-      "SARS-CoV-2 Positive",
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
+      subtitle = " SARS-CoV-2 Positive",
       color = "yellow"
     )
   })
@@ -428,7 +429,7 @@ server <- function(input, output, session) {
       df <- df_signBox
     }
     valueBox(
-      format(sum(df$n), big.mark= ","), 
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
       "Hospitalized",
       color = "teal"
     )
@@ -444,7 +445,7 @@ server <- function(input, output, session) {
     }
     df <- filter(df, S5Intub == 2)
     valueBox(
-      format(sum(df$n), big.mark= ","), 
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
       "Intubation",
       color = "purple"
     )
@@ -460,7 +461,7 @@ server <- function(input, output, session) {
     }
     df <- filter(df, S5DishargeType == 4)
     valueBox(
-      format(sum(df$n), big.mark= ","), 
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
       "Death",
       color = "maroon"
     )

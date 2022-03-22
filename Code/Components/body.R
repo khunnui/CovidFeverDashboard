@@ -109,37 +109,42 @@ body <- dashboardBody(
               width = 12,
               plotlyOutput("Diag", height = 766)
             ))),
-    tabItem(tabName = "underlying",
-            fluidRow(box(
-              title = "Underlying Condition Among Febrile Patients",
-              width = 12,
-              plotlyOutput("Underly", height = 475)
-            ))),
+    tabItem(
+      tabName = "underlying",
+      fluidRow(
+        box(
+          title = "Underlying Condition Among Febrile Patients",
+          width = 12,
+          plotlyOutput("Underly", height = 475)
+        )
+      )
+    ),
     tabItem(tabName = "risk",
-            fluidRow(box(
-              title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
-              width =12,
-              plotlyOutput("Risk", height = 475)
-            ))),
-    
-    tabItem(tabName = "sign",
-            fluidRow(
-              column(
-                width = 10,
-                box(
-                  title = "Clinical Signs and Symptoms among Febrile Patients",
-                  width = NULL,
-                  plotlyOutput("Sign", height = 612)
-                )
-              ),
-              column(
-                width = 2,
-                valueBoxOutput("posBoxSign", width = NULL),
-                valueBoxOutput("hospitalised", width = NULL),
-                valueBoxOutput("intub", width = NULL),
-                valueBoxOutput("death", width = NULL)
-              )
-            )), 
+      fluidRow(
+        box(
+          title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
+          width =12,
+          plotlyOutput("Risk", height = 475)
+        )
+      )
+    ),
+    tabItem(
+      tabName = "sign",
+      fluidRow(
+        # tags$head(tags$style(HTML('
+        #     .small-box {height: 70px}
+        #   '))),
+        valueBoxOutput("posBoxSign", width = 3),
+        valueBoxOutput("hospitalised", width = 3),
+        valueBoxOutput("intub", width = 3),
+        valueBoxOutput("death", width = 3)
+      ),
+      box(
+        title = "Clinical Signs and Symptoms among Febrile Patients",
+        width = NULL,
+        plotlyOutput("Sign", height = 612)
+      )
+    ), 
     tabItem(tabName = "vac",
             fluidRow(
               box(
@@ -169,7 +174,8 @@ body <- dashboardBody(
     tabItem(tabName = "sero",
             fluidRow(box(
               title = "Serology Testing Among Febrile Patient", 
-              "Box content"
+              width = 12,
+              ""
             ))),
     tabItem(tabName = "KAP",
             fluidRow(

@@ -82,7 +82,11 @@ hbar <- function(df, column, tt) {
       legendtitle = TRUE,
       showarrow = FALSE
     ) %>%
-    layout(legend = list(y = 0.9, yanchor = "top"))
+    layout(legend = list(
+      traceorder = "normal",
+      y = 0.9, 
+      yanchor = "top", 
+      margin = list(l = 50, r = 50, b = 50, t = 50, pad = 20)))
   
 }
 
