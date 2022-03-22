@@ -29,11 +29,11 @@ body <- dashboardBody(
                 width = 12,
                 align="center",
                 plotlyOutput("ScreeningBar", height = 375),
-                radioButtons("type", 
+                radioButtons("screenx",
                              label = "",
                              inline = TRUE,
                              choices = list("Weekly" = 1, "Monthly" = 2), 
-                             selected = 1)
+                             selected = 2)
               )
             ),
             fluidRow(
@@ -50,13 +50,16 @@ body <- dashboardBody(
                   plotlyOutput("ScreeningGender", height = 242)
                 )
               ),
-              column(width = 6,
-                     box(
-                       title = "Enrollment",
-                       width = NULL,
-                       plotlyOutput("ScreeningEnrol")
-                     ))
-            )),
+              column(
+                width = 6,
+                box(
+                  title = "Enrollment",
+                  width = NULL,
+                  plotlyOutput("ScreeningEnrol")
+                )
+              )
+            )
+    ),
     tabItem(
       tabName = "enrol",
       fluidRow(
@@ -65,7 +68,13 @@ body <- dashboardBody(
           box(
             title = "Eligible and Enrollment by Month",
             width = NULL,
-            plotlyOutput("EnrollmentBar", height = 430)
+            align="center",
+            plotlyOutput("EnrollmentBar", height = 375),
+            radioButtons("enrollx", 
+                         label = "",
+                         inline = TRUE,
+                         choices = list("Weekly" = 1, "Monthly" = 2), 
+                         selected = 2)
           )
         ),
         column(

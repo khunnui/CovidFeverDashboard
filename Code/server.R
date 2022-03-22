@@ -56,7 +56,7 @@ server <- function(input, output, session) {
   })
 
   output$ScreeningBar <- renderPlotly({
-    if (input$type == 1) {
+    if (input$screenx == 1) {
       df_scr <- df_scrw
       l = list(
         title = '',
@@ -168,6 +168,24 @@ server <- function(input, output, session) {
   })
 
   output$EnrollmentBar <- renderPlotly({
+    if (input$enrollx == 1) {
+      df_eli <- df_eliw
+      df_enr <- df_enrw
+      l = list(
+        title = '',
+        dtick = 1209600000,
+        tick0 = "2021-06-07",
+        tickformat = "%b %d, %y",
+        tickangle = -45
+      )
+    } else {
+      df_eli <- df_elim
+      df_enr <- df_enrm
+      l = list(title = '',
+               dtick = "M1",
+               tickformat = "%b %y"
+      )
+    }
     if (input$Hospital != "All") {
       df1 <- df_eli %>% filter(S1HospitalID == input$Hospital)
       df2 <- df_enr %>% filter(S1HospitalID == input$Hospital)
@@ -187,7 +205,6 @@ server <- function(input, output, session) {
         y = ~ count,
         name = "Eligible",
         type = 'bar',
-#        mode = 'lines',
         marker = list(color = '#39CCCC'),
         hoverinfo = 'y'
       ) %>%
@@ -225,20 +242,20 @@ server <- function(input, output, session) {
           title = 'Incidence',
           range = list(0, 100)
         ),
-        xaxis = list(title = '',
-                     tickformat = "%b %y"),
+        xaxis = l,
         yaxis = list(title = 'Number Eligible/Enrolled',
                      range = list(0, 500)),
         bargap = 0.5,
-        margin = list(l = 50, r = 50),
+        margin = list(l = 80, r = 80),
         legend = list(
           orientation = "h",
           # show entries horizontally
           xanchor = "center",
           # use center of legend as anchor
-          x = 0.5
+          x = 0.5,
+          y = 0.95
         )
-      )             # put legend in center of x-axis)  # use center of legend as anchor)
+      )             
   })
   
   output$eliBox <- renderValueBox({
@@ -386,10 +403,6 @@ server <- function(input, output, session) {
     hbar(df, Signs, tt())
   })
 
-<<<<<<< HEAD
-=======
-  
->>>>>>> 146eb08ddcd74080673d5c6c170a0c357461d0d4
   output$posBoxSign <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_enr %>% filter(S1HospitalID == input$Hospital)
@@ -402,16 +415,10 @@ server <- function(input, output, session) {
     valueBox(
       format(sum(df$n), big.mark= ","),
       "SARS-CoV-2 Positive",
-<<<<<<< HEAD
       color = "yellow"
     )
   })
 
-=======
-      color = "aqua"
-    )
-  })
-  
   output$hospitalised <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
@@ -459,7 +466,6 @@ server <- function(input, output, session) {
     )
   })
   
->>>>>>> 146eb08ddcd74080673d5c6c170a0c357461d0d4
   output$VaccinePie1 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_vac %>% filter(S1HospitalID == input$Hospital)
