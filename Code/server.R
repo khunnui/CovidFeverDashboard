@@ -386,6 +386,10 @@ server <- function(input, output, session) {
     hbar(df, Signs, tt())
   })
 
+<<<<<<< HEAD
+=======
+  
+>>>>>>> 146eb08ddcd74080673d5c6c170a0c357461d0d4
   output$posBoxSign <- renderValueBox({
     if (input$Hospital != "All") {
       df <- df_enr %>% filter(S1HospitalID == input$Hospital)
@@ -398,10 +402,64 @@ server <- function(input, output, session) {
     valueBox(
       format(sum(df$n), big.mark= ","),
       "SARS-CoV-2 Positive",
+<<<<<<< HEAD
       color = "yellow"
     )
   })
 
+=======
+      color = "aqua"
+    )
+  })
+  
+  output$hospitalised <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Hospitalized",
+      color = "teal"
+    )
+  })
+  
+  output$intub <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, S5Intub == 2)
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Intubation",
+      color = "purple"
+    )
+  })
+  
+  output$death <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, S5DishargeType == 4)
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Death",
+      color = "maroon"
+    )
+  })
+  
+>>>>>>> 146eb08ddcd74080673d5c6c170a0c357461d0d4
   output$VaccinePie1 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_vac %>% filter(S1HospitalID == input$Hospital)
