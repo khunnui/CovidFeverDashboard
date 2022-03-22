@@ -398,6 +398,67 @@ server <- function(input, output, session) {
     hbar(df, Signs, tt())
   })
 
+  output$posBoxSign <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enr %>% filter(Province == input$Province)
+    } else {
+      df <- df_enr
+    }
+    df <- filter(df, FinalResult == "Positive")
+    valueBox(
+      format(sum(df$n), big.mark= ","),
+      "SARS-CoV-2 Positive",
+      color = "aqua"
+    )
+  })
+  output$hospitalised <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Hospitalized",
+      color = "teal"
+    )
+  })
+  output$intub <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, S5Intub == 2)
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Intubation",
+      color = "purple"
+    )
+  })
+  
+  output$death <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_signBox %>% filter(Province == input$Province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, S5DishargeType == 4)
+    valueBox(
+      format(sum(df$n), big.mark= ","), 
+      "Death",
+      color = "maroon"
+    )
+  })
+  
   output$VaccinePie1 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_vac %>% filter(S1HospitalID == input$Hospital)

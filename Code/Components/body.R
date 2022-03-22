@@ -128,7 +128,7 @@ body <- dashboardBody(
                 valueBoxOutput("posBoxSign", width = NULL),
                 valueBoxOutput("hospitalised", width = NULL),
                 valueBoxOutput("intub", width = NULL),
-                valueBoxOutput("deathBox", width = NULL)
+                valueBoxOutput("death", width = NULL)
               )
             )), 
     tabItem(tabName = "vac",
