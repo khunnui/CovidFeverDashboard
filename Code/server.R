@@ -180,35 +180,57 @@ server <- function(input, output, session) {
     }
     plot_ly() %>%
       add_trace(
-        data = df2 %>%
-          group_by(enrdate, FinalResult) %>%
-          summarise(count = sum(n)),
-        x = ~ enrdate,
-        y = ~ count,
-        color = ~ FinalResult,
-        type = 'bar',
-        hoverinfo = 'y'
-      ) %>%
-      add_trace(
         data = df1 %>%
           group_by(scrdate) %>%
           summarise(count = sum(n)),
         x = ~ scrdate,
         y = ~ count,
         name = "Eligible",
+        type = 'bar',
+#        mode = 'lines',
+        marker = list(color = '#39CCCC'),
+        hoverinfo = 'y'
+      ) %>%
+      add_trace(
+        data = df2 %>%
+          group_by(enrdate) %>%
+          summarise(count = sum(n)),
+        x = ~ enrdate,
+        y = ~ count,
+        name = "Enroll",
+        type = 'bar',
+        marker = list(color = '#00C0EF'),
+        hoverinfo = 'y'
+      ) %>%
+      add_trace(
+        data = df2 %>%
+          group_by(enrdate) %>%
+          summarise(inc = round(sum(n[FinalResult == 'Positive'], na.rm = TRUE) *
+                                  100 / sum(n), 2)),
+        x = ~ enrdate,
+        y = ~ inc,
+        yaxis = "y2",
+        name = "COVID-19 Incidence",
         type = 'scatter',
         mode = 'lines',
+        line = list(color = '#F39C12'),
         hoverinfo = 'y'
       ) %>%
       layout(
         title = tt(),
+        yaxis2 = list(
+          overlaying = "y",
+          side = "right",
+          rangemode = 'tozero',
+          title = 'Incidence',
+          range = list(0, 100)
+        ),
         xaxis = list(title = '',
                      tickformat = "%b %y"),
         yaxis = list(title = 'Number Eligible/Enrolled',
-                     range = list(0, 400)),
-        barmode = 'stack',
+                     range = list(0, 500)),
         bargap = 0.5,
-        margin = list(l = 5, r = 5),
+        margin = list(l = 50, r = 50),
         legend = list(
           orientation = "h",
           # show entries horizontally
@@ -230,7 +252,7 @@ server <- function(input, output, session) {
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Eligible",
-      color = "aqua"
+      color = "teal"
     )
   })
   
@@ -245,7 +267,7 @@ server <- function(input, output, session) {
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Enrolled",
-      color = "teal"
+      color = "aqua"
     )
   })
   
@@ -329,23 +351,6 @@ server <- function(input, output, session) {
       df <- df_dx
     }
     hbar(df, Diagnosis, tt())
-    # plot_ly(
-    #   data = df %>% 
-    #     group_by(FinalResult, Diagnosis) %>% 
-    #     summarise(count = sum(n)),
-    #   y = ~ Diagnosis,
-    #   x = ~ count,
-    #   type = "bar",
-    #   orientation = 'h',
-    #   color = ~ FinalResult,
-    #   hoverinfo = 'x'
-    # ) %>% 
-    #   layout(barmode = 'stack',
-    #          xaxis = list(title = 'Count',
-    #                       bargap = 0.5),
-    #          yaxis = list(title = '',
-    #                       categoryorder = "total ascending"))
-    #   
   })  
 
   output$Underly <- renderPlotly({
@@ -357,23 +362,6 @@ server <- function(input, output, session) {
       df <- df_un
     }
     hbar(df, Underlying, tt())
-    # plot_ly(
-    #   data = df %>% 
-    #     group_by(FinalResult, Underlying) %>% 
-    #     summarise(count = sum(n)),
-    #   y = ~ Underlying,
-    #   x = ~ count,
-    #   type = "bar",
-    #   orientation = 'h',
-    #   color = ~ FinalResult,
-    #   hoverinfo = 'x'
-    # ) %>% 
-    #   layout(barmode = 'stack',
-    #          xaxis = list(title = 'Count',
-    #                       bargap = 0.5),
-    #          yaxis = list(title = '',
-    #                       categoryorder = "total ascending"))
-    
   })  
   
   output$Risk <- renderPlotly({
@@ -396,6 +384,22 @@ server <- function(input, output, session) {
       df <- df_sign
     }
     hbar(df, Signs, tt())
+  })
+
+  output$posBoxSign <- renderValueBox({
+    if (input$Hospital != "All") {
+      df <- df_enr %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_enr %>% filter(Province == input$Province)
+    } else {
+      df <- df_enr
+    }
+    df <- filter(df, FinalResult == "Positive")
+    valueBox(
+      format(sum(df$n), big.mark= ","),
+      "SARS-CoV-2 Positive",
+      color = "yellow"
+    )
   })
 
   output$VaccinePie1 <- renderPlotly({
