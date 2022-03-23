@@ -66,7 +66,7 @@ body <- dashboardBody(
         column(
           width = 10,
           box(
-            title = "Eligible and Enrollment by Month",
+            title = "Eligible, Enrollment and SARS-Cov2 Incidence by Month",
             width = NULL,
             align="center",
             plotlyOutput("EnrollmentBar", height = 375),

@@ -63,7 +63,8 @@ server <- function(input, output, session) {
         dtick = 1209600000,
         tick0 = "2021-06-07",
         tickformat = "%b %d, %y",
-        tickangle = -45
+        tickangle = -45,
+        tickfont = list(size = 10)
       )
     } else {
       df_scr <- df_scrm
@@ -97,7 +98,8 @@ server <- function(input, output, session) {
           "</sup>"
         ),
         xaxis = l,
-        yaxis = list(title = 'Number Screened'),
+        yaxis = list(title = 'Number Screened',
+                     tickformat = ','),
         bargap = 0.5,
         margin = list(l = 80, r = 80)
       )
@@ -160,7 +162,8 @@ server <- function(input, output, session) {
       layout(
         title = tt(),
         xaxis = list(title = 'Previously Enrolled'),
-        yaxis = list(title = 'Count'),
+        yaxis = list(title = 'Count',
+                     tickformat = ','),
         bargap = 0.5,
         legend = list(title=list(text='Enrolled'),
                       x = 100, 
@@ -177,7 +180,8 @@ server <- function(input, output, session) {
         dtick = 1209600000,
         tick0 = "2021-06-07",
         tickformat = "%b %d, %y",
-        tickangle = -45
+        tickangle = -45,
+        tickfont = list(size = 10)
       )
     } else {
       df_eli <- df_elim
@@ -223,8 +227,7 @@ server <- function(input, output, session) {
       add_trace(
         data = df2 %>%
           group_by(enrdate) %>%
-          summarise(inc = round(sum(n[FinalResult == 'Positive'], na.rm = TRUE) *
-                                  100 / sum(n), 2)),
+          summarise(inc = round(sum(n[FinalResult == 'Positive'], na.rm = TRUE) / sum(n), 2)),
         x = ~ enrdate,
         y = ~ inc,
         yaxis = "y2",
@@ -241,12 +244,13 @@ server <- function(input, output, session) {
           side = "right",
           rangemode = 'tozero',
           title = 'Incidence',
-          range = list(0, 100)
+          range = list(0, 1),
+          tickformat = '.0%'
         ),
         xaxis = l,
-        yaxis = list(title = 'Number Eligible/Enrolled',
-                     range = list(0, 500)),
+        yaxis = list(title = 'Number Eligible/Enrolled'),
         bargap = 0.5,
+        bargroupgap = 0.1,
         margin = list(l = 80, r = 80),
         legend = list(
           orientation = "h",
@@ -414,7 +418,7 @@ server <- function(input, output, session) {
     }
     df <- filter(df, FinalResult == "Positive")
     valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       subtitle = " SARS-CoV-2 Positive",
       color = "yellow"
     )
@@ -429,7 +433,7 @@ server <- function(input, output, session) {
       df <- df_signBox
     }
     valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Hospitalized",
       color = "teal"
     )
@@ -445,7 +449,7 @@ server <- function(input, output, session) {
     }
     df <- filter(df, S5Intub == 2)
     valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Intubation",
       color = "purple"
     )
@@ -461,7 +465,7 @@ server <- function(input, output, session) {
     }
     df <- filter(df, S5DishargeType == 4)
     valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 50%;"),
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Death",
       color = "maroon"
     )
@@ -584,7 +588,8 @@ server <- function(input, output, session) {
       layout(
         title = tt(),
         xaxis = list(title = ''),
-        yaxis = list(title = 'Count'),
+        yaxis = list(title = 'Count',
+                     tickformat = ','),
         bargap = 0.5,
         legend = list(
           orientation = "h",
