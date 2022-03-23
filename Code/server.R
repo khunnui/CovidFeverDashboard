@@ -557,38 +557,56 @@ server <- function(input, output, session) {
     pie(df, FinalResult, tt())
   }) 
   
-#   output$DetectBar <- renderPlotly({
-#     if (input$Hospital != "All") {
-#       df <- df_lab %>% filter(S1HospitalID == input$Hospital)
-#     } else if (input$Province != "All") {
-#       df <- df_lab %>% filter(Province == input$Province)
-#     } else {
-#       df <- df_lab
-#     }
-#     plot_ly(
-#       df %>%
-#         group_by(SpecType, FinalResult) %>%
-#         summarise(count = sum(n)),
-#       x = ~ SpecType,
-#       y = ~ count,
-# #      color = ~ FinalResult,
-#       type = "bar",
-#       hoverinfo = 'y',
-#       hovertemplate = '%{y:,}<extra></extra>'
-#     )
-#       # layout(
-#       #   title = tt(),
-#       #   xaxis = list(title = 'Sample Type'),
-#       #   yaxis = list(title = 'Count'),
-#       #   bargap = 0.5,
-#       #   legend = list(
-#       #     title = list(text = 'Enrolled'),
-#       #     x = 100,
-#       #     y = 0.5
-#       #   )
-#       # )
-#   })
+  output$DetectBar <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_lab %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_lab %>% filter(Province == input$Province)
+    } else {
+      df <- df_lab
+    }
+    plot_ly(
+      df %>%
+        group_by(SpecType) %>%
+        summarise(total = sum(n),
+                  positive = sum(n[FinalResult == 'Positive'])),
+      x = ~ SpecType,
+      y = ~ total,
+      type = "bar",
+      name = 'Tested',
+      hoverinfo = 'y',
+      hovertemplate = '%{y:,}<extra></extra>'
+    ) %>% 
+      add_trace(y = ~ positive, 
+                name = 'PCR Positive',
+                hoverinfo = 'y',
+                hovertemplate = '%{y:,}<extra></extra>') %>% 
+      layout(
+        title = tt(),
+        xaxis = list(title = ''),
+        yaxis = list(title = 'Count'),
+        bargap = 0.5,
+        legend = list(
+          orientation = "h",
+          # show entries horizontally
+          xanchor = "center",
+          # use center of legend as anchor
+          x = 0.5
+        )
+      )
+  })
   
+  output$DetectPie <- renderPlotly({
+    if (input$Hospital != "All") {
+      df <- df_labpos %>% filter(S1HospitalID == input$Hospital)
+    } else if (input$Province != "All") {
+      df <- df_labpos %>% filter(Province == input$Province)
+    } else {
+      df <- df_labpos
+    }
+    pie(df, specimens, tt(), TRUE)
+  })  
+    
   output$kap1 <- renderPlotly({
     if (input$Hospital != "All") {
       df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)

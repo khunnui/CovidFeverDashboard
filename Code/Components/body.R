@@ -100,7 +100,7 @@ body <- dashboardBody(
           title = "Occupation",
           width = 4,
           plotlyOutput("EnrollmentOcc", height = 270)
-        ),
+        )
       ),
     ),
     tabItem(tabName = "diag",
@@ -164,13 +164,21 @@ body <- dashboardBody(
               width = 12,
               plotlyOutput("atkPie")
             ))),
-    tabItem(tabName = "detect",
-            fluidRow(box(
-              title = "SARS-CoV-2 Detection by Sample Type", 
-              "Temp"
-              # plotlyOutput("DetectBar"),
-              # plotlyOutput("DetectPie")
-            ))),
+    tabItem(
+      tabName = "detect",
+        fluidRow(
+          box(
+            title = "SARS-CoV-2 Detection by Sample Type", 
+            width = 6,
+            plotlyOutput("DetectBar")
+          ),
+          box(
+            title = "% PCR Positive by Sample Type",
+            width = 6,
+            plotlyOutput("DetectPie")
+          )
+        )
+    ),
     tabItem(tabName = "sero",
             fluidRow(box(
               title = "Serology Testing Among Febrile Patient", 
