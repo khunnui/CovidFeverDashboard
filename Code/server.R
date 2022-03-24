@@ -497,8 +497,9 @@ server <- function(input, output, session) {
     df2 <- filter(df, S33CovidVaccine == "Unvaccinated")
     plot_ly(labels = ~ FinalResult,
             values = ~ count,
+            sort = FALSE,
             marker = list(
-              colors = colors,
+              colors = c("#F39C12", "#FBDEB0", "#ECF0F5"),
               line = list(color = '#FFFFFF', width = 1)
             ),
             texttemplate = "%{percent:.1%}",
