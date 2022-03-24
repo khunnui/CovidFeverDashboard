@@ -17,7 +17,7 @@ body <- dashboardBody(
     tabItem(tabName = "site",
             fluidRow(
               box(
-                title = "Study Sites: 3 hospitals in 2 provinces",
+                title = "Surveillance of COVID-19 in Patients Presenting with Febrile Illness in Nakhon Phanom and Tak Provinces, Thailand (COVID Fever)",
                 width = 12,
                 plotOutput("map", height = 455)
               )
