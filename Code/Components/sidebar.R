@@ -17,7 +17,7 @@ sidebar <- dashboardSidebar(
     )
   ),
   sidebarMenu(
-    menuItem("Study sites", tabName = "site"),
+    menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
     menuItem("Diagnosis at OPD/ER", tabName = "diag"),

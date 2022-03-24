@@ -14,12 +14,30 @@ body <- dashboardBody(
          .skin-black .main-sidebar {background-color: #49708B;}")
   )),
   tabItems(
-    tabItem(tabName = "site",
+    tabItem(tabName = "overview",
             fluidRow(
               box(
-                title = "Surveillance of COVID-19 in Patients Presenting with Febrile Illness in Nakhon Phanom and Tak Provinces, Thailand (COVID Fever)",
+                title = HTML("Surveillance of COVID-19 in Patients Presenting with Febrile Illness<br>in Nakhon Phanom and Tak Provinces, Thailand (COVID Fever)"),
+                width = 12,
+                div(
+                  style = "text-align: center; font-size: 20px",
+                  h4("Objectives")
+                ),
+                HTML("<ul><li>...text...</li>
+                          <li>...more text...</li>
+                          <li>...more text...</li>
+                          <li>...more text...</li>
+                     </ul>")
+              ),
+              box(
+                title = "Study Sites",
                 width = 12,
                 plotOutput("map", height = 455)
+              ),
+              box(
+                title = "Methods",
+                width = 12,
+                
               )
             )),
     tabItem(tabName = "screen",
