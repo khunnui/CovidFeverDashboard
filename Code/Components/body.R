@@ -23,10 +23,13 @@ body <- dashboardBody(
                   style = "text-align: center; font-size: 20px",
                   h4("Objectives")
                 ),
-                HTML("<ul><li>...text...</li>
-                          <li>...more text...</li>
-                          <li>...more text...</li>
-                          <li>...more text...</li>
+                HTML("<ul><li>Detect and describe the proportion, clinical characteristics, risk factors of SARS-CoV-2 infection among febrile patients without respiratory symptoms </li>
+                          <li>Assess knowledge, attitudes, and practices (KAP) among febrile patients to better understand health seeking behavior, and potential barriers to care</li>
+                          <li>Determine the utility of saliva and anterior nasal swabs as suitable specimens compared to nasopharyngeal swab + oropharyngeal swab for the detection of SARS-CoV-2 RNA.</li>
+                          <li>Determine if a pooled PCR testing strategy is cost-effective </li>
+                          <li>Assess clinical and laboratory characteristics, including temporal patterns of antibody response, and outcomes among patients hospitalized with COVID-19.</li>
+                          <li>Determine the seroprevalence of antibodies against SARS-CoV-2 in febrile patients </li>
+                
                      </ul>")
               ),
               box(
@@ -37,7 +40,43 @@ body <- dashboardBody(
               box(
                 title = "Methods",
                 width = 12,
-                
+                div(
+                  style = "text-align: left; font-size: 20px; font-weight: bold",
+                  h5("Study population:")
+                ),
+                HTML("<ul> <li>Prospective enroll febrile patients aged >2 years old, presenting to OPDs or ERs</li>
+                          <li>Expected 8,500 cases within 2-3 years</li>
+ 
+                     </ul>"),
+                div(
+                  style = "text-align: left; font-size: 20px; font-weight: bold",
+                  h5("Inclusion criteria:")
+                ),
+                HTML("<ul> <li>Fever >37.5 °C or history of fever  <14 days AND </li>
+                            <li>No clinical signs or symptoms of respiratory infection  (no cough, difficulty breathing or sputum production)</li>
+ 
+                     </ul>"),
+                div(
+                  style = "text-align: left; font-size: 20px; font-weight: bold",
+                  h5("Exclusion criteria:")
+                ),
+                HTML("<ul> <li>Known COVID-19 infection within the past 30 days or</li>
+                        <li>Fever >14 days or</li>
+                        <li>Present to OPDs or ERs with trauma or accident</li>
+                        <li>Not willing to participate or cannot communicate</li>
+                     </ul>"),
+                div(
+                  style = "text-align: left; font-size: 20px; font-weight: bold",
+                  h5("Data collection:")
+                ),
+                HTML("<ul> <li>Interview: clinical, risk factors, knowledge/attitude/practice (KAP), vaccination </li>
+                        <li>Review medical record: clinical, laboratory, treatment, outcome</li>
+                    </ul>"),
+                div(
+                  style = "text-align: left; font-size: 20px; font-weight: bold",
+                  h5("Specimen collection and laboratory testing:")
+                ),
+                img(src = "CollectMethod.jpg"  ,alt="Collect Method", height = "200", width = "700")
               )
             )),
     tabItem(tabName = "screen",
