@@ -85,7 +85,53 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   style = "text-align: left; font-size: 20px; font-weight: bold",
                   h5("Specimen collection and laboratory testing:")
                 ),
-                img(src = "CollectMethod.jpg"  ,alt="Collect Method", height = "200", width = "600")
+                HTML("
+              <style>
+              table {
+              font-family: Arial;
+              background-color: #F5F5F5;
+              border: 1px solid #1C6EA4; border-collapse: collapse;
+              margin-left:auto; margin-right:auto;
+              }
+              table td {
+              border: 1px solid #AAAAAA;
+              padding: 5px 5px;
+              }
+              </style>
+              <table>
+              <tbody>
+              <tr>
+              <td rowspan='2'><span>&nbsp;</span></td>
+              <td colspan='4'><div style='text-align:center;'>Specimen Collection</div></td>
+              </tr>
+              <tr>
+              <td><div style='text-align:center; width:80pt;'>NP+OP swab</div></td>
+              <td><div style='text-align:center; width:80pt;'>Nasal Swab</div></td>
+              <td><div style='text-align:center; width:80pt;'>Saliva</div></td>
+              <td><div style='text-align:center; width:80pt;'>Blood</div></td>
+              </tr>
+              <tr>
+              <td>All enrollees at enrollment</td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: red'><span>&#10008;</span></div></td>
+              </tr>
+              <tr>
+              <td>5<sup>th</sup> enrollees</td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              <td><div style='text-align:center; color: green'><span>&#10004;</span></div></td>
+              </tr>
+              </tbody>
+              </table>
+              "),
+                div(
+                  style = "text-align:center; display:block;",
+                  img(src = "CollectMethod2.jpg" ,alt="Collect Method", height = "100", width = "600")
+                )
+                 
               )
             )),
     tabItem(tabName = "screen",
