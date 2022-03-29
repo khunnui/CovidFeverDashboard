@@ -58,6 +58,8 @@ map_cf_tak <- ggplot() +
   geom_sf_text(data = cf_tak,
             aes(label = AmphoeE),
             size = 4) +
+  coord_sf(xlim = c(365000, 550000),
+           ylim = c(1679000, 1974000)) +
   scale_fill_manual(values = c("yellow", "pink", "deepskyblue")) +
   theme_void() +
   theme(legend.position = "none")
@@ -69,6 +71,8 @@ map_cf_np <- ggplot() +
   geom_sf_text(data = cf_np,
             aes(label = AmphoeE),
             size = 4) +
+  coord_sf(xlim = c(982500, 1167500),
+           ylim = c(1785000, 2080000)) +
   scale_fill_manual(values = c("orange", "mediumpurple1", "darkseagreen3")) +
   theme_void() +
   theme(legend.position = "none")
