@@ -44,7 +44,5 @@ sidebar <- dashboardSidebar(
     inputId = "Hospital",
     label = "Hospital:",
     choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
-  ),
-  
-  h6(textOutput("Date"), align = "center")
+  )
 )

@@ -20,9 +20,8 @@ server <- function(input, output, session) {
     }
   })
   
-  output$Date <- renderText({
-    paste0("  Data as of ", ddate)
-  })
+  shinyjs::html("dateHeader", paste0(" Data as of ", ddate))
+      
   
   output$titletext <- renderText({
     if (input$Hospital != "All") {

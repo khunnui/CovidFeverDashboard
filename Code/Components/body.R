@@ -7,12 +7,21 @@
 library(shinydashboard)
 library(plotly)
 library(DT)
+library(shinyjs)
 
 body <- dashboardBody(
   tags$head(tags$style(
     HTML("div.box-header {text-align: center;}
-         .skin-black .main-sidebar {background-color: #49708B;}")
+         .skin-black .main-sidebar {background-color: #49708B;}
+    .myClass {font-size: 14px; text-align: right; margin-top: 17px; margin-right: 20px;}")
   )),
+  tags$script(
+    HTML(
+      '$(document).ready(function() {
+$("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
+})'
+    )
+  ),
   tabItems(
     tabItem(tabName = "overview",
             fluidRow(
@@ -255,5 +264,6 @@ body <- dashboardBody(
                 plotlyOutput("kap2", height = 267)
               )
             ))
-  )
+  ),
+  useShinyjs()
 )
