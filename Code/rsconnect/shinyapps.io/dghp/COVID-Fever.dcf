@@ -1,0 +1,13 @@
+name: COVID-Fever
+title: COVID-Fever
+username:
+account: dghp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5855926
+bundleId: 5733699
+url: https://dghp.shinyapps.io/COVID-Fever/
+when: 1648438821.21046
+lastSyncTime: 1648438821.21046
+asMultiple: FALSE
+asStatic: FALSE

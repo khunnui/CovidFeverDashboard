@@ -76,7 +76,7 @@ body <- dashboardBody(
                   style = "text-align: left; font-size: 20px; font-weight: bold",
                   h5("Specimen collection and laboratory testing:")
                 ),
-                img(src = "CollectMethod.jpg"  ,alt="Collect Method", height = "200", width = "700")
+                img(src = "CollectMethod.jpg"  ,alt="Collect Method", height = "200", width = "600")
               )
             )),
     tabItem(tabName = "screen",

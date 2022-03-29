@@ -7,22 +7,26 @@
 library(shinydashboard)
 
 sidebar <- dashboardSidebar(
-  width = 160,
+  width = 180,
   tags$style(
     HTML(
       "
         .shiny-input-container > label {margin-bottom: -15px;}
-        .sidebar-menu li a {padding-top: 5px; padding-bottom: 5px;}
+        .sidebar-menu li a {padding-top: 5px; padding-bottom: 4px;}
       "
     )
   ),
   sidebarMenu(
+  
     menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
-    menuItem("Diagnosis at OPD/ER", tabName = "diag"),
-    menuItem("Underlying Condition", tabName = "underlying"),
-    menuItem("Risk Factors", tabName = "risk"),
+    menuItem("Physical Exam.",
+             menuSubItem("Diagnosis", tabName = "diag"),
+             menuSubItem("Signs and Symptoms", tabName = "sign"),
+             menuSubItem("Underlying Conditions", tabName = "underlying"),
+             menuSubItem("Risk Factors", tabName = "risk")
+    ),
     menuItem("Signs and Symptoms", tabName = "sign"),
     menuItem("Vaccination", tabName = "vac"),
     menuItem("ATK Used", tabName = "atk"),
