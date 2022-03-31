@@ -26,7 +26,15 @@ th_province  <- st_read(paste0(shapefile_folder, "ThailandProvince.shp"),
                         stringsAsFactors = FALSE)
 th_district  <- st_read(paste0(shapefile_folder, "Amphoe77.shp"), 
                         stringsAsFactors = FALSE)
-sea          <- world %>%  filter(ISO %in% c('KH','MM','LA','MY','VN'))
+
+world <- world %>%
+  mutate(
+    my_nudge_x = case_when(ISO == 'MM' ~ 1.2,
+                           TRUE ~ 0),
+    my_nudge_y = case_when(ISO == 'MM' ~ 1,
+                           ISO == 'MY' ~ 1.55,
+                           TRUE ~ 0)
+  )
 tak_district <- th_district %>% filter(ProvID == 63)
 np_district  <- th_district %>% filter(ProvID == 48)
 
@@ -36,7 +44,7 @@ cf_tak       <- tak_district %>% filter(AmphoeID %in% c("05", "06", "08"))
 cf_np        <- np_district %>% filter(AmphoeID %in% c("01", "05", "08"))
 
 map_cf_province <- ggplot() +
-  geom_sf(data = sea,
+  geom_sf(data = world,
           fill = "gray95",
           size = 0.5) +
   geom_sf(data = th_province,
@@ -45,8 +53,9 @@ map_cf_province <- ggplot() +
   geom_sf(data = cf_province,
           fill = "red",
           alpha = 0.5) +
-  geom_sf_text(data = sea, 
+  geom_sf_text(data = world,
                aes(label = COUNTRY),
+               nudge_x=world$my_nudge_x,nudge_y=world$my_nudge_y,
                size = 4) +
   geom_sf_text(data = cf_province, 
                aes(label = ProvName),
