@@ -21,12 +21,16 @@ sidebar <- dashboardSidebar(
     menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
-    menuItem("Physical Exam.",
-             menuSubItem("Diagnosis", tabName = "diag"),
-             menuSubItem("Signs and Symptoms", tabName = "sign"),
-             menuSubItem("Underlying Conditions", tabName = "underlying"),
-             menuSubItem("Risk Factors", tabName = "risk")
-    ),
+    # menuItem("Physical Exam.",
+    #          menuSubItem("Diagnosis", tabName = "diag"),
+    #          menuSubItem("Signs and Symptoms", tabName = "sign"),
+    #          menuSubItem("Underlying Conditions", tabName = "underlying"),
+    #          menuSubItem("Risk Factors", tabName = "risk")
+    # ),
+    menuItem("Diagnosis", tabName = "diag"),
+    menuItem("Signs and Symptoms", tabName = "sign"),
+    menuItem("Underlying Conditions", tabName = "underlying"),
+    menuItem("Risk Factors", tabName = "risk"),
     menuItem("Signs and Symptoms", tabName = "sign"),
     menuItem("Vaccination", tabName = "vac"),
     menuItem("ATK Used", tabName = "atk"),
@@ -46,7 +50,7 @@ sidebar <- dashboardSidebar(
     choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
     
     
-  ),
-  dateInput("dateto", "Date From:" ),
-  dateInput("datefrom", "Date To:" )
+  )
+#  dateInput("dateto", "Date From:" ),
+ # dateInput("datefrom", "Date To:" )
 )
