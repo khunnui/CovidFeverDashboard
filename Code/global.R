@@ -29,15 +29,16 @@ th_district  <- st_read(paste0(shapefile_folder, "Amphoe77.shp"),
 
 world <- world %>%
   mutate(
-    my_nudge_x = case_when(ISO == 'MM' ~ 1.2,
+    my_nudge_x = case_when(ISO == 'MM' ~ 1.7,
+                           ISO == 'MY' ~ -0.1,
                            TRUE ~ 0),
     my_nudge_y = case_when(ISO == 'MM' ~ 1,
-                           ISO == 'MY' ~ 1.55,
-                           TRUE ~ 0)
+                           ISO == 'MY' ~ 1.59,
+                           TRUE ~ 0),
+    COUNTRY = ifelse(ISO == 'TH', NA, COUNTRY)
   )
 tak_district <- th_district %>% filter(ProvID == 63)
 np_district  <- th_district %>% filter(ProvID == 48)
-
 
 cf_province  <- th_province %>% filter(ProvNum %in% c(48, 63))
 cf_tak       <- tak_district %>% filter(AmphoeID %in% c("05", "06", "08"))
@@ -60,8 +61,8 @@ map_cf_province <- ggplot() +
   geom_sf_text(data = cf_province, 
                aes(label = ProvName),
                size = 4) +
-  coord_sf(xlim = c(95.2, 106),
-           ylim = c(5, 20),
+  coord_sf(xlim = c(97, 106),
+           ylim = c(6, 20),
            expand = TRUE) + 
   theme_void()
 
@@ -72,7 +73,7 @@ map_cf_tak <- ggplot() +
   geom_sf_text(data = cf_tak,
             aes(label = AmphoeE),
             size = 4) +
-  coord_sf(xlim = c(374000, 541000),
+  coord_sf(xlim = c(371000, 544000),
            ylim = c(1688000, 1965000)) +
   scale_fill_manual(values = c("yellow", "pink", "deepskyblue")) +
   theme_void() +
