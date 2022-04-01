@@ -61,7 +61,7 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   style = "text-align: left; font-size: 20px; font-weight: bold",
                   h5("Inclusion criteria:")
                 ),
-                HTML("<ul> <li>Fever >37.5 °C or history of fever  <14 days AND </li>
+                HTML("<ul> <li>Fever >37.5 &deg;C or history of fever  <14 days AND </li>
                             <li>No clinical signs or symptoms of respiratory infection  (no cough, difficulty breathing or sputum production)</li>
  
                      </ul>"),
