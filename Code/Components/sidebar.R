@@ -31,7 +31,6 @@ sidebar <- dashboardSidebar(
     menuItem("Signs and Symptoms", tabName = "sign"),
     menuItem("Underlying Conditions", tabName = "underlying"),
     menuItem("Risk Factors", tabName = "risk"),
-    menuItem("Signs and Symptoms", tabName = "sign"),
     menuItem("Vaccination", tabName = "vac"),
     menuItem("ATK Used", tabName = "atk"),
     menuItem("SARS-CoV-2 Detection", tabName = "detect"),
