@@ -157,17 +157,18 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   dataTableOutput("ScreeningAge")
                 ),
                 box(
-                  title = "Gender",
+                  title = "Age Group",
                   width = NULL,
-                  plotlyOutput("ScreeningGender", height = 242)
+                  plotlyOutput("ScreeningAgeGroup", height = 242)
                 )
               ),
               column(
                 width = 6,
                 box(
-                  title = "Enrollment",
+                  title = "Gender",
                   width = NULL,
-                  plotlyOutput("ScreeningEnrol")
+                  plotlyOutput("ScreeningGender")
+                
                 )
               )
             )

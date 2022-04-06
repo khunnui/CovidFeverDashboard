@@ -139,37 +139,19 @@ server <- function(input, output, session) {
     pie(df, S1Gender, tt())
   })
   
-  output$ScreeningEnrol <- renderPlotly({
+  output$ScreeningAgeGroup <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_screnrol %>% filter(S1HospitalID == input$Hospital)
+      df <- df_scrage %>% filter(S1HospitalID == input$Hospital)
     } else if (input$Province != "All") {
-      df <- df_screnrol %>% filter(Province == input$Province)
+      df <- df_scrage %>% filter(Province == input$Province)
     } else {
-      df <- df_screnrol
+      df <- df_scrage
     }
-    plot_ly(
-      data = df %>%
-        group_by(OLDCF, CF_Enrol) %>%
-        summarise(count = sum(n)),
-      x = ~ OLDCF,
-      y = ~ count,
-      color = ~ CF_Enrol,
-      type = "bar",
-      hoverinfo = 'y',
-      hovertemplate = '%{y:,}<extra></extra>'
-    ) %>%
-      layout(
-        title = tt(),
-        xaxis = list(title = 'Previously Enrolled'),
-        yaxis = list(title = 'Count',
-                     tickformat = ','),
-        bargap = 0.5,
-        legend = list(title=list(text='Enrolled'),
-                      x = 100, 
-                      y = 0.5)
-      )
+    pie(df, agegroup, tt())
   })
-
+  
+  
+ 
   output$EnrollmentBar <- renderPlotly({
     if (input$enrollx == 1) {
       df_eli <- df_eliw
