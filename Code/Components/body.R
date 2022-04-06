@@ -154,12 +154,9 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                 box(
                   title = "Age",
                   width = NULL,
-                  dataTableOutput("ScreeningAge")
-                ),
-                box(
-                  title = "Age Group",
-                  width = NULL,
-                  plotlyOutput("ScreeningAgeGroup", height = 242)
+                  dataTableOutput("ScreeningAge"),
+               
+                  plotlyOutput("ScreeningAgeGroup", height = 325)
                 )
               ),
               column(
