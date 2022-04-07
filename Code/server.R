@@ -37,12 +37,12 @@ server <- function(input, output, session) {
     if (input$Province == "All") {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
+        choices = c("All", as.character(unique(df_scrgender$Hospital)))
       )
     } else {
       updateSelectInput(
         inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scrgender$S1HospitalID[df_scrgender$Province == input$Province])))
+        choices = c("All", as.character(unique(df_scrgender$Hospital[df_scrgender$Province == input$Province])))
       )
     }
   })
@@ -72,7 +72,7 @@ server <- function(input, output, session) {
                tickformat = "%b %y")
     }
     if (input$Hospital != "All") {
-      df <- df_scr %>% filter(S1HospitalID == input$Hospital)
+      df <- df_scr %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_scr %>% filter(Province == input$Province)
     } else {
@@ -106,8 +106,8 @@ server <- function(input, output, session) {
   
   output$ScreeningAge <- renderDT({
     if (input$Hospital != "All") {
-      df <- df_scrage2 %>% filter(S1HospitalID == input$Hospital) %>% 
-        select(-S1HospitalID)
+      df <- df_scrage2 %>% filter(Hospital == input$Hospital) %>% 
+        select(-Hospital)
     } else if (input$Province != "All") {
       df <- df_scrage1 %>% filter(Province == input$Province) %>% 
         select(-Province)
@@ -130,7 +130,7 @@ server <- function(input, output, session) {
   
   output$ScreeningGender <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_scrgender %>% filter(S1HospitalID == input$Hospital)
+      df <- df_scrgender %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_scrgender %>% filter(Province == input$Province)
     } else {
@@ -141,7 +141,7 @@ server <- function(input, output, session) {
   
   output$ScreeningAgeGroup <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_scrage %>% filter(S1HospitalID == input$Hospital)
+      df <- df_scrage %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_scrage %>% filter(Province == input$Province)
     } else {
@@ -173,8 +173,8 @@ server <- function(input, output, session) {
       )
     }
     if (input$Hospital != "All") {
-      df1 <- df_eli %>% filter(S1HospitalID == input$Hospital)
-      df2 <- df_enr %>% filter(S1HospitalID == input$Hospital)
+      df1 <- df_eli %>% filter(Hospital == input$Hospital)
+      df2 <- df_enr %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df1 <- df_eli %>% filter(Province == input$Province)
       df2 <- df_enr %>% filter(Province == input$Province)
@@ -246,7 +246,7 @@ server <- function(input, output, session) {
   
   output$eliBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_elim %>% filter(S1HospitalID == input$Hospital)
+      df <- df_elim %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_elim %>% filter(Province == input$Province)
     } else {
@@ -261,7 +261,7 @@ server <- function(input, output, session) {
   
   output$enrolBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrm %>% filter(Province == input$Province)
     } else {
@@ -276,7 +276,7 @@ server <- function(input, output, session) {
   
   output$posBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrm %>% filter(Province == input$Province)
     } else {
@@ -292,7 +292,7 @@ server <- function(input, output, session) {
   
   output$pos3weekBox <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_pos3wk %>% filter(S1HospitalID == input$Hospital)
+      df <- df_pos3wk %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_pos3wk %>% filter(Province == input$Province)
     } else {
@@ -308,7 +308,7 @@ server <- function(input, output, session) {
   
   output$EnrollmentAge <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_enrage %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrage %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrage %>% filter(Province == input$Province)
     } else {
@@ -319,7 +319,7 @@ server <- function(input, output, session) {
   
   output$EnrollmentGender <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_enrgender %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrgender %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrgender %>% filter(Province == input$Province)
     } else {
@@ -330,7 +330,7 @@ server <- function(input, output, session) {
   
   output$EnrollmentOcc <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_enrocc %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrocc %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrocc %>% filter(Province == input$Province)
     } else {
@@ -347,7 +347,7 @@ server <- function(input, output, session) {
 
   output$Diag <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_dx %>% filter(S1HospitalID == input$Hospital)
+      df <- df_dx %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_dx %>% filter(Province == input$Province)
     } else {
@@ -358,7 +358,7 @@ server <- function(input, output, session) {
 
   output$Underly <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_un %>% filter(S1HospitalID == input$Hospital)
+      df <- df_un %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_un %>% filter(Province == input$Province)
     } else {
@@ -369,7 +369,7 @@ server <- function(input, output, session) {
   
   output$Risk <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_rf %>% filter(S1HospitalID == input$Hospital)
+      df <- df_rf %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_rf %>% filter(Province == input$Province)
     } else {
@@ -380,7 +380,7 @@ server <- function(input, output, session) {
   
   output$Sign <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_sign %>% filter(S1HospitalID == input$Hospital)
+      df <- df_sign %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_sign %>% filter(Province == input$Province)
     } else {
@@ -391,7 +391,7 @@ server <- function(input, output, session) {
 
   output$posBoxSign <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
+      df <- df_enrm %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_enrm %>% filter(Province == input$Province)
     } else {
@@ -407,7 +407,7 @@ server <- function(input, output, session) {
 
   output$hospitalised <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+      df <- df_signBox %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_signBox %>% filter(Province == input$Province)
     } else {
@@ -422,7 +422,7 @@ server <- function(input, output, session) {
   
   output$intub <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+      df <- df_signBox %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_signBox %>% filter(Province == input$Province)
     } else {
@@ -438,7 +438,7 @@ server <- function(input, output, session) {
   
   output$death <- renderValueBox({
     if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
+      df <- df_signBox %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_signBox %>% filter(Province == input$Province)
     } else {
@@ -454,7 +454,7 @@ server <- function(input, output, session) {
   
   output$VaccinePie1 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+      df <- df_vac %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_vac %>% filter(Province == input$Province)
     } else {
@@ -465,7 +465,7 @@ server <- function(input, output, session) {
   
   output$VaccinePie2 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
+      df <- df_vac %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_vac %>% filter(Province == input$Province)
     } else {
@@ -534,7 +534,7 @@ server <- function(input, output, session) {
   
   output$atkPie <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_atk %>% filter(S1HospitalID == input$Hospital)
+      df <- df_atk %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_atk %>% filter(Province == input$Province)
     } else {
@@ -545,7 +545,7 @@ server <- function(input, output, session) {
   
   output$DetectBar <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_lab %>% filter(S1HospitalID == input$Hospital)
+      df <- df_lab %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_lab %>% filter(Province == input$Province)
     } else {
@@ -585,7 +585,7 @@ server <- function(input, output, session) {
   
   output$DetectPie <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_labpos %>% filter(S1HospitalID == input$Hospital)
+      df <- df_labpos %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_labpos %>% filter(Province == input$Province)
     } else {
@@ -596,7 +596,7 @@ server <- function(input, output, session) {
     
   output$kap1 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)
+      df <- df_kap1 %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_kap1 %>% filter(Province == input$Province)
     } else {
@@ -620,7 +620,7 @@ server <- function(input, output, session) {
   
   output$kap2 <- renderPlotly({
     if (input$Hospital != "All") {
-      df <- df_kap2 %>% filter(S1HospitalID == input$Hospital)
+      df <- df_kap2 %>% filter(Hospital == input$Hospital)
     } else if (input$Province != "All") {
       df <- df_kap2 %>% filter(Province == input$Province)
     } else {
