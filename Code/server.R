@@ -11,38 +11,37 @@ library(cowplot)
 server <- function(input, output, session) {
 
   tt <- reactive({
-    if (input$Hospital != "All") {
-      tt <- paste0(input$Hospital, " Hospital")
-    } else if (input$Province != "All") {
-      tt <- paste0(input$Province, " Province")
+    if (input$hospital != "All") {
+      tt <- paste0(input$hospital, " Hospital")
+    } else if (input$province != "All") {
+      tt <- paste0(input$province, " province")
     } else {
       tt <- ""
     }
   })
   
   shinyjs::html("dateHeader", paste0(" Data as of ", ddate))
-      
-  
+
   output$titletext <- renderText({
-    if (input$Hospital != "All") {
-      titletext <- paste0(input$Hospital, " Hospital")
-    } else if (input$Province != "All") {
-      titletext <- paste0(input$Province, " Province")
+    if (input$hospital != "All") {
+      titletext <- paste0(input$hospital, " Hospital")
+    } else if (input$province != "All") {
+      titletext <- paste0(input$province, " province")
     } else {
       titletext <- ""
     }
   })
 
-  observeEvent(input$Province, {
-    if (input$Province == "All") {
+  observeEvent(input$province, {
+    if (input$province == "All") {
       updateSelectInput(
-        inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
+        inputId = "hospital",
+        choices = c("All", as.character(unique(df_scrgender$hospital)))
       )
     } else {
       updateSelectInput(
-        inputId = "Hospital",
-        choices = c("All", as.character(unique(df_scrgender$S1HospitalID[df_scrgender$Province == input$Province])))
+        inputId = "hospital",
+        choices = c("All", as.character(unique(df_scrgender$hospital[df_scrgender$province == input$province])))
       )
     }
   })
@@ -71,14 +70,14 @@ server <- function(input, output, session) {
                dtick = "M1",
                tickformat = "%b %y")
     }
-    if (input$Hospital != "All") {
-      df <- df_scr %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_scr %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_scr %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_scr %>% filter(province == input$province)
     } else {
       df <- df_scr
     }
-    p <- plot_ly(
+    plot_ly(
       data = df %>%
         group_by(scrdate) %>%
         summarise(count = sum(n)),
@@ -86,7 +85,7 @@ server <- function(input, output, session) {
       y = ~ count,
       name = "Screening",
       type = "bar",
-      marker = list(color = 'rgb(158,202,225)'),
+      marker = list(color = color_scr),
       hoverinfo = 'y'
     ) %>%
       layout(
@@ -105,12 +104,12 @@ server <- function(input, output, session) {
   })
   
   output$ScreeningAge <- renderDT({
-    if (input$Hospital != "All") {
-      df <- df_scrage2 %>% filter(S1HospitalID == input$Hospital) %>% 
-        select(-S1HospitalID)
-    } else if (input$Province != "All") {
-      df <- df_scrage1 %>% filter(Province == input$Province) %>% 
-        select(-Province)
+    if (input$hospital != "All") {
+      df <- df_scrage2 %>% filter(hospital == input$hospital) %>% 
+        select(-hospital)
+    } else if (input$province != "All") {
+      df <- df_scrage1 %>% filter(province == input$province) %>% 
+        select(-province)
     } else {
       df <- df_scrage0
     }
@@ -128,30 +127,28 @@ server <- function(input, output, session) {
       formatRound(1, 0)
   })
   
-  output$ScreeningGender <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_scrgender %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_scrgender %>% filter(Province == input$Province)
-    } else {
-      df <- df_scrgender
-    }
-    pie(df, S1Gender, tt())
-  })
-  
   output$ScreeningAgeGroup <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_scrage %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_scrage %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_scrage %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_scrage %>% filter(province == input$province)
     } else {
       df <- df_scrage
     }
-    pie(df, agegroup, tt())
+    bar_age(df, tt())
   })
   
-  
- 
+  output$ScreeningGender <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_scrgender %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_scrgender %>% filter(province == input$province)
+    } else {
+      df <- df_scrgender
+    }
+    pie_gender(df, tt())
+  })
+
   output$EnrollmentBar <- renderPlotly({
     if (input$enrollx == 1) {
       df_eli <- df_eliw
@@ -172,12 +169,12 @@ server <- function(input, output, session) {
                tickformat = "%b %y"
       )
     }
-    if (input$Hospital != "All") {
-      df1 <- df_eli %>% filter(S1HospitalID == input$Hospital)
-      df2 <- df_enr %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df1 <- df_eli %>% filter(Province == input$Province)
-      df2 <- df_enr %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df1 <- df_eli %>% filter(hospital == input$hospital)
+      df2 <- df_enr %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df1 <- df_eli %>% filter(province == input$province)
+      df2 <- df_enr %>% filter(province == input$province)
     } else {
       df1 <- df_eli
       df2 <- df_enr
@@ -191,7 +188,7 @@ server <- function(input, output, session) {
         y = ~ count,
         name = "Eligible",
         type = 'bar',
-        marker = list(color = '#39CCCC'),
+        marker = list(color = color_eli),
         hoverinfo = 'y'
       ) %>%
       add_trace(
@@ -202,20 +199,20 @@ server <- function(input, output, session) {
         y = ~ count,
         name = "Enroll",
         type = 'bar',
-        marker = list(color = '#00C0EF'),
+        marker = list(color = color_enr),
         hoverinfo = 'y'
       ) %>%
       add_trace(
         data = df2 %>%
           group_by(enrdate) %>%
-          summarise(inc = round(sum(n[FinalResult == 'Positive'], na.rm = TRUE) / sum(n), 2)),
+          summarise(inc = round(sum(n[finalresult == 'Positive'], na.rm = TRUE) / sum(n), 2)),
         x = ~ enrdate,
         y = ~ inc,
         yaxis = "y2",
         name = "COVID-19 Incidence",
         type = 'scatter',
         mode = 'lines',
-        line = list(color = '#F39C12'),
+        line = list(color = color_pos),
         hoverinfo = 'y'
       ) %>%
       layout(
@@ -226,7 +223,8 @@ server <- function(input, output, session) {
           rangemode = 'tozero',
           title = 'Incidence',
           range = list(0, 1),
-          tickformat = '.0%'
+          tickformat = '.0%',
+          showgrid = FALSE
         ),
         xaxis = l,
         yaxis = list(title = 'Number Eligible/Enrolled'),
@@ -239,331 +237,288 @@ server <- function(input, output, session) {
           xanchor = "center",
           # use center of legend as anchor
           x = 0.5,
-          y = 0.95
+          y = 1
         )
       )             
   })
   
   output$eliBox <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_elim %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_elim %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_elim %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_elim %>% filter(province == input$province)
     } else {
       df <- df_elim
     }
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Eligible",
-      color = "teal"
+      color = "blue"
     )
   })
   
   output$enrolBox <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrm %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrm %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrm %>% filter(province == input$province)
     } else {
       df <- df_enrm
     }
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Enrolled",
-      color = "aqua"
+      color = "green"
     )
   })
   
   output$posBox <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrm %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrm %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrm %>% filter(province == input$province)
     } else {
       df <- df_enrm
     }
-    df <- filter(df, FinalResult == "Positive")
+    df <- filter(df, finalresult == "Positive")
     valueBox(
       format(sum(df$n), big.mark= ","),
       "SARS-CoV-2 Positive",
-      color = "yellow"
+      color = "orange"
     )
   })
   
   output$pos3weekBox <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_pos3wk %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_pos3wk %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_pos3wk %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_pos3wk %>% filter(province == input$province)
     } else {
       df <- df_pos3wk
     }
-    df <- filter(df, FinalResult == "Positive")
+    df <- filter(df, finalresult == "Positive")
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Cases detected in last 3 weeks",
-      color = "purple"
+      color = "yellow"
     )
   })
   
   output$EnrollmentAge <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_enrage %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrage %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrage %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrage %>% filter(province == input$province)
     } else {
       df <- df_enrage
     }
-    pie(df, agegroup, tt())
+    #pie(df, agegroup, tt(), FALSE, color_qual)
+    bar_age(df, tt())
+    
   })
   
   output$EnrollmentGender <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_enrgender %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrgender %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrgender %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrgender %>% filter(province == input$province)
     } else {
       df <- df_enrgender
     }
-    pie(df, S1Gender, tt())
+    pie_gender(df, tt())
   })
   
   output$EnrollmentOcc <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_enrocc %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrocc %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrocc %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrocc %>% filter(province == input$province)
     } else {
       df <- df_enrocc
     }
     df %>%
-      group_by(S34Occupation) %>% # Group by specified column
+      group_by(s34occupation) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
-      mutate(rank = rank(-replace(count,S34Occupation=='Other',NA), ties.method = "first")) %>% 
-      mutate(S34Occupation = ifelse(rank <= 5, levels(S34Occupation)[S34Occupation], "Other")) %>%
+      mutate(rank = rank(-replace(count,s34occupation=='Other',NA), ties.method = "first")) %>% 
+      mutate(s34occupation = ifelse(rank <= 5, levels(s34occupation)[s34occupation], "Other")) %>%
       rename(n = count) %>%      
-      pie(S34Occupation, tt(), TRUE)
+      pie(s34occupation, tt(), FALSE, color_qual)
   })
 
   output$Diag <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_dx %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_dx %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_dx %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_dx %>% filter(province == input$province)
     } else {
       df <- df_dx
     }
-    hbar(df, Diagnosis, tt())
+    bar_h(df, diagnosis, tt())
   })  
 
   output$Underly <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_un %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_un %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_un %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_un %>% filter(province == input$province)
     } else {
       df <- df_un
     }
-    hbar(df, Underlying, tt())
+    bar_h(df, underlying, tt())
   })  
   
   output$Risk <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_rf %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_rf %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_rf %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_rf %>% filter(province == input$province)
     } else {
       df <- df_rf
     }
-    hbar(df, Risk, tt())
+    bar_h(df, risk, tt())
   })
   
   output$Sign <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_sign %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_sign %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_sign %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_sign %>% filter(province == input$province)
     } else {
       df <- df_sign
     }
-    hbar(df, Signs, tt())
+    bar_h(df, signs, tt())
   })
 
   output$posBoxSign <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_enrm %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_enrm %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_enrm %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrm %>% filter(province == input$province)
     } else {
       df <- df_enrm
     }
-    df <- filter(df, FinalResult == "Positive")
+    df <- filter(df, finalresult == "Positive")
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       subtitle = " SARS-CoV-2 Positive",
-      color = "yellow"
+      color = "orange"
     )
   })
 
   output$hospitalised <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_signBox %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
     } else {
       df <- df_signBox
     }
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Hospitalized",
-      color = "teal"
+      color = "yellow"
     )
   })
   
   output$intub <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_signBox %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
     } else {
       df <- df_signBox
     }
-    df <- filter(df, S5Intub == 2)
+    df <- filter(df, s5intub == 2)
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Intubation",
-      color = "purple"
+      color = "red"
     )
   })
   
   output$death <- renderValueBox({
-    if (input$Hospital != "All") {
-      df <- df_signBox %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_signBox %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
     } else {
       df <- df_signBox
     }
-    df <- filter(df, S5DishargeType == 4)
+    df <- filter(df, s5dishargetype == 4)
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Death",
-      color = "maroon"
+      color = "black"
     )
   })
   
-  output$VaccinePie1 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_vac %>% filter(Province == input$Province)
+  output$VaccineSunburst <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_vac %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_vac %>% filter(province == input$province)
     } else {
       df <- df_vac
     }
-    pie(df, S33CovidVaccine, tt())
-  }) 
-  
-  output$VaccinePie2 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_vac %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_vac %>% filter(Province == input$Province)
-    } else {
-      df <- df_vac
-    }
-    df <- df %>%
-      group_by(S33CovidVaccine, FinalResult) %>%
-      summarise(count = sum(n))
-    df1 <- filter(df, S33CovidVaccine == "Vaccinated")
-    df2 <- filter(df, S33CovidVaccine == "Unvaccinated")
-    plot_ly(labels = ~ FinalResult,
-            values = ~ count,
-            sort = FALSE,
-            marker = list(
-              colors = c("#F39C12", "#FBDEB0", "#ECF0F5"),
-              line = list(color = '#FFFFFF', width = 1)
-            ),
-            texttemplate = "%{percent:.1%}",
-            hovertemplate = '%{value:,}<extra></extra>'
-    ) %>%
-      add_pie(
-        data = df1,
-        name = "Vaccinated",
-        scalegroup = 'one',
-        direction ='clockwise', 
-        domain = list(row = 0, column = 0)
-      ) %>%
-      add_pie(
-        data = df2,
-        name = "Unvaccinated",
-        scalegroup = 'one',
-        direction ='clockwise', 
-        domain = list(row = 0, column = 1)
+    df %>% 
+      group_by(s33covidvaccine, finalresult) %>% # Group by specified column
+      summarise(count = sum(n)) %>% 
+      sunburst_df(value_column = "count", add_root = FALSE) %>% 
+      mutate(colors = case_when(
+        ids == 'Vaccinated'    ~ '#ace1af',
+        ids == 'Unvaccinated'  ~ '#a1caf1',
+        ids == 'Unknown'       ~ '#ebe6e5',
+        grepl('Positive', ids) ~ '#b78f62'
+      )) %>% 
+      plot_ly(
+        ids     = ~ ids,
+        labels  = ~ labels,
+        parents = ~ parents,
+        values  = ~ values,
+        type = 'sunburst',
+        branchvalues = 'total',
+        textinfo = 'label+percent entry',
+        marker = list(colors = ~ colors)
       ) %>%
       layout(
         title = tt(),
-        grid = list(rows = 1, columns = 2),
-        margin = list(l = 160, r = 160),
-        legend = list(
-          orientation = "h",
-          # show entries horizontally
-          xanchor = "center",
-          # use center of legend as anchor
-          x = 0.5
-        ),
-        annotations = list(
-          list(
-            x = 0.12,
-            y = 1,
-            text = "Vaccinated",
-            showarrow = F,
-            xref = 'paper',
-            yref = 'paper'
-          ),
-          list(
-            x = 0.88,
-            y = 1,
-            text = "Unvaccinated",
-            showarrow = F,
-            xref = 'paper',
-            yref = 'paper'
-          )
-        )
-      )
-  })
+        margin = list(l = 30, r = 30, t= 30))
+  }) 
   
   output$atkPie <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_atk %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_atk %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_atk %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_atk %>% filter(province == input$province)
     } else {
       df <- df_atk
     }
-    pie(df, FinalResult, tt())
+    pie(df, atkresult, tt(), FALSE, color_posneg)
   }) 
   
   output$DetectBar <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_lab %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_lab %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_lab %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_lab %>% filter(province == input$province)
     } else {
       df <- df_lab
     }
     plot_ly(
       df %>%
-        group_by(SpecType) %>%
+        group_by(spectype) %>%
         summarise(total = sum(n),
-                  positive = sum(n[FinalResult == 'Positive'])),
-      x = ~ SpecType,
+                  positive = sum(n[finalresult == 'Positive'])),
+      x = ~ spectype,
       y = ~ total,
       type = "bar",
+      marker = list(color = color_scr),
       name = 'Tested',
       hoverinfo = 'y',
       hovertemplate = '%{y:,}<extra></extra>'
     ) %>% 
       add_trace(y = ~ positive, 
+                marker = list(color = color_pos),
                 name = 'PCR Positive',
                 hoverinfo = 'y',
                 hovertemplate = '%{y:,}<extra></extra>') %>% 
@@ -584,59 +539,59 @@ server <- function(input, output, session) {
   })
   
   output$DetectPie <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_labpos %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_labpos %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_labpos %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_labpos %>% filter(province == input$province)
     } else {
       df <- df_labpos
     }
-    pie(df, specimens, tt(), TRUE)
+    pie(df, specimens, tt(), FALSE, color_qual)
   })  
     
   output$kap1 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_kap1 %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_kap1 %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_kap1 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap1 %>% filter(province == input$province)
     } else {
       df <- df_kap1
     }
     df %>%
       mutate(
-        kap = recode(
+        kap = factor(recode(
           kap,
-          'S3604SickSpread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
-          'S3615CareLate'   = 'I sought care today later than I usual\nbecause of COVID-19',
-          'S3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
-          'S3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
-          'S3618'           = 'Always wearing mask in public is a good thing to do',
-          'S3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
-          'S3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
-        )
+          's3604sickspread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
+          's3615carelate'   = 'I sought care today later than I usual\nbecause of COVID-19',
+          's3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
+          's3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
+          's3618'           = 'Always wearing mask in public is a good thing to do',
+          's3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
+          's3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
+        ))
       ) %>%
-      scalebar(kap, c('#93C2A4', '#C8EABA', '#FFFEDF', '#FFCB81', '#EE9134'))
+      bar_scale(kap, color_scale1)
   })
   
   output$kap2 <- renderPlotly({
-    if (input$Hospital != "All") {
-      df <- df_kap2 %>% filter(S1HospitalID == input$Hospital)
-    } else if (input$Province != "All") {
-      df <- df_kap2 %>% filter(Province == input$Province)
+    if (input$hospital != "All") {
+      df <- df_kap2 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap2 %>% filter(province == input$province)
     } else {
       df <- df_kap2
     }
     df %>%
       mutate(
-        kap = recode(
+        kap = factor(recode(
           kap,
-          'S3610MaskIn'     = 'During the past 2 weeks, did you wear a mask at home?',
-          'S3613MaskOut'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
-          'S3621'           = 'Do you practice social distancing from other persons\nin your household?',
-          'S3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
-        )
+          's3610maskin'     = 'During the past 2 weeks, did you wear a mask at home?',
+          's3613maskout'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
+          's3621'           = 'Do you practice social distancing from other persons\nin your household?',
+          's3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
+        ))
       ) %>%
-      scalebar(kap, c('#66A38F', '#86C499', '#ADDFAA', '#D7F3C1', '#FFFEDF'))
+      bar_scale(kap, color_scale2)
   })
   
 }

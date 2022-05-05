@@ -12,7 +12,7 @@ library(shinyjs)
 body <- dashboardBody(
   tags$head(tags$style(
     HTML("div.box-header {text-align: center;}
-         .skin-black .main-sidebar {background-color: #49708B;}
+         .skin-black .main-sidebar {background-color: #0B2C4B;}
     .myClass {font-size: 14px; text-align: right; margin-top: 17px; margin-right: 20px;}")
   )),
   tags$script(
@@ -189,6 +189,12 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         ),
         column(
           width = 2,
+          tags$head(tags$style(HTML('
+            .small-box.bg-blue { background-color: #a1caf1 !important; color: #000000 !important}
+            .small-box.bg-green { background-color: #ace1af !important; color: #000000 !important}
+            .small-box.bg-orange { background-color: #B78F62 !important; color: #000000 !important}
+            .small-box.bg-yellow { background-color: #f8de7e !important; color: #000000 !important}
+          '))),
           valueBoxOutput("eliBox", width = NULL),
           valueBoxOutput("enrolBox", width = NULL),
           valueBoxOutput("posBox", width = NULL),
@@ -220,25 +226,6 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
               plotlyOutput("Diag", height = 766)
             ))),
     tabItem(
-      tabName = "underlying",
-      fluidRow(
-        box(
-          title = "Underlying Condition Among Febrile Patients",
-          width = 12,
-          plotlyOutput("Underly", height = 475)
-        )
-      )
-    ),
-    tabItem(tabName = "risk",
-      fluidRow(
-        box(
-          title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
-          width =12,
-          plotlyOutput("Risk", height = 475)
-        )
-      )
-    ),
-    tabItem(
       tabName = "sign",
       fluidRow(
         # tags$head(tags$style(HTML('
@@ -255,19 +242,40 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         plotlyOutput("Sign", height = 612)
       )
     ), 
+    tabItem(
+      tabName = "underlying",
+      fluidRow(
+        box(
+          title = "Underlying Condition Among Febrile Patients",
+          width = 12,
+          plotlyOutput("Underly", height = 475)
+        )
+      )
+    ),
+    tabItem(tabName = "risk",
+      fluidRow(
+        box(
+          title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
+          width = 12,
+          plotlyOutput("Risk", height = 475)
+        )
+      )
+    ),
     tabItem(tabName = "vac",
-            fluidRow(
-              box(
-                title = "COVID-19 Vaccination",
-                width = 4,
-                plotlyOutput("VaccinePie1")
-              ),
-              box(
-                title = "COVID-19 Vaccination vs. PCR Results",
-                width = 8,
-                plotlyOutput("VaccinePie2")
-              )
-            )),
+      fluidRow(
+        box(
+          title = "COVID-19 Vaccination and PCR Result",
+          width = 12,
+          plotlyOutput("VaccineSunburst")
+        )
+        # ),
+        # box(
+        #   title = "COVID-19 Vaccination vs. PCR Results",
+        #   width = 8,
+        #   plotlyOutput("VaccinePie2")
+        # )
+      )
+    ),
     tabItem(tabName = "atk",
             fluidRow(box(
               title = "Antigen Test Kits (ATK) Used within Past 30 Days among Febrile Patients",
@@ -304,8 +312,8 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   style = "text-align: center; font-size: 20px",
                   textOutput("titletext")
                 ),
-                plotlyOutput("kap1"),
-                plotlyOutput("kap2", height = 267)
+                plotlyOutput("kap1", height = 360),
+                plotlyOutput("kap2", height = 232)
               )
             ))
   ),

@@ -16,6 +16,27 @@ source('./function.R')
 #############
 githubURL <- "https://github.com/NartladaC/CovidFeverData/raw/main/Data/CFDashboard.RData"
 load(url(githubURL))
+# load('C:/Projects/CovidFever/R/CovidFeverData/Data/CFDashboard.RData')
+
+##########
+# Colors #
+##########
+color_scr <- '#a1caf1'
+color_age <- '#a1caf1'
+color_gender <- c('#a1caf1', '#d8bfd8', '#ebe6e5')
+color_eli <- '#a1caf1'
+color_enr <- '#ace1af'
+color_pos <- '#b78f62'
+color_qual <- c('#ffcba4',
+                '#b78f62',
+                '#f8de7e',
+                '#d8bfd8',
+                '#a1caf1',
+                '#ace1af',
+                '#ebe6e5')
+color_posneg <- c('#b78f62','#a1caf1','#ebe6e5')
+color_scale1 <- c('#81613c','#b78f62','#ebe6e5','#a1caf1','#1a67af')
+color_scale2 <- c('#e0edfa','#c0dcf6','#a1caf1','#5e99d0','#1a67af')
 
 ###############
 # Study sites #
@@ -49,11 +70,10 @@ map_cf_province <- ggplot() +
           fill = "gray95",
           size = 0.5) +
   geom_sf(data = th_province,
-          fill = "grey85",
+          fill = "grey80",
           size = 0.5) +
   geom_sf(data = cf_province,
-          fill = "red",
-          alpha = 0.5) +
+          fill = "#dd4b39") +
   geom_sf_text(data = world,
                aes(label = COUNTRY),
                nudge_x=world$my_nudge_x,nudge_y=world$my_nudge_y,
@@ -75,7 +95,7 @@ map_cf_tak <- ggplot() +
             size = 4) +
   coord_sf(xlim = c(371000, 544000),
            ylim = c(1688000, 1965000)) +
-  scale_fill_manual(values = c("yellow", "pink", "deepskyblue")) +
+  scale_fill_manual(values = c("#f8de7e", "pink", "#a1caf1")) +
   theme_void() +
   theme(legend.position = "none")
 
@@ -88,6 +108,6 @@ map_cf_np <- ggplot() +
             size = 4) +
   coord_sf(xlim = c(1026500, 1123500),
            ylim = c(1870000, 1995000)) +
-  scale_fill_manual(values = c("orange", "mediumpurple1", "darkseagreen3")) +
+  scale_fill_manual(values = c('#ffcba4', '#d8bfd8', '#ace1af')) +
   theme_void() +
   theme(legend.position = "none")

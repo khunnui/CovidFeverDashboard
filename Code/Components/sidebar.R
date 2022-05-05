@@ -21,12 +21,6 @@ sidebar <- dashboardSidebar(
     menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
-    # menuItem("Physical Exam.",
-    #          menuSubItem("Diagnosis", tabName = "diag"),
-    #          menuSubItem("Signs and Symptoms", tabName = "sign"),
-    #          menuSubItem("Underlying Conditions", tabName = "underlying"),
-    #          menuSubItem("Risk Factors", tabName = "risk")
-    # ),
     menuItem("Diagnosis", tabName = "diag"),
     menuItem("Signs and Symptoms", tabName = "sign"),
     menuItem("Underlying Conditions", tabName = "underlying"),
@@ -39,14 +33,14 @@ sidebar <- dashboardSidebar(
   ),
   tags$div(id = "div_test", tags$style("#div_test div {margin-bottom: -2px}"),
            selectInput(
-             inputId = "Province",
+             inputId = "province",
              label = "Province:",
-             choices = c("All", unique(df_scrgender$Province))
+             choices = c("All", as.character(unique(df_scrgender$province)))
            )),
   selectInput(
-    inputId = "Hospital",
+    inputId = "hospital",
     label = "Hospital:",
-    choices = c("All", as.character(unique(df_scrgender$S1HospitalID)))
+    choices = c("All", as.character(unique(df_scrgender$hospital)))
     
     
   )
