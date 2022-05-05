@@ -41,9 +41,8 @@ sidebar <- dashboardSidebar(
     inputId = "hospital",
     label = "Hospital:",
     choices = c("All", as.character(unique(df_scrgender$hospital)))
-    
-    
+
   )
-#  dateInput("dateto", "Date From:" ),
- # dateInput("datefrom", "Date To:" )
+  # dateInput("dateto", "Date From:" ),
+  # dateInput("datefrom", "Date To:" )
 )
