@@ -444,7 +444,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_signBox
     }
-    df <- filter(df, s5dishargetype == 4)
+    df <- filter(df, s5dischargetype == 4)
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Death",
