@@ -221,7 +221,7 @@ server <- function(input, output, session) {
           overlaying = "y",
           side = "right",
           rangemode = 'tozero',
-          title = 'Incidence',
+          title = '% SARS-CoV-2 RT-PCR positive',
           range = list(0, 1),
           tickformat = '.0%',
           showgrid = FALSE

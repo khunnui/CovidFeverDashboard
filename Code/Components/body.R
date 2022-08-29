@@ -12,7 +12,7 @@ library(shinyjs)
 body <- dashboardBody(
   tags$head(tags$style(
     HTML("div.box-header {text-align: center;}
-         .skin-black .main-sidebar {background-color: #0B2C4B;}
+         .skin-black .main-sidebar {background-color: #49708B;}
     .myClass {font-size: 14px; text-align: right; margin-top: 17px; margin-right: 20px;}")
   )),
   tags$script(
@@ -62,8 +62,11 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   h5("Inclusion criteria:")
                 ),
                 HTML("<ul> <li>Fever >37.5 &deg;C or history of fever  <14 days AND </li>
-                            <li>No clinical signs or symptoms of respiratory infection  (no cough, difficulty breathing or sputum production)</li>
- 
+                            <li>No clinical signs or symptoms of respiratory infection  (no cough, difficulty breathing or sputum production) 
+                          
+                         <ul>
+                          <li>Remove this criteria since May 2022</li>
+                     </ul></li>
                      </ul>"),
                 div(
                   style = "text-align: left; font-size: 20px; font-weight: bold",
@@ -145,7 +148,8 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                              label = "",
                              inline = TRUE,
                              choices = list("Weekly" = 1, "Monthly" = 2), 
-                             selected = 2)
+                             selected = 2),
+                footer = "  *included febrile patients with respiratory symptoms since May 17, 2022 for Tak and May 23, 2022 for Nakhon Phanom"
               )
             ),
             fluidRow(
@@ -176,7 +180,7 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         column(
           width = 10,
           box(
-            title = "Eligible, Enrollment and SARS-Cov2 Incidence by Month",
+            title = "Eligible, Enrollment and SARS-Cov-2 RT-PCR Positive Cases by Month",
             width = NULL,
             align="center",
             plotlyOutput("EnrollmentBar", height = 375),
@@ -184,17 +188,13 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                          label = "",
                          inline = TRUE,
                          choices = list("Weekly" = 1, "Monthly" = 2), 
-                         selected = 2)
+                         selected = 2),
+            footer = "  *included febrile patients with respiratory symptoms since May 17, 2022 for Tak and May 23, 2022 for Nakhon Phanom"
+            
           )
         ),
         column(
           width = 2,
-          tags$head(tags$style(HTML('
-            .small-box.bg-blue { background-color: #a1caf1 !important; color: #000000 !important}
-            .small-box.bg-green { background-color: #ace1af !important; color: #000000 !important}
-            .small-box.bg-orange { background-color: #B78F62 !important; color: #000000 !important}
-            .small-box.bg-yellow { background-color: #f8de7e !important; color: #000000 !important}
-          '))),
           valueBoxOutput("eliBox", width = NULL),
           valueBoxOutput("enrolBox", width = NULL),
           valueBoxOutput("posBox", width = NULL),
@@ -226,6 +226,25 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
               plotlyOutput("Diag", height = 766)
             ))),
     tabItem(
+      tabName = "underlying",
+      fluidRow(
+        box(
+          title = "Underlying Condition Among Febrile Patients",
+          width = 12,
+          plotlyOutput("Underly", height = 475)
+        )
+      )
+    ),
+    tabItem(tabName = "risk",
+      fluidRow(
+        box(
+          title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
+          width =12,
+          plotlyOutput("Risk", height = 475)
+        )
+      )
+    ),
+    tabItem(
       tabName = "sign",
       fluidRow(
         # tags$head(tags$style(HTML('
@@ -242,40 +261,19 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         plotlyOutput("Sign", height = 612)
       )
     ), 
-    tabItem(
-      tabName = "underlying",
-      fluidRow(
-        box(
-          title = "Underlying Condition Among Febrile Patients",
-          width = 12,
-          plotlyOutput("Underly", height = 475)
-        )
-      )
-    ),
-    tabItem(tabName = "risk",
-      fluidRow(
-        box(
-          title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
-          width = 12,
-          plotlyOutput("Risk", height = 475)
-        )
-      )
-    ),
     tabItem(tabName = "vac",
-      fluidRow(
-        box(
-          title = "COVID-19 Vaccination and PCR Result",
-          width = 12,
-          plotlyOutput("VaccineSunburst")
-        )
-        # ),
-        # box(
-        #   title = "COVID-19 Vaccination vs. PCR Results",
-        #   width = 8,
-        #   plotlyOutput("VaccinePie2")
-        # )
-      )
-    ),
+            fluidRow(
+              box(
+                title = "COVID-19 Vaccination",
+                width = 4,
+                plotlyOutput("VaccinePie1")
+              ),
+              box(
+                title = "COVID-19 Vaccination vs. PCR Results",
+                width = 8,
+                plotlyOutput("VaccinePie2")
+              )
+            )),
     tabItem(tabName = "atk",
             fluidRow(box(
               title = "Antigen Test Kits (ATK) Used within Past 30 Days among Febrile Patients",
@@ -312,8 +310,8 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   style = "text-align: center; font-size: 20px",
                   textOutput("titletext")
                 ),
-                plotlyOutput("kap1", height = 360),
-                plotlyOutput("kap2", height = 232)
+                plotlyOutput("kap1"),
+                plotlyOutput("kap2", height = 267)
               )
             ))
   ),
