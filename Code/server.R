@@ -508,7 +508,7 @@ server <- function(input, output, session) {
       df %>%
         group_by(spectype) %>%
         summarise(total = sum(n),
-                  positive = sum(n[finalresult == 'Positive'])),
+                  positive = sum(n[finalresult == 'Positive'],na.rm = TRUE)),
       x = ~ spectype,
       y = ~ total,
       type = "bar",
