@@ -89,12 +89,12 @@ server <- function(input, output, session) {
       hoverinfo = 'y'
     ) %>%
       layout(
-        title = paste0(
+        title = list(text = paste0(
           tt(),
           "<br><sup>Total screening = ",
           format(sum(df$n), big.mark = ","),
           "</sup>"
-        ),
+        ), font = list(family = "Verdana", size = 14)),
         xaxis = l,
         yaxis = list(title = 'Number Screened',
                      tickformat = ','),
@@ -115,7 +115,7 @@ server <- function(input, output, session) {
     }
     datatable(
       df,
-      caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; color: black; font-size: 20px;",
+      caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; font-family: Verdana; font-size: 14px;",
                                         tt()),
       rownames = FALSE,
       options = list(
@@ -135,7 +135,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_scrage
     }
-    bar_age(df, tt())
+    bar_age(df, "")
   })
   
   output$ScreeningGender <- renderPlotly({
@@ -216,7 +216,7 @@ server <- function(input, output, session) {
         hoverinfo = 'y'
       ) %>%
       layout(
-        title = tt(),
+        title = list(text = tt(), font = list(family = "Verdana", size = 14)),
         yaxis2 = list(
           overlaying = "y",
           side = "right",
@@ -345,48 +345,92 @@ server <- function(input, output, session) {
       pie(s34occupation, tt(), FALSE, color_qual)
   })
 
-  output$Diag <- renderPlotly({
-    if (input$hospital != "All") {
-      df <- df_dx %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_dx %>% filter(province == input$province)
-    } else {
-      df <- df_dx
+  output$Diag <- render_gt({
+    if (input$province == "All" & input$hospital == "All") {
+      gt_dx
+    } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+      gt_dx_n
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      gt_dx_t
+    } else if (input$hospital == "Nakorn Phanom") {
+      gt_dx_n1
+    } else if (input$hospital == "Sri Songkhram") {
+      gt_dx_n2
+    } else if (input$hospital == "That Phanom") {
+      gt_dx_n3
+    } else if (input$hospital == "Mae Sot") {
+      gt_dx_t1
+    } else if (input$hospital == "Umphang") {
+      gt_dx_t2
+    } else if (input$hospital == "Tha Song Yang") {
+      gt_dx_t3
     }
-    bar_h(df, diagnosis, tt())
-  })  
+  })
 
-  output$Underly <- renderPlotly({
-    if (input$hospital != "All") {
-      df <- df_un %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_un %>% filter(province == input$province)
-    } else {
-      df <- df_un
+  output$Sign <- render_gt({
+    if (input$province == "All" & input$hospital == "All") {
+      gt_sign
+    } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+      gt_sign_n
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      gt_sign_t
+    } else if (input$hospital == "Nakorn Phanom") {
+      gt_sign_n1
+    } else if (input$hospital == "Sri Songkhram") {
+      gt_sign_n2
+    } else if (input$hospital == "That Phanom") {
+      gt_sign_n3
+    } else if (input$hospital == "Mae Sot") {
+      gt_sign_t1
+    } else if (input$hospital == "Umphang") {
+      gt_sign_t2
+    } else if (input$hospital == "Tha Song Yang") {
+      gt_sign_t3
     }
-    bar_h(df, underlying, tt())
-  })  
-  
-  output$Risk <- renderPlotly({
-    if (input$hospital != "All") {
-      df <- df_rf %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_rf %>% filter(province == input$province)
-    } else {
-      df <- df_rf
-    }
-    bar_h(df, risk, tt())
   })
   
-  output$Sign <- renderPlotly({
-    if (input$hospital != "All") {
-      df <- df_sign %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_sign %>% filter(province == input$province)
-    } else {
-      df <- df_sign
+  output$Underly <- render_gt({
+    if (input$province == "All" & input$hospital == "All") {
+      gt_un
+    } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+      gt_un_n
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      gt_un_t
+    } else if (input$hospital == "Nakorn Phanom") {
+      gt_un_n1
+    } else if (input$hospital == "Sri Songkhram") {
+      gt_un_n2
+    } else if (input$hospital == "That Phanom") {
+      gt_un_n3
+    } else if (input$hospital == "Mae Sot") {
+      gt_un_t1
+    } else if (input$hospital == "Umphang") {
+      gt_un_t2
+    } else if (input$hospital == "Tha Song Yang") {
+      gt_un_t3
     }
-    bar_h(df, signs, tt())
+  })  
+  
+  output$Risk <- render_gt({
+    if (input$province == "All" & input$hospital == "All") {
+      gt_rf
+    } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+      gt_rf_n
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      gt_rf_t
+    } else if (input$hospital == "Nakorn Phanom") {
+      gt_rf_n1
+    } else if (input$hospital == "Sri Songkhram") {
+      gt_rf_n2
+    } else if (input$hospital == "That Phanom") {
+      gt_rf_n3
+    } else if (input$hospital == "Mae Sot") {
+      gt_rf_t1
+    } else if (input$hospital == "Umphang") {
+      gt_rf_t2
+    } else if (input$hospital == "Tha Song Yang") {
+      gt_rf_t3
+    }
   })
 
   output$posBoxSign <- renderValueBox({
@@ -444,7 +488,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_signBox
     }
-    df <- filter(df, s5dishargetype == 4)
+    df <- filter(df, s5dischargetype == 4)
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Death",
@@ -481,7 +525,7 @@ server <- function(input, output, session) {
         marker = list(colors = ~ colors)
       ) %>%
       layout(
-        title = tt(),
+        title = list(text = tt(), font = list(family = "Verdana", size = 14)),
         margin = list(l = 30, r = 30, t= 30))
   }) 
   
@@ -508,7 +552,7 @@ server <- function(input, output, session) {
       df %>%
         group_by(spectype) %>%
         summarise(total = sum(n),
-                  positive = sum(n[finalresult == 'Positive'])),
+                  positive = sum(n[finalresult == 'Positive'], na.rm = TRUE)),
       x = ~ spectype,
       y = ~ total,
       type = "bar",
@@ -523,7 +567,7 @@ server <- function(input, output, session) {
                 hoverinfo = 'y',
                 hovertemplate = '%{y:,}<extra></extra>') %>% 
       layout(
-        title = tt(),
+        title = list(text = tt(), font = list(family = "Verdana", size = 14)),
         xaxis = list(title = ''),
         yaxis = list(title = 'Count',
                      tickformat = ','),

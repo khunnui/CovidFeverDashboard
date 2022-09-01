@@ -7,6 +7,7 @@
 library(shinydashboard)
 library(plotly)
 library(DT)
+library(gt)
 library(shinyjs)
 
 body <- dashboardBody(
@@ -155,7 +156,6 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   title = "Age",
                   width = NULL,
                   dataTableOutput("ScreeningAge"),
-               
                   plotlyOutput("ScreeningAgeGroup", height = 325)
                 )
               ),
@@ -165,7 +165,6 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                   title = "Gender",
                   width = NULL,
                   plotlyOutput("ScreeningGender")
-                
                 )
               )
             )
@@ -217,14 +216,17 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
           width = 4,
           plotlyOutput("EnrollmentOcc", height = 270)
         )
-      ),
+      )
     ),
-    tabItem(tabName = "diag",
-            fluidRow(box(
-              title = "Diagnosis at OPD/ER", 
-              width = 12,
-              plotlyOutput("Diag", height = 766)
-            ))),
+    tabItem(
+      tabName = "diag",
+      fluidRow(
+        box(title = "Diagnosis at OPD/ER",
+            width = 12,
+            gt_output("Diag")
+        )
+      )
+    ),
     tabItem(
       tabName = "sign",
       fluidRow(
@@ -236,19 +238,19 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         valueBoxOutput("intub", width = 3),
         valueBoxOutput("death", width = 3)
       ),
-      box(
-        title = "Clinical Signs and Symptoms among Febrile Patients",
-        width = NULL,
-        plotlyOutput("Sign", height = 612)
+      fluidRow(
+        box(title = "Clinical Signs and Symptoms among Febrile Patients",
+            width = 12,
+            gt_output("Sign"))
       )
-    ), 
+    ),
     tabItem(
       tabName = "underlying",
       fluidRow(
         box(
           title = "Underlying Condition Among Febrile Patients",
           width = 12,
-          plotlyOutput("Underly", height = 475)
+          gt_output("Underly")
         )
       )
     ),
@@ -257,7 +259,7 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
         box(
           title = "Risk Factors Within Past 14 Days among Febrile Patients  ",
           width = 12,
-          plotlyOutput("Risk", height = 475)
+          gt_output("Risk")
         )
       )
     ),
@@ -309,7 +311,7 @@ $("header").find("nav").append(\'<div id="dateHeader" class="myClass"></div>\');
                 title = "Knowledge, Attitude and Practices",
                 width = 12,
                 div(
-                  style = "text-align: center; font-size: 20px",
+                  style = "text-align: center; font-family: Verdana; font-size: 14px",
                   textOutput("titletext")
                 ),
                 plotlyOutput("kap1", height = 360),

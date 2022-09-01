@@ -29,7 +29,7 @@ pie <- function(df, column, tt, sort = FALSE, colors) {
       hovertemplate = '%{value:,}<extra></extra>'
     ) %>%
     layout(
-      title = tt,
+      title = list(text = tt, font = list(family = "Verdana", size = 14)),
       margin = list(l = 30, r = 30, t = 30, b = 30, pad = 20),
       legend = list(
         orientation = "h",
@@ -64,7 +64,7 @@ pie_gender <- function(df, tt) {
       hovertemplate = '%{label}: %{value:,}<extra></extra>'
     ) %>%
     layout(
-      title = tt,
+      title = list(text = tt, font = list(family = "Verdana", size = 14)),
       margin = list(l = 30, r = 30, t = 30),
       showlegend = FALSE
     )
@@ -84,63 +84,13 @@ bar_age <- function(df, tt) {
     hoverinfo = 'y'
   ) %>%
     layout(
-      title = tt,
+      title = list(text = tt, font = list(family = "Verdana", size = 14)),
       xaxis = list(title = 'Age Group'),
       yaxis = list(title = 'Number Screened',
                    tickformat = ','),
       bargap = 0.5,
       margin = list(l = 20, r = 20)
     )
-  
-}
-
-bar_h <- function(df, column, tt) {
-  
-  # An R function with a parameter that accepts a data.frame column can't evaluate
-  # the column argument until it is first 'quoted', followed by an 'unquote' within
-  # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
-  column = enquo(column)
-
-  plot_ly(
-    data = df %>% 
-      group_by(finalresult, !!column) %>% 
-      summarise(count = sum(n)),
-    y = column,
-    x = ~ count,
-    type = "bar",
-    orientation = 'h',
-    color = ~ finalresult,
-    colors = color_posneg,
-    hoverinfo = 'x'
-  ) %>% 
-    layout(
-      title = tt,
-      barmode = 'stack',
-      xaxis = list(title = 'Count',
-                   bargap = 0.5),
-      yaxis = list(title = '',
-                   categoryorder = "total ascending",
-                   ticks = "outside", 
-                   tickcolor='white', 
-                   ticklen = 10)
-    ) %>%
-    add_annotations(
-      text = "PCR Result",
-      xref = "paper",
-      yref = "paper",
-      x = 1.037,
-      xanchor = "left",
-      y = 0.9,
-      yanchor = "bottom",
-      # Same y as legend below
-      legendtitle = TRUE,
-      showarrow = FALSE
-    ) %>%
-    layout(legend = list(
-      traceorder = "normal",
-      y = 0.9, 
-      yanchor = "top", 
-      margin = list(l = 50, r = 50, b = 50, t = 50, pad = 20)))
   
 }
 
@@ -178,15 +128,15 @@ bar_scale <- function(df, column, colors) {
 
 }
 
-sunburst_df <- function(DF, value_column = NULL, add_root = FALSE){
+sunburst_df <- function(df, value_column = NULL, add_root = FALSE){
   require(data.table)
   
-  colNamesDF <- names(DF)
+  colNamesdf <- names(df)
   
-  if(is.data.table(DF)){
-    DT <- copy(DF)
+  if(is.data.table(df)){
+    DT <- copy(df)
   } else {
-    DT <- data.table(DF, stringsAsFactors = FALSE)
+    DT <- data.table(df, stringsAsFactors = FALSE)
   }
   
   if(add_root){
@@ -198,13 +148,13 @@ sunburst_df <- function(DF, value_column = NULL, add_root = FALSE){
   DT[, (hierarchy_columns) := lapply(.SD, as.factor), .SDcols = hierarchy_columns]
   
   if(is.null(value_column) && add_root){
-    setcolorder(DT, c("root", colNamesDF))
+    setcolorder(DT, c("root", colNamesdf))
   } else if(!is.null(value_column) && !add_root) {
     setnames(DT, value_column, "values", skip_absent=TRUE)
-    setcolorder(DT, c(setdiff(colNamesDF, value_column), "values"))
+    setcolorder(DT, c(setdiff(colNamesdf, value_column), "values"))
   } else if(!is.null(value_column) && add_root) {
     setnames(DT, value_column, "values", skip_absent=TRUE)
-    setcolorder(DT, c("root", setdiff(colNamesDF, value_column), "values"))
+    setcolorder(DT, c("root", setdiff(colNamesdf, value_column), "values"))
   }
   
   hierarchyList <- list()
@@ -227,5 +177,5 @@ sunburst_df <- function(DF, value_column = NULL, add_root = FALSE){
   hierarchyDT[, ids := apply(.SD, 1, function(x){paste(x[!is.na(x)], collapse = " - ")}), .SDcols = c("parents", "labels")]
   hierarchyDT[, c(parent_columns) := NULL]
   return(hierarchyDT)
+  
 }
-
