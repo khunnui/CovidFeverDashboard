@@ -209,7 +209,7 @@ server <- function(input, output, session) {
         x = ~ enrdate,
         y = ~ inc,
         yaxis = "y2",
-        name = "COVID-19 Incidence",
+        name = "COVID-19 Positive rate",
         type = 'scatter',
         mode = 'lines',
         line = list(color = color_pos),
@@ -221,7 +221,7 @@ server <- function(input, output, session) {
           overlaying = "y",
           side = "right",
           rangemode = 'tozero',
-          title = 'Incidence',
+          title = '% SARS-CoV-2 RT-PCR positive',
           range = list(0, 1),
           tickformat = '.0%',
           showgrid = FALSE
@@ -367,6 +367,69 @@ server <- function(input, output, session) {
     }
   })
 
+  output$posBoxSign <- renderValueBox({
+    if (input$hospital != "All") {
+      df <- df_enrm %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_enrm %>% filter(province == input$province)
+    } else {
+      df <- df_enrm
+    }
+    df <- filter(df, finalresult == "Positive")
+    valueBox(
+     tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
+     subtitle = " SARS-CoV-2 Positive",
+      color = "orange"
+    )
+  })
+
+  output$hospitalised <- renderValueBox({
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
+    } else {
+      df <- df_signBox
+    }
+    valueBox(
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
+      "Hospitalized",
+      color = "yellow"
+    )
+  })
+  
+  output$intub <- renderValueBox({
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, s5intub == 2)
+    valueBox(
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
+      "Intubation",
+      color = "red"
+    )
+  })
+  
+  output$death <- renderValueBox({
+    if (input$hospital != "All") {
+      df <- df_signBox %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_signBox %>% filter(province == input$province)
+    } else {
+      df <- df_signBox
+    }
+    df <- filter(df, s5dischargetype == 4)
+    valueBox(
+      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
+      "Death",
+      color = "black"
+    )
+  })
+  
   output$Sign <- render_gt({
     if (input$province == "All" & input$hospital == "All") {
       gt_sign
@@ -433,69 +496,6 @@ server <- function(input, output, session) {
     }
   })
 
-  output$posBoxSign <- renderValueBox({
-    if (input$hospital != "All") {
-      df <- df_enrm %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_enrm %>% filter(province == input$province)
-    } else {
-      df <- df_enrm
-    }
-    df <- filter(df, finalresult == "Positive")
-    valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
-      subtitle = " SARS-CoV-2 Positive",
-      color = "orange"
-    )
-  })
-
-  output$hospitalised <- renderValueBox({
-    if (input$hospital != "All") {
-      df <- df_signBox %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_signBox %>% filter(province == input$province)
-    } else {
-      df <- df_signBox
-    }
-    valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
-      "Hospitalized",
-      color = "yellow"
-    )
-  })
-  
-  output$intub <- renderValueBox({
-    if (input$hospital != "All") {
-      df <- df_signBox %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_signBox %>% filter(province == input$province)
-    } else {
-      df <- df_signBox
-    }
-    df <- filter(df, s5intub == 2)
-    valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
-      "Intubation",
-      color = "red"
-    )
-  })
-  
-  output$death <- renderValueBox({
-    if (input$hospital != "All") {
-      df <- df_signBox %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
-      df <- df_signBox %>% filter(province == input$province)
-    } else {
-      df <- df_signBox
-    }
-    df <- filter(df, s5dischargetype == 4)
-    valueBox(
-      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
-      "Death",
-      color = "black"
-    )
-  })
-  
   output$VaccineSunburst <- renderPlotly({
     if (input$hospital != "All") {
       df <- df_vac %>% filter(hospital == input$hospital)
