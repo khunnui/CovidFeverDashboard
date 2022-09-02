@@ -605,13 +605,13 @@ server <- function(input, output, session) {
       mutate(
         kap = factor(recode(
           kap,
-          's3604sickspread' = 'Only people who are sick and who shows symptoms can\nspread the disease',
-          's3615carelate'   = 'I sought care today later than I usual\nbecause of COVID-19',
-          's3616'           = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
-          's3617'           = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
-          's3618'           = 'Always wearing mask in public is a good thing to do',
-          's3619'           = 'Always practicing social distancing from other people\nis a good thing to do',
-          's3620'           = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
+          's3604' = 'Only people who are sick and who shows symptoms can\nspread the disease',
+          's3615' = 'I sought care today later than I usual\nbecause of COVID-19',
+          's3616' = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
+          's3617' = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
+          's3618' = 'Always wearing mask in public is a good thing to do',
+          's3619' = 'Always practicing social distancing from other people\nis a good thing to do',
+          's3620' = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
         ))
       ) %>%
       bar_scale(kap, color_scale1)
@@ -629,10 +629,10 @@ server <- function(input, output, session) {
       mutate(
         kap = factor(recode(
           kap,
-          's3610maskin'     = 'During the past 2 weeks, did you wear a mask at home?',
-          's3613maskout'    = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
-          's3621'           = 'Do you practice social distancing from other persons\nin your household?',
-          's3622'           = 'Do you practice social distancing from other persons\noutside of your residence?'
+          's3610' = 'During the past 2 weeks, did you wear a mask at home?',
+          's3613' = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
+          's3621' = 'Do you practice social distancing from other persons\nin your household?',
+          's3622' = 'Do you practice social distancing from other persons\noutside of your residence?'
         ))
       ) %>%
       bar_scale(kap, color_scale2)

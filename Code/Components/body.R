@@ -147,7 +147,7 @@ body <- dashboardBody(
           div(
             style = "text-align:center; display:block;",
             img(
-              src = "CollectMethod2.jpg" ,
+              src = "CollectMethod.jpg" ,
               alt = "Collect Method",
               height = "100",
               width = "600"
