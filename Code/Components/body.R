@@ -52,7 +52,16 @@ body <- dashboardBody(
         box(
           title = "Study Sites",
           width = 12,
-          plotOutput("map", height = 455)
+          # plotOutput("map", height = 455)
+          div(
+            style = "text-align:center; display:block;",
+            img(
+              src = "StudySites.png" ,
+              alt = "Study Sites",
+              height = "455",
+              width = "1033"
+            )
+          )
         ),
         box(
           title = "Methods",

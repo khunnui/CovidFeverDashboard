@@ -6,7 +6,7 @@ library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(DT)
-library(cowplot)
+# library(cowplot)
 
 server <- function(input, output, session) {
 
@@ -46,12 +46,12 @@ server <- function(input, output, session) {
     }
   })
 
-  output$map <- renderPlot({
-    ggdraw() +
-      draw_plot(map_cf_tak,      x = 0.06, width = 0.24, y = 0.2, height = 0.6) +
-      draw_plot(map_cf_province, x = 0.3,  width = 0.4,  y = 0,   height = 1) +
-      draw_plot(map_cf_np,       x = 0.7,  width = 0.25, y = 0.2, height = 0.6)
-  })
+  # output$map <- renderPlot({
+  #   ggdraw() +
+  #     draw_plot(map_cf_tak,      x = 0.06, width = 0.24, y = 0.2, height = 0.6) +
+  #     draw_plot(map_cf_province, x = 0.3,  width = 0.4,  y = 0,   height = 1) +
+  #     draw_plot(map_cf_np,       x = 0.7,  width = 0.25, y = 0.2, height = 0.6)
+  # })
 
   output$ScreeningBar <- renderPlotly({
     if (input$screenx == 1) {
@@ -347,23 +347,23 @@ server <- function(input, output, session) {
 
   output$Diag <- render_gt({
     if (input$province == "All" & input$hospital == "All") {
-      gt_dx
+      create_sum_table(ls_dx$df_sum, "", "Diagnoses", ls_dx$N0, ls_dx$N1, ls_dx$N2)
     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-      gt_dx_n
-    } else if (input$province == "Tak" & input$hospital == "All") {
-      gt_dx_t
+      create_sum_table(ls_dx_n$df_sum, "Nakorn Phanom Province", "Diagnoses", ls_dx_n$N0, ls_dx_n$N1, ls_dx_n$N2)
     } else if (input$hospital == "Nakorn Phanom") {
-      gt_dx_n1
+      create_sum_table(ls_dx_n1$df_sum, "Nakorn Phanom Hospital", "Diagnoses", ls_dx_n1$N0, ls_dx_n1$N1, ls_dx_n1$N2)
     } else if (input$hospital == "Sri Songkhram") {
-      gt_dx_n2
+      create_sum_table(ls_dx_n2$df_sum, "Sri Songkhram Hospital", "Diagnoses", ls_dx_n2$N0, ls_dx_n2$N1, ls_dx_n2$N2)
     } else if (input$hospital == "That Phanom") {
-      gt_dx_n3
+      create_sum_table(ls_dx_n3$df_sum, "That Phanom Hospital", "Diagnoses", ls_dx_n3$N0, ls_dx_n3$N1, ls_dx_n3$N2)
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      create_sum_table(ls_dx_t$df_sum, "Tak Province", "Diagnoses", ls_dx_t$N0, ls_dx_t$N1, ls_dx_t$N2)
     } else if (input$hospital == "Mae Sot") {
-      gt_dx_t1
+      create_sum_table(ls_dx_t1$df_sum, "Mae Sot Hospital", "Diagnoses", ls_dx_t1$N0, ls_dx_t1$N1, ls_dx_t1$N2)
     } else if (input$hospital == "Umphang") {
-      gt_dx_t2
+      create_sum_table(ls_dx_t2$df_sum, "Umphang Hospital", "Diagnoses", ls_dx_t2$N0, ls_dx_t2$N1, ls_dx_t2$N2)
     } else if (input$hospital == "Tha Song Yang") {
-      gt_dx_t3
+      create_sum_table(ls_dx_t3$df_sum, "Tha Song Yang Hospital", "Diagnoses", ls_dx_t3$N0, ls_dx_t3$N1, ls_dx_t3$N2)
     }
   })
 
@@ -432,67 +432,67 @@ server <- function(input, output, session) {
   
   output$Sign <- render_gt({
     if (input$province == "All" & input$hospital == "All") {
-      gt_sign
+      create_sum_table(ls_sign$df_sum, "", "Signs & Symptoms", ls_sign$N0, ls_sign$N1, ls_sign$N2)
     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-      gt_sign_n
-    } else if (input$province == "Tak" & input$hospital == "All") {
-      gt_sign_t
+      create_sum_table(ls_sign_n$df_sum, "Nakorn Phanom Province", "Signs & Symptoms", ls_sign_n$N0, ls_sign_n$N1, ls_sign_n$N2)
     } else if (input$hospital == "Nakorn Phanom") {
-      gt_sign_n1
+      create_sum_table(ls_sign_n1$df_sum, "Nakorn Phanom Hospital", "Signs & Symptoms", ls_sign_n1$N0, ls_sign_n1$N1, ls_sign_n1$N2)
     } else if (input$hospital == "Sri Songkhram") {
-      gt_sign_n2
+      create_sum_table(ls_sign_n2$df_sum, "Sri Songkhram Hospital", "Signs & Symptoms", ls_sign_n2$N0, ls_sign_n2$N1, ls_sign_n2$N2)
     } else if (input$hospital == "That Phanom") {
-      gt_sign_n3
+      create_sum_table(ls_sign_n3$df_sum, "That Phanom Hospital", "Signs & Symptoms", ls_sign_n3$N0, ls_sign_n3$N1, ls_sign_n3$N2)
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      create_sum_table(ls_sign_t$df_sum, "Tak Province", "Signs & Symptoms", ls_sign_t$N0, ls_sign_t$N1, ls_sign_t$N2)
     } else if (input$hospital == "Mae Sot") {
-      gt_sign_t1
+      create_sum_table(ls_sign_t1$df_sum, "Mae Sot Hospital", "Signs & Symptoms", ls_sign_t1$N0, ls_sign_t1$N1, ls_sign_t1$N2)
     } else if (input$hospital == "Umphang") {
-      gt_sign_t2
+      create_sum_table(ls_sign_t2$df_sum, "Umphang Hospital", "Signs & Symptoms", ls_sign_t2$N0, ls_sign_t2$N1, ls_sign_t2$N2)
     } else if (input$hospital == "Tha Song Yang") {
-      gt_sign_t3
+      create_sum_table(ls_sign_t3$df_sum, "Tha Song Yang Hospital", "Signs & Symptoms", ls_sign_t3$N0, ls_sign_t3$N1, ls_sign_t3$N2)
     }
   })
   
   output$Underly <- render_gt({
     if (input$province == "All" & input$hospital == "All") {
-      gt_un
+      create_sum_table(ls_un$df_sum, "", "Underlying Conditions", ls_un$N0, ls_un$N1, ls_un$N2)
     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-      gt_un_n
-    } else if (input$province == "Tak" & input$hospital == "All") {
-      gt_un_t
+      create_sum_table(ls_un_n$df_sum, "Nakorn Phanom Province", "Underlying Conditions", ls_un_n$N0, ls_un_n$N1, ls_un_n$N2)
     } else if (input$hospital == "Nakorn Phanom") {
-      gt_un_n1
+      create_sum_table(ls_un_n1$df_sum, "Nakorn Phanom Hospital", "Underlying Conditions", ls_un_n1$N0, ls_un_n1$N1, ls_un_n1$N2)
     } else if (input$hospital == "Sri Songkhram") {
-      gt_un_n2
+      create_sum_table(ls_un_n2$df_sum, "Sri Songkhram Hospital", "Underlying Conditions", ls_un_n2$N0, ls_un_n2$N1, ls_un_n2$N2)
     } else if (input$hospital == "That Phanom") {
-      gt_un_n3
+      create_sum_table(ls_un_n3$df_sum, "That Phanom Hospital", "Underlying Conditions", ls_un_n3$N0, ls_un_n3$N1, ls_un_n3$N2)
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      create_sum_table(ls_un_t$df_sum, "Tak Province", "Underlying Conditions", ls_un_t$N0, ls_un_t$N1, ls_un_t$N2)
     } else if (input$hospital == "Mae Sot") {
-      gt_un_t1
+      create_sum_table(ls_un_t1$df_sum, "Mae Sot Hospital", "Underlying Conditions", ls_un_t1$N0, ls_un_t1$N1, ls_un_t1$N2)
     } else if (input$hospital == "Umphang") {
-      gt_un_t2
+      create_sum_table(ls_un_t2$df_sum, "Umphang Hospital", "Underlying Conditions", ls_un_t2$N0, ls_un_t2$N1, ls_un_t2$N2)
     } else if (input$hospital == "Tha Song Yang") {
-      gt_un_t3
+      create_sum_table(ls_un_t3$df_sum, "Tha Song Yang Hospital", "Underlying Conditions", ls_un_t3$N0, ls_un_t3$N1, ls_un_t3$N2)
     }
   })  
   
   output$Risk <- render_gt({
     if (input$province == "All" & input$hospital == "All") {
-      gt_rf
+      create_sum_table(ls_rf$df_sum, "", "Risk Factors", ls_rf$N0, ls_rf$N1, ls_rf$N2)
     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-      gt_rf_n
-    } else if (input$province == "Tak" & input$hospital == "All") {
-      gt_rf_t
+      create_sum_table(ls_rf_n$df_sum, "Nakorn Phanom Province", "Risk Factors", ls_rf_n$N0, ls_rf_n$N1, ls_rf_n$N2)
     } else if (input$hospital == "Nakorn Phanom") {
-      gt_rf_n1
+      create_sum_table(ls_rf_n1$df_sum, "Nakorn Phanom Hospital", "Risk Factors", ls_rf_n1$N0, ls_rf_n1$N1, ls_rf_n1$N2)
     } else if (input$hospital == "Sri Songkhram") {
-      gt_rf_n2
+      create_sum_table(ls_rf_n2$df_sum, "Sri Songkhram Hospital", "Risk Factors", ls_rf_n2$N0, ls_rf_n2$N1, ls_rf_n2$N2)
     } else if (input$hospital == "That Phanom") {
-      gt_rf_n3
+      create_sum_table(ls_rf_n3$df_sum, "That Phanom Hospital", "Risk Factors", ls_rf_n3$N0, ls_rf_n3$N1, ls_rf_n3$N2)
+    } else if (input$province == "Tak" & input$hospital == "All") {
+      create_sum_table(ls_rf_t$df_sum, "Tak Province", "Risk Factors", ls_rf_t$N0, ls_rf_t$N1, ls_rf_t$N2)
     } else if (input$hospital == "Mae Sot") {
-      gt_rf_t1
+      create_sum_table(ls_rf_t1$df_sum, "Mae Sot Hospital", "Risk Factors", ls_rf_t1$N0, ls_rf_t1$N1, ls_rf_t1$N2)
     } else if (input$hospital == "Umphang") {
-      gt_rf_t2
+      create_sum_table(ls_rf_t2$df_sum, "Umphang Hospital", "Risk Factors", ls_rf_t2$N0, ls_rf_t2$N1, ls_rf_t2$N2)
     } else if (input$hospital == "Tha Song Yang") {
-      gt_rf_t3
+      create_sum_table(ls_rf_t3$df_sum, "Tha Song Yang Hospital", "Risk Factors", ls_rf_t3$N0, ls_rf_t3$N1, ls_rf_t3$N2)
     }
   })
 

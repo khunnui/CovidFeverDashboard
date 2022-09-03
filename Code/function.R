@@ -1,3 +1,10 @@
+library(gt)
+library(rstatix)
+
+# detach("package:gtExtras", unload = TRUE)
+# devtools::install_github("Nartladac/gtExtras")
+library(gtExtras)
+
 ###################
 # functions.R
 #
@@ -178,4 +185,60 @@ sunburst_df <- function(df, value_column = NULL, add_root = FALSE){
   hierarchyDT[, c(parent_columns) := NULL]
   return(hierarchyDT)
   
+}
+
+create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
+
+  df_sum %>%
+    gt() %>%
+    gt_plt_bar_stack(
+      posneg,
+      palette = c('#b78f62','#a1caf1'),
+      labels = c("PCR Positive", "PCR Negative"),
+      position = "stack",
+      width = 80
+    ) %>%
+    tab_options(
+      table.font.size = px(11L),
+      data_row.padding = 0,
+      table.border.top.style = "hidden"
+    ) %>%
+    tab_header(
+      title = tt
+    ) %>%
+    tab_spanner(label = "PCR Result",
+                columns = stat_1:stat_2) %>%
+    tab_style(
+      style = list(cell_text(font = "Verdana", size = 14)),
+      locations = list(cells_title(groups = "title"))
+    ) %>%
+    tab_style(
+      style = cell_text(weight = "bold"),
+      locations = list(cells_column_spanners())
+    ) %>%
+    tab_style(
+      style = "padding-left:11px;padding-right:11px;",
+      locations = cells_column_labels(columns = stat_0:stat_1)) %>%
+    tab_style(
+      style = cell_borders(
+        sides = c("bottom"),
+        color = "LightGray",
+        weight = px(0.5),
+        style = "solid"
+      ),
+      locations = cells_body(columns = everything(),
+                             rows = everything())
+    ) %>%
+    cols_label(
+      variable = md(paste0("**", head, "**")),
+      stat_0 = md(paste0("**Overall** (N = ", N0, ") n (%)")),
+      stat_1 = md(paste0("**Positive** (N = ", N1, ") n (%)")),
+      stat_2 = md(paste0("**Negative** (N = ", N2, ") n (%)")),
+      p.value = md("**p value**")
+    ) %>%
+    cols_align(align = "center",
+               columns = c(starts_with("stat_"), p.value)) %>%
+    cols_width(starts_with("stat_") ~ px(120)) %>%
+    cols_width(p.value ~ px(100))
+
 }
