@@ -200,8 +200,7 @@ create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
     ) %>%
     tab_options(
       table.font.size = px(11L),
-      data_row.padding = 0,
-      table.border.top.style = "hidden"
+      data_row.padding = 2
     ) %>%
     tab_header(
       title = tt
