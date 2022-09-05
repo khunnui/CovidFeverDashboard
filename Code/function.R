@@ -200,6 +200,7 @@ create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
     ) %>%
     tab_options(
       table.font.size = px(11L),
+      table.border.top.style = "hidden",
       data_row.padding = 2
     ) %>%
     tab_header(
@@ -216,9 +217,6 @@ create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
       locations = list(cells_column_spanners())
     ) %>%
     tab_style(
-      style = "padding-left:11px;padding-right:11px;",
-      locations = cells_column_labels(columns = stat_0:stat_1)) %>%
-    tab_style(
       style = cell_borders(
         sides = c("bottom"),
         color = "LightGray",
@@ -229,11 +227,11 @@ create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
                              rows = everything())
     ) %>%
     cols_label(
-      variable = md(paste0("**", head, "**")),
-      stat_0 = md(paste0("**Overall** (N = ", N0, ") n (%)")),
-      stat_1 = md(paste0("**Positive** (N = ", N1, ") n (%)")),
-      stat_2 = md(paste0("**Negative** (N = ", N2, ") n (%)")),
-      p.value = md("**p value**")
+      variable = gt::html(paste0("<b>", head, "</b>")),
+      stat_0   = gt::html(paste0("<b>Overall</b>  (N = ", N0, ")<br>n (%)")),
+      stat_1   = gt::html(paste0("<b>Positive</b> (N = ", N1, ")<br>n (%)")),
+      stat_2   = gt::html(paste0("<b>Negative</b> (N = ", N2, ")<br>n (%)")),
+      p.value  = gt::html("<b>p value</b>")
     ) %>%
     cols_align(align = "center",
                columns = c(starts_with("stat_"), p.value)) %>%

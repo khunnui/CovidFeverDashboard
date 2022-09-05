@@ -6,6 +6,8 @@ library(tidyverse)
 library(ggplot2)
 library(plotly)
 library(DT)
+library(svglite)
+
 # library(cowplot)
 
 server <- function(input, output, session) {
