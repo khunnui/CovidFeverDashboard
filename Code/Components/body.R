@@ -32,6 +32,7 @@ body <- dashboardBody(
     tabItem(
       tabName = "overview",
       fluidRow(
+        # style = "margin-top: -5px; margin-bottom: -20px; margin-left: -20px; margin-right: -20px;",
         box(
           title = HTML("Surveillance of COVID-19 in Patients Presenting with Febrile Illness<br>in Nakhon Phanom and Tak Provinces, Thailand (COVID Fever)"),
           width = 12,
@@ -166,6 +167,7 @@ body <- dashboardBody(
       )
     ),
     tabItem(
+      # style = "margin-top: -5px; margin-bottom: -20px; margin-left: -5px; margin-right: -5px;",
       tabName = "screen",
       fluidRow(
         box(
@@ -303,7 +305,8 @@ body <- dashboardBody(
         box(
           title = "COVID-19 Vaccination and PCR Result",
           width = 12,
-          plotlyOutput("VaccineSunburst")
+          plotlyOutput("VaccineSunburst"),
+          "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
         )
       )
     ),

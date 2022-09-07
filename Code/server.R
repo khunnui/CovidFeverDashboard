@@ -507,14 +507,15 @@ server <- function(input, output, session) {
       df <- df_vac
     }
     df %>% 
-      group_by(s33covidvaccine, finalresult) %>% # Group by specified column
+      group_by(vac, finalresult) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
       sunburst_df(value_column = "count", add_root = FALSE) %>% 
       mutate(colors = case_when(
-        ids == 'Vaccinated'    ~ '#ace1af',
-        ids == 'Unvaccinated'  ~ '#a1caf1',
-        ids == 'Unknown'       ~ '#ebe6e5',
-        grepl('Positive', ids) ~ '#b78f62'
+        ids == 'Fully vaccinated'     ~ '#ace1af',
+        ids == 'Partially vaccinated' ~ '#a1caf1',
+        ids == 'Unvaccinated'         ~ '#ffcba4',
+        ids == 'Unknown'              ~ '#ebe6e5',
+        grepl('Positive', ids)        ~ '#b78f62'
       )) %>% 
       plot_ly(
         ids     = ~ ids,
