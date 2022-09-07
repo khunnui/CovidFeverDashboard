@@ -148,7 +148,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_scrgender
     }
-    pie_gender(df, tt())
+    pie1(df, s1gender, tt(), color_gender)
   })
 
   output$EnrollmentBar <- renderPlotly({
@@ -314,7 +314,6 @@ server <- function(input, output, session) {
     } else {
       df <- df_enrage
     }
-    #pie(df, agegroup, tt(), FALSE, color_qual)
     bar_age(df, tt())
     
   })
@@ -327,7 +326,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_enrgender
     }
-    pie_gender(df, tt())
+    pie1(df, s1gender, tt(), color_gender)
   })
   
   output$EnrollmentOcc <- renderPlotly({
@@ -344,7 +343,7 @@ server <- function(input, output, session) {
       mutate(rank = rank(-replace(count,s34occupation=='Other',NA), ties.method = "first")) %>% 
       mutate(s34occupation = ifelse(rank <= 5, levels(s34occupation)[s34occupation], "Other")) %>%
       rename(n = count) %>%      
-      pie(s34occupation, tt(), FALSE, color_qual)
+      pie2(s34occupation, tt())
   })
 
   output$Diag <- render_gt({
@@ -512,7 +511,7 @@ server <- function(input, output, session) {
       sunburst_df(value_column = "count", add_root = FALSE) %>% 
       mutate(colors = case_when(
         ids == 'Fully vaccinated'     ~ '#ace1af',
-        ids == 'Partially vaccinated' ~ '#a1caf1',
+        ids == 'Partially vaccinated' ~ '#f8de7e',
         ids == 'Unvaccinated'         ~ '#ffcba4',
         ids == 'Unknown'              ~ '#ebe6e5',
         grepl('Positive', ids)        ~ '#b78f62'
@@ -540,7 +539,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_atk
     }
-    pie(df, atkresult, tt(), FALSE, color_posneg)
+    pie1(df, atkresult, tt(), color_atk)
   }) 
   
   output$DetectBar <- renderPlotly({
@@ -593,7 +592,7 @@ server <- function(input, output, session) {
     } else {
       df <- df_labpos
     }
-    pie(df, specimens, tt(), FALSE, color_qual)
+    pie2(df, specimens, tt(), 90)
   })  
     
   output$kap1 <- renderPlotly({

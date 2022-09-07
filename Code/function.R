@@ -10,59 +10,25 @@ library(gtExtras)
 #
 ###################
 
-pie <- function(df, column, tt, sort = FALSE, colors) {
-  
+pie1 <- function(df, column, tt, colors) {
+
   # An R function with a parameter that accepts a data.frame column can't evaluate
   # the column argument until it is first 'quoted', followed by an 'unquote' within
   # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
   column = enquo(column)
-  
+
   df %>%
     group_by(!!column) %>% # Group by specified column
     summarise(count = sum(n)) %>% # Number of observations in each group
-    arrange(!!column) %>% 
     plot_ly() %>%
     add_trace(
       labels = column,
       values = ~ count,
       type = 'pie',
-      direction ='clockwise',
-      sort = sort,
+      sort = FALSE, 
+      direction = "clockwise",
       marker = list(
         colors = colors,
-        line = list(color = '#FFFFFF', width = 1)
-      ),
-      texttemplate = "%{percent:.1%}",
-      hovertemplate = '%{value:,}<extra></extra>'
-    ) %>%
-    layout(
-      title = list(text = tt, font = list(family = "Verdana", size = 14)),
-      margin = list(l = 30, r = 30, t = 30, b = 30, pad = 20),
-      legend = list(
-        orientation = "h",
-        # show entries horizontally
-        xanchor = "center",
-        # use center of legend as anchor
-        x = 0.5
-      )
-    )
-  
-}
-
-pie_gender <- function(df, tt) {
-
-  df %>%
-    group_by(s1gender) %>% # Group by specified column
-    summarise(count = sum(n)) %>% # Number of observations in each group
-    plot_ly() %>%
-    add_trace(
-      labels = ~ s1gender,
-      values = ~ count,
-      type = 'pie',
-      direction ='clockwise',
-      sort = FALSE,
-      marker = list(
-        colors = color_gender,
         line = list(color = '#FFFFFF', width = 1)
       ),
       textinfo = 'label+percent',
@@ -74,6 +40,44 @@ pie_gender <- function(df, tt) {
       title = list(text = tt, font = list(family = "Verdana", size = 14)),
       margin = list(l = 30, r = 30, t = 30),
       showlegend = FALSE
+    )
+  
+}
+
+pie2 <- function(df, column, tt, rotate = 0) {
+  
+  # An R function with a parameter that accepts a data.frame column can't evaluate
+  # the column argument until it is first 'quoted', followed by an 'unquote' within
+  # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
+  column = enquo(column)
+  
+  df %>%
+    group_by(!!column) %>% # Group by specified column
+    summarise(count = sum(n)) %>% # Number of observations in each group
+    plot_ly() %>%
+    add_trace(
+      labels = column,
+      values = ~ count,
+      type = 'pie',
+      direction = "clockwise",
+      rotation = rotate,
+      marker = list(
+        colors = color_qual,
+        line = list(color = '#FFFFFF', width = 1)
+      ),
+      texttemplate = "%{percent:.1%}",
+      hovertemplate = '%{value:,}<extra></extra>'
+    ) %>%
+    layout(
+      title = list(text = tt, font = list(family = "Verdana", size = 14)),
+      margin = list(l = 30, r = 30, t = 30),
+      legend = list(
+        orientation = "h",
+        # show entries horizontally
+        xanchor = "center",
+        # use center of legend as anchor
+        x = 0.5
+      )
     )
   
 }
