@@ -552,26 +552,37 @@ server <- function(input, output, session) {
     } else {
       df <- df_lab
     }
+
     plot_ly(
       df %>%
         group_by(spectype) %>%
         summarise(total = sum(n),
-                  positive = sum(n[finalresult == 'Positive'], na.rm = TRUE)),
+                  positive = sum(n[finalresult == 'Positive'], na.rm = TRUE),
+                  pct = round(positive / total * 100, 1)),
       x = ~ spectype,
-      y = ~ total,
-      type = "bar",
-      marker = list(color = color_scr),
-      name = 'Tested',
-      hoverinfo = 'y',
-      hovertemplate = '%{y:,}<extra></extra>'
-    ) %>% 
-      add_trace(y = ~ positive, 
-                marker = list(color = color_pos),
-                name = 'PCR Positive',
-                hoverinfo = 'y',
-                hovertemplate = '%{y:,}<extra></extra>') %>% 
+      type = "bar"
+    ) %>%
+      add_trace(
+        y = ~ total,
+        marker = list(color = color_scr),
+        name = 'Tested',
+        text = ~ total,
+        textposition = "none",
+        hoverinfo = 'text'
+      ) %>%
+      add_trace(
+        y = ~ positive,
+        marker = list(color = color_pos),
+        name = 'PCR Positive',
+        text = ~ paste(positive, "/", total, " (", pct, "%)"),
+        textposition = "none",
+        hoverinfo = 'text'
+      ) %>%
       layout(
-        title = list(text = tt(), font = list(family = "Verdana", size = 14)),
+        title = list(
+          text = tt(),
+          font = list(family = "Verdana", size = 14)
+        ),
         xaxis = list(title = ''),
         yaxis = list(title = 'Count',
                      tickformat = ','),
