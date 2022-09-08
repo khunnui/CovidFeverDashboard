@@ -66,7 +66,8 @@ pie2 <- function(df, column, tt, rotate = 0) {
         line = list(color = '#FFFFFF', width = 1)
       ),
       texttemplate = "%{percent:.1%}",
-      hovertemplate = '%{value:,}<extra></extra>'
+      hoverinfo = 'label+value',
+      hovertemplate = '%{label}: %{value:,}<extra></extra>'
     ) %>%
     layout(
       title = list(text = tt, font = list(family = "Verdana", size = 14)),
