@@ -17,16 +17,17 @@ pie1 <- function(df, column, tt, colors) {
   # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
   column = enquo(column)
 
-  df %>%
+  df <- df %>%
     group_by(!!column) %>% # Group by specified column
-    summarise(count = sum(n)) %>% # Number of observations in each group
-    plot_ly() %>%
+    summarise(count = sum(n)) # Number of observations in each group
+  
+  plot_ly(df) %>%
     add_trace(
       labels = column,
       values = ~ count,
       type = 'pie',
-      sort = FALSE, 
-      direction = "clockwise",
+      sort = FALSE,
+      rotation = 0 - df$count[1] / sum(df$count) * 360,
       marker = list(
         colors = colors,
         line = list(color = '#FFFFFF', width = 1)
@@ -51,16 +52,17 @@ pie2 <- function(df, column, tt, rotate = 0) {
   # the dyplr function. 'Quote' a column using enquo(), then 'unquote' it using !!.
   column = enquo(column)
   
-  df %>%
+  df <- df %>%
     group_by(!!column) %>% # Group by specified column
     summarise(count = sum(n)) %>% # Number of observations in each group
-    plot_ly() %>%
+    arrange(desc(count))
+
+  plot_ly(df) %>%
     add_trace(
       labels = column,
       values = ~ count,
       type = 'pie',
-      direction = "clockwise",
-      rotation = rotate,
+      rotation = rotate - df$count[1] / sum(df$count) * 360,
       marker = list(
         colors = color_qual,
         line = list(color = '#FFFFFF', width = 1)

@@ -523,6 +523,8 @@ server <- function(input, output, session) {
         values  = ~ values,
         type = 'sunburst',
         branchvalues = 'total',
+        sort = FALSE,
+        rotation = 90,
         textinfo = 'label+percent entry',
         marker = list(colors = ~ colors)
       ) %>%
