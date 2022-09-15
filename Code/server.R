@@ -559,11 +559,11 @@ server <- function(input, output, session) {
         summarise(total = sum(n),
                   positive = sum(n[finalresult == 'Positive'], na.rm = TRUE),
                   pct = round(positive / total * 100, 1)),
-      x = ~ spectype,
-      type = "bar"
+      x = ~ spectype
     ) %>%
       add_trace(
         y = ~ total,
+        type = "bar",
         marker = list(color = color_scr),
         name = 'Tested',
         text = ~ total,
@@ -572,6 +572,7 @@ server <- function(input, output, session) {
       ) %>%
       add_trace(
         y = ~ positive,
+        type = "bar",
         marker = list(color = color_pos),
         name = 'PCR Positive',
         text = ~ paste(positive, "/", total, " (", pct, "%)"),
