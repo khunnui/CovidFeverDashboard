@@ -545,14 +545,24 @@ server <- function(input, output, session) {
   }) 
   
   output$DetectBar <- renderPlotly({
-    if (input$hospital != "All") {
+    if (input$hospital != "All" & input$DataEntered == FALSE) {
       df <- df_lab %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
+      
+    } else if (input$hospital != "All" & input$DataEntered == TRUE) {
+      df <- df_labenr %>% filter(hospital == input$hospital)
+      
+    } else if (input$province != "All"  & input$DataEntered == FALSE) {
       df <- df_lab %>% filter(province == input$province)
-    } else {
+      
+    } else if (input$province != "All"  & input$DataEntered == TRUE) {
+      df <- df_labenr %>% filter(province == input$province)
+      
+    } else if (input$province != "All"  & input$DataEntered == FALSE) {
       df <- df_lab
+    } else    {
+      df <- df_labenr
     }
-
+  
     plot_ly(
       df %>%
         group_by(spectype) %>%

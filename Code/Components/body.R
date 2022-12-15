@@ -326,7 +326,8 @@ body <- dashboardBody(
           box(
             title = "SARS-CoV-2 Detection by Sample Type", 
             width = 6,
-            plotlyOutput("DetectBar")
+            plotlyOutput("DetectBar"),
+            checkboxInput("DataEntered",label="Show only enrolled data entered",value=FALSE)
           ),
           box(
             title = "% PCR Positive by Sample Type",
