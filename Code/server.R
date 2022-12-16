@@ -545,25 +545,35 @@ server <- function(input, output, session) {
   }) 
   
   output$DetectBar <- renderPlotly({
-    if (input$hospital != "All") {
+    if (input$hospital != "All" & input$DataEntered == FALSE) {
       df <- df_lab %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
+      
+    } else if (input$hospital != "All" & input$DataEntered == TRUE) {
+      df <- df_labenr %>% filter(hospital == input$hospital)
+      
+    } else if (input$province != "All"  & input$DataEntered == FALSE) {
       df <- df_lab %>% filter(province == input$province)
-    } else {
+      
+    } else if (input$province != "All"  & input$DataEntered == TRUE) {
+      df <- df_labenr %>% filter(province == input$province)
+      
+    } else if (input$DataEntered == FALSE) {
       df <- df_lab
+    } else    {
+      df <- df_labenr
     }
-
+  
     plot_ly(
       df %>%
         group_by(spectype) %>%
         summarise(total = sum(n),
                   positive = sum(n[finalresult == 'Positive'], na.rm = TRUE),
                   pct = round(positive / total * 100, 1)),
-      x = ~ spectype,
-      type = "bar"
+      x = ~ spectype
     ) %>%
       add_trace(
         y = ~ total,
+        type = "bar",
         marker = list(color = color_scr),
         name = 'Tested',
         text = ~ total,
@@ -572,6 +582,7 @@ server <- function(input, output, session) {
       ) %>%
       add_trace(
         y = ~ positive,
+        type = "bar",
         marker = list(color = color_pos),
         name = 'PCR Positive',
         text = ~ paste(positive, "/", total, " (", pct, "%)"),
@@ -598,12 +609,22 @@ server <- function(input, output, session) {
   })
   
   output$DetectPie <- renderPlotly({
-    if (input$hospital != "All") {
+    if (input$hospital != "All" & input$DataEntered2 == FALSE) {
       df <- df_labpos %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
+      
+    } else if (input$hospital != "All" & input$DataEntered2 == TRUE) {
+      df <- df_labposenr %>% filter(hospital == input$hospital)
+      
+    } else if (input$province != "All"  & input$DataEntered2 == FALSE) {
       df <- df_labpos %>% filter(province == input$province)
-    } else {
+      
+    } else if (input$province != "All"  & input$DataEntered2 == TRUE) {
+      df <- df_labposenr %>% filter(province == input$province)
+      
+    } else if (input$DataEntered2 == FALSE) {
       df <- df_labpos
+    } else    {
+      df <- df_labposenr
     }
     pie2(df, specimens, tt(), 90)
   })  
