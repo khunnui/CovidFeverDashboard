@@ -34,6 +34,17 @@ server <- function(input, output, session) {
     }
   })
 
+  output$dl <- downloadHandler(
+    filename = "CRF.pdf",
+    content = function(file) {
+      file.copy("www/crf.pdf", file)
+    }
+  )
+  
+  output$pdfview <- renderUI({
+    tags$iframe(style = "height:920px; width:100%", src = "crf.pdf")
+  })
+  
   observeEvent(input$province, {
     if (input$province == "All") {
       updateSelectInput(
