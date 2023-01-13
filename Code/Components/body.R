@@ -163,6 +163,14 @@ body <- dashboardBody(
               width = "600"
             )
           )
+        ),
+        box(
+          title = "CRF",
+          width = 12, 
+          div(
+            style = "text-align:center; display:block;"
+            
+          ),uiOutput("pdfview")
         )
       )
     ),

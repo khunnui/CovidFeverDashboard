@@ -33,7 +33,11 @@ server <- function(input, output, session) {
       titletext <- ""
     }
   })
-
+  
+  output$pdfview <- renderUI({
+    tags$iframe(style = "height:920px; width:100%", src = "CRF.pdf")
+  })
+  
   observeEvent(input$province, {
     if (input$province == "All") {
       updateSelectInput(
