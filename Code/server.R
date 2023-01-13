@@ -561,7 +561,11 @@ server <- function(input, output, session) {
     } else if (input$province != "All"  & input$DataEntered == TRUE) {
       df <- df_labenr %>% filter(province == input$province)
       
+<<<<<<< HEAD
     } else if (input$DataEntered == FALSE) {
+=======
+    } else if (input$province != "All"  & input$DataEntered == FALSE) {
+>>>>>>> 7d5d2bfcc9ebe764ed41690a3344bcbb942940eb
       df <- df_lab
     } else    {
       df <- df_labenr
