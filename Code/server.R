@@ -34,15 +34,15 @@ server <- function(input, output, session) {
     }
   })
 
-  output$dl <- downloadHandler(
-    filename = "CRF.pdf",
-    content = function(file) {
-      file.copy("www/crf.pdf", file)
-    }
-  )
+  # output$dl <- downloadHandler(
+  #   filename = "CRF.pdf",
+  #   content = function(file) {
+  #     file.copy("www/crf.pdf", file)
+  #   }
+  # )
   
   output$pdfview <- renderUI({
-    tags$iframe(style = "height:920px; width:100%", src = "crf.pdf")
+    tags$iframe(style = "height:920px; width:100%", src = "CRF.pdf")
   })
   
   observeEvent(input$province, {
@@ -557,23 +557,19 @@ server <- function(input, output, session) {
   
   output$DetectBar <- renderPlotly({
     if (input$hospital != "All" & input$DataEntered == FALSE) {
-      df <- df_lab %>% filter(hospital == input$hospital)
-      
+      df <- df_lab %>%    filter(hospital == input$hospital)
     } else if (input$hospital != "All" & input$DataEntered == TRUE) {
       df <- df_labenr %>% filter(hospital == input$hospital)
-      
-    } else if (input$province != "All"  & input$DataEntered == FALSE) {
-      df <- df_lab %>% filter(province == input$province)
-      
-    } else if (input$province != "All"  & input$DataEntered == TRUE) {
+    } else if (input$province != "All" & input$DataEntered == FALSE) {
+      df <- df_lab %>%    filter(province == input$province)
+    } else if (input$province != "All" & input$DataEntered == TRUE) {
       df <- df_labenr %>% filter(province == input$province)
-      
-    } else if (input$province != "All"  & input$DataEntered == FALSE) {
+    } else if (input$DataEntered == FALSE) {
       df <- df_lab
-    } else    {
+    } else {
       df <- df_labenr
     }
-  
+    
     plot_ly(
       df %>%
         group_by(spectype) %>%
@@ -620,12 +616,22 @@ server <- function(input, output, session) {
   })
   
   output$DetectPie <- renderPlotly({
-    if (input$hospital != "All") {
+    if (input$hospital != "All" & input$DataEntered2 == FALSE) {
       df <- df_labpos %>% filter(hospital == input$hospital)
-    } else if (input$province != "All") {
+      
+    } else if (input$hospital != "All" & input$DataEntered2 == TRUE) {
+      df <- df_labposenr %>% filter(hospital == input$hospital)
+      
+    } else if (input$province != "All"  & input$DataEntered2 == FALSE) {
       df <- df_labpos %>% filter(province == input$province)
-    } else {
+      
+    } else if (input$province != "All"  & input$DataEntered2 == TRUE) {
+      df <- df_labposenr %>% filter(province == input$province)
+      
+    } else if (input$DataEntered2 == FALSE) {
       df <- df_labpos
+    } else    {
+      df <- df_labposenr
     }
     pie2(df, specimens, tt(), 90)
   })  
