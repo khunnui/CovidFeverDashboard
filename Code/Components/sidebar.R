@@ -42,6 +42,12 @@ sidebar <- dashboardSidebar(
     label = "Hospital:",
     choices = c("All", as.character(unique(df_scrgender$hospital)))
 
+  ),
+  selectInput(
+    inputId = "rps",
+    label = "RPS:",
+    choices = c("All", "Yes","No")
+    
   )
   # dateInput("dateto", "Date From:" ),
   # dateInput("datefrom", "Date To:" )
