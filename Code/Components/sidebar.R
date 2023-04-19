@@ -17,7 +17,6 @@ sidebar <- dashboardSidebar(
     )
   ),
   sidebarMenu(
-  
     menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
@@ -41,13 +40,11 @@ sidebar <- dashboardSidebar(
     inputId = "hospital",
     label = "Hospital:",
     choices = c("All", as.character(unique(df_scrgender$hospital)))
-
   ),
   selectInput(
     inputId = "rps",
     label = "RPS:",
-    choices = c("All", "Yes","No")
-    
+    choices = c("All", "Yes", "No")
   )
   # dateInput("dateto", "Date From:" ),
   # dateInput("datefrom", "Date To:" )
