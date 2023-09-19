@@ -346,11 +346,51 @@ body <- dashboardBody(
         )
     ),
     tabItem(tabName = "sero",
-            fluidRow(box(
-              title = "Serology Testing Among Febrile Patient", 
-              width = 12,
-              ""
-            ))),
+            fluidRow(
+              box(
+                title = "Serology Testing Among Febrile Patient (Table 1a)",
+                width = 12,
+                align="center",
+                gt_output("sero1a"),
+                
+              )
+            ),
+            
+            fluidRow(
+              box(
+                title = "Serology Testing Among Febrile Patient (Table 1b)",
+                width = 12,
+                align="center",
+                gt_output("sero1b"),
+                
+                radioButtons(
+                  "serox",
+                  label = "",
+                  inline = TRUE,
+                  choices = list("All" = 1, "PCR+" = 2, "PCR-" =3), 
+                  selected = 1
+                )
+              )
+            ),
+            fluidRow(
+              box(
+                title = "Serology Testing Among Febrile Patient (Table 2a)",
+                width = 12,
+                align="center",
+                gt_output("sero2a"),
+                
+              )
+            ),
+            fluidRow(
+              box(
+                title = "Serology Testing Among Febrile Patient (Table 2b)",
+                width = 12,
+                align="center",
+                gt_output("sero2b"),
+                
+              )
+            ),
+    ),
     tabItem(tabName = "KAP",
             fluidRow(
               box(

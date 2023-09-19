@@ -7,8 +7,11 @@ library(ggplot2)
 library(plotly)
 library(DT)
 library(svglite)
+library(gtsummary)
 
 # library(cowplot)
+theme_gtsummary_journal(journal = "jama")
+theme_gtsummary_compact()
 
 server <- function(input, output, session) {
 
@@ -893,7 +896,165 @@ server <- function(input, output, session) {
     }
     pie2(df, specimens, tt(), 90)
   })  
+   
+  output$sero1a <- render_gt({
+    if (input$hospital != "All") {
+      df <- dfsero1a %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- dfsero1a %>% filter(province == input$province)
+    } else {
+      df <- dfsero1a
+    }
+    tbl_summary(data = df %>% select(-c('province','hospital')),
+                by = finalresult,
+                digits = list(all_categorical() ~ c(0, 1))) %>%
+      add_overall() %>%
+      modify_caption("**Table 1a**") %>%
+      modify_header(update = list(label = "**Serology Testing**",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+    as_gt() 
+        
+  })
     
+  output$sero1b <- render_gt({
+    if (input$hospital != "All") {
+      df <- dfsero1b %>% filter(hospital == input$hospital)
+      if (input$serox == "2") {
+        df <- df %>% filter(finalresult == 'Positive')
+      } else if (input$serox == "3") {
+       df <- df %>% filter(finalresult == 'Negative')
+      }
+    } else if (input$province != "All") {
+        df <- dfsero1b %>% filter(province == input$province)
+        if (input$serox == "2") {
+          df <- df %>% filter(finalresult == 'Positive')
+        } else if (input$serox == "3") {
+          df <- df %>% filter(finalresult == 'Negative')
+        }
+      } else {
+        df <- dfsero1b
+        if (input$serox == "2") {
+          df <- df %>% filter(finalresult == 'Positive')
+        } else if (input$serox == "3") {
+          df <- df %>% filter(finalresult == 'Negative')
+        }
+      }
+    tbl_summary(data = df %>% select(-c('province','hospital')),
+                by = finalresult,
+                digits = list(all_categorical() ~ c(0, 1))) %>%
+      add_overall() %>%
+      modify_caption("**Table 1b**") %>%
+      modify_header(update = list(label = "**Serology Testing**",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      as_gt() 
+    
+  })
+  
+  output$sero2a <- render_gt({
+    if (input$hospital != "All") {
+      df <- dfsero2a %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- dfsero2a %>% filter(province == input$province)
+    } else {
+      df <- dfsero2a
+    }
+    tn <- df %>% 
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary() %>% 
+      bold_labels()
+    
+    tigmo <- df %>% 
+      filter(igm_o == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tigm11 <- df %>% 
+      filter(igm_11 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tigm91 <- df %>% 
+      filter(igm_91 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    
+    tigm <- tbl_merge(list(tigmo, tigm11, tigm91),
+                      tab_spanner = c('Overall +ve', '+ve at 1st sample', '+ve at last sample'))
+    tiggno <- df %>% 
+      filter(iggn_o == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tiggn11 <- df %>% 
+      filter(iggn_11 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tiggn91 <- df %>% 
+      filter(iggn_91 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    
+    tiggn <- tbl_merge(list(tiggno, tiggn11, tiggn91),
+                       tab_spanner = c('Overall +ve', '+ve at 1st sample', '+ve at last sample'))
+    tiggso <- df %>% 
+      filter(iggs_o == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tiggs11 <- df %>% 
+      filter(iggs_11 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    tiggs91 <- df %>% 
+      filter(iggs_91 == 'Positive') %>%
+      select(-c(igm_o:iggs_91)) %>% 
+      tbl_summary()
+    
+    tiggs <- tbl_merge(list(tiggso, tiggs11, tiggs91),
+                       tab_spanner = c('Overall +ve', '+ve at 1st sample', '+ve at last sample'))
+    
+    tbl_merge(list(tn, tigmo,tigm11,tigm91,  tiggno,tiggn11,tiggn91,  tiggso,tiggs11,tiggs91),
+                     tab_spanner = c('**Total**', '**IgM <br> Overall +ve**', '**IgM <br> +ve at 1st sample**', '**IgM <br> +ve at last sample**',
+                                     '**IgG-N <br> Overall +ve**', '**IgG-N <br> +ve at 1st sample**', '**IgG-N <br> +ve at last sample**',
+                                     '**IgG-S <br> Overall +ve**', '**IgG-S <br> +ve at 1st sample**', '**IgG-S <br> +ve at last sample**')) %>% 
+   
+    as_gt() 
+    
+  })
+  
+  output$sero2b <- render_gt({
+    if (input$hospital != "All") {
+      df <- dfsero2b %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- dfsero2b %>% filter(province == input$province)
+    } else {
+      df <- dfsero2b
+    }
+     
+    tn <- df %>% 
+      select(-c(iggsq_11:iggsq_91,tigsfold)) %>% 
+      tbl_summary() %>% 
+      bold_labels()
+    
+    tigs11 <- df %>% 
+      filter(!is.na(iggsq_11)) %>%
+      select(-c(iggsq_91,tigsfold)) %>% 
+      tbl_continuous(variable = iggsq_11)
+    
+    tigs91 <- df %>% 
+      filter(!is.na(iggsq_91) ) %>%
+      select(-c(iggsq_11,tigsfold)) %>% 
+      tbl_continuous(variable = iggsq_91)
+    
+    tfold <- df %>% 
+      filter(!is.na(tigsfold) ) %>%
+      select(-c(iggsq_11,iggsq_91)) %>% 
+      tbl_continuous(variable = tigsfold)
+    
+    
+    
+     tbl_merge(list(tn, tigs11,tigs91,  tfold ),
+                     tab_spanner = c('**Total**', '**Baseline**', '**F/U 4-6 weeks**', '**Fold change**'))%>%
+      as_gt() 
+    
+  })
+  
   output$kap1 <- renderPlotly({
     if (input$hospital != "All") {
       df <- df_kap1 %>% filter(hospital == input$hospital)
