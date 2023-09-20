@@ -14,7 +14,7 @@ source('./function.R')
 #############
 githubURL <- "https://github.com/NartladaC/CovidFeverData/raw/main/Data/CFDashboard.RData"
 load(url(githubURL))
-# load('C:/Projects/CovidFever/R/CovidFeverData/Data/CFDashboard.RData')
+# load('C:/COVIDDashboard/CovidFeverData/Data/CFDashboard.RData')
 
 ##########
 # Colors #

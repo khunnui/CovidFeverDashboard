@@ -10,7 +10,7 @@ library(svglite)
 library(gtsummary)
 
 # library(cowplot)
-theme_gtsummary_journal(journal = "jama")
+#theme_gtsummary_journal(journal = "jama")
 theme_gtsummary_compact()
 
 server <- function(input, output, session) {
@@ -939,13 +939,18 @@ server <- function(input, output, session) {
           df <- df %>% filter(finalresult == 'Negative')
         }
       }
-    tbl_summary(data = df %>% select(-c('province','hospital')),
-                by = finalresult,
-                digits = list(all_categorical() ~ c(0, 1))) %>%
-      add_overall() %>%
-      modify_caption("**Table 1b**") %>%
-      modify_header(update = list(label = "**Serology Testing**",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+  
+    
+    # All 5th enrollment
+    # Call functions to create columns
+    t1bo    <- df %>% select(-c(finalresult, igminterpret, igginterpret, iggquantiinterpret)) %>% create_t1bo()
+    t1bigm  <- df %>% select(-c(finalresult, igginterpret, iggquantiinterpret)) %>% create_t1b(igminterpret)
+    t1biggn <- df %>% select(-c(finalresult, igminterpret, iggquantiinterpret)) %>% create_t1b(igginterpret)
+    t1biggs <- df %>% select(-c(finalresult, igminterpret, igginterpret)) %>% create_t1b(iggquantiinterpret)
+    # Merge all columns side by side
+    tbl_merge(list(t1bo, t1bigm, t1biggn, t1biggs),
+              tab_spanner = c('**Overall**', '**IgM**', '**IgG-N**', '**IgG-S**')) %>%
+      modify_caption("**Table 1b: All 5th enrollment** (N = {N})") %>% 
       as_gt() 
     
   })
@@ -1030,23 +1035,26 @@ server <- function(input, output, session) {
     tn <- df %>% 
       select(-c(iggsq_11:iggsq_91,tigsfold)) %>% 
       tbl_summary() %>% 
-      bold_labels()
+      bold_labels() %>% 
+      modify_footnote(update = everything() ~ NA) 
     
     tigs11 <- df %>% 
       filter(!is.na(iggsq_11)) %>%
       select(-c(iggsq_91,tigsfold)) %>% 
-      tbl_continuous(variable = iggsq_11)
+      tbl_continuous(variable = iggsq_11) %>% 
+      modify_footnote(update = everything() ~ NA)
     
     tigs91 <- df %>% 
       filter(!is.na(iggsq_91) ) %>%
       select(-c(iggsq_11,tigsfold)) %>% 
-      tbl_continuous(variable = iggsq_91)
+      tbl_continuous(variable = iggsq_91) %>%
+      modify_footnote(update = everything() ~ NA) 
     
     tfold <- df %>% 
       filter(!is.na(tigsfold) ) %>%
       select(-c(iggsq_11,iggsq_91)) %>% 
-      tbl_continuous(variable = tigsfold)
-    
+      tbl_continuous(variable = tigsfold) %>%
+      modify_footnote(update = everything() ~ NA) 
     
     
      tbl_merge(list(tn, tigs11,tigs91,  tfold ),

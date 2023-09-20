@@ -246,3 +246,27 @@ create_sum_table <- function(df_sum, tt, head, N0, N1, N2) {
     cols_width(p.value ~ px(100))
 
 }
+# Function to create the overall column of table 1b
+create_t1bo <- function(df) {
+  t <- tbl_summary(
+    data = df,
+    digits = list(all_categorical() ~ c(0, 1)),
+    missing = 'no'
+  ) %>%
+    bold_labels() %>%
+    modify_header(update = list(all_stat_cols() ~ "N = {n}"))
+}
+# Function to create the columns for each IgM, IgG-N, IgG-S
+create_t1b <- function(df, var) {
+  var <- enquo(var)
+  t <- tbl_summary(
+    data = df,
+    by = !!var,
+    digits = list(all_categorical() ~ c(0, 1)),
+    missing = 'no'
+  ) %>%
+    bold_labels() %>%
+    add_p() %>%
+    bold_p() %>%
+    modify_header(update = list(all_stat_cols() ~ "**{level}**<br>N = {n}"))
+}

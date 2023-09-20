@@ -348,7 +348,7 @@ body <- dashboardBody(
     tabItem(tabName = "sero",
             fluidRow(
               box(
-                title = "Serology Testing Among Febrile Patient (Table 1a)",
+                title = "Seroprevalence Among Febrile Patients",
                 width = 12,
                 align="center",
                 gt_output("sero1a"),
@@ -358,10 +358,10 @@ body <- dashboardBody(
             
             fluidRow(
               box(
-                title = "Serology Testing Among Febrile Patient (Table 1b)",
+                title = "Characteristics of Febrile Patients with Serology Positive",
                 width = 12,
                 align="center",
-                gt_output("sero1b"),
+                
                 
                 radioButtons(
                   "serox",
@@ -369,12 +369,14 @@ body <- dashboardBody(
                   inline = TRUE,
                   choices = list("All" = 1, "PCR+" = 2, "PCR-" =3), 
                   selected = 1
-                )
+                ),
+                gt_output("sero1b")
+                
               )
             ),
             fluidRow(
               box(
-                title = "Serology Testing Among Febrile Patient (Table 2a)",
+                title = "Serology Response Among COVID-19 Patients",
                 width = 12,
                 align="center",
                 gt_output("sero2a"),
@@ -383,11 +385,11 @@ body <- dashboardBody(
             ),
             fluidRow(
               box(
-                title = "Serology Testing Among Febrile Patient (Table 2b)",
+                title = "IgG-S* Among COVID-19 Patients, Compared Between Baseline and 4-6 Weeks Followup ",
                 width = 12,
                 align="center",
                 gt_output("sero2b"),
-                
+                "*IgG-S = Anti spike protein IgG (AU/ml)."
               )
             ),
     ),
