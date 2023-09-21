@@ -909,7 +909,7 @@ server <- function(input, output, session) {
                 by = finalresult,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
-      modify_caption("**Table 1a**") %>%
+      modify_caption("") %>%
       modify_header(update = list(label = "**Serology Testing**",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
     as_gt() 
@@ -950,7 +950,7 @@ server <- function(input, output, session) {
     # Merge all columns side by side
     tbl_merge(list(t1bo, t1bigm, t1biggn, t1biggs),
               tab_spanner = c('**Overall**', '**IgM**', '**IgG-N**', '**IgG-S**')) %>%
-      modify_caption("**Table 1b: All 5th enrollment** (N = {N})") %>% 
+      modify_caption("**All 5th enrollment** (N = {N})") %>% 
       as_gt() 
     
   })
