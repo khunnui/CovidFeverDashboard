@@ -416,7 +416,7 @@ server <- function(input, output, session) {
   })
 
   output$Diag <- render_gt({
-    if (input$rps == "All") {
+    # if (input$rps == "All") {
       if (input$province == "All" & input$hospital == "All") {
         gt_dx
       } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
@@ -436,47 +436,47 @@ server <- function(input, output, session) {
       } else if (input$hospital == "Tha Song Yang") {
         gt_dx_t3
       }
-    } else if (input$rps == "Yes") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_dx_rps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_dx_rps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_dx_rps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_dx_rps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_dx_rps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_dx_rps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_dx_rps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_dx_rps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_dx_rps_t3
-      }
-    } else if (input$rps == "No") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_dx_norps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_dx_norps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_dx_norps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_dx_norps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_dx_norps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_dx_norps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_dx_norps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_dx_norps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_dx_norps_t3
-      }
-    }
+    # } else if (input$rps == "Yes") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_dx_rps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_dx_rps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_dx_rps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_dx_rps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_dx_rps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_dx_rps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_dx_rps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_dx_rps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_dx_rps_t3
+    #   }
+    # } else if (input$rps == "No") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_dx_norps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_dx_norps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_dx_norps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_dx_norps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_dx_norps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_dx_norps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_dx_norps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_dx_norps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_dx_norps_t3
+    #   }
+    # }
   })
   
   output$posBoxSign <- renderValueBox({
@@ -563,7 +563,7 @@ server <- function(input, output, session) {
   })
   
   output$Sign <- render_gt({
-    if (input$rps == "All") {
+    # if (input$rps == "All") {
       if (input$province == "All" & input$hospital == "All") {
         gt_ss
       } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
@@ -583,51 +583,51 @@ server <- function(input, output, session) {
       } else if (input$hospital == "Tha Song Yang") {
         gt_ss_t3
       }
-    } else if (input$rps == "Yes") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_ss_rps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_ss_rps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_ss_rps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_ss_rps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_ss_rps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_ss_rps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_ss_rps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_ss_rps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_ss_rps_t3
-      }
-    } else if (input$rps == "No") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_ss_norps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_ss_norps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_ss_norps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_ss_norps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_ss_norps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_ss_norps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_ss_norps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_ss_norps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_ss_norps_t3
-      }
-    }
+    # } else if (input$rps == "Yes") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_ss_rps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_ss_rps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_ss_rps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_ss_rps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_ss_rps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_ss_rps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_ss_rps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_ss_rps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_ss_rps_t3
+    #   }
+    # } else if (input$rps == "No") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_ss_norps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_ss_norps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_ss_norps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_ss_norps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_ss_norps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_ss_norps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_ss_norps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_ss_norps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_ss_norps_t3
+    #   }
+    # }
   })
   
   output$Underly <- render_gt({
-    if (input$rps == "All") {
+    # if (input$rps == "All") {
       if (input$province == "All" & input$hospital == "All") {
         gt_un
       } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
@@ -647,51 +647,51 @@ server <- function(input, output, session) {
       } else if (input$hospital == "Tha Song Yang") {
         gt_un_t3
       }
-    } else if (input$rps == "Yes") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_un_rps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_un_rps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_un_rps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_un_rps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_un_rps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_un_rps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_un_rps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_un_rps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_un_rps_t3
-      }
-    } else if (input$rps == "No") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_un_norps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_un_norps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_un_norps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_un_norps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_un_norps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_un_norps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_un_norps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_un_norps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_un_norps_t3
-      }
-    }
+    # } else if (input$rps == "Yes") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_un_rps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_un_rps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_un_rps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_un_rps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_un_rps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_un_rps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_un_rps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_un_rps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_un_rps_t3
+    #   }
+    # } else if (input$rps == "No") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_un_norps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_un_norps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_un_norps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_un_norps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_un_norps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_un_norps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_un_norps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_un_norps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_un_norps_t3
+    #   }
+    # }
   })
   
   output$Risk <- render_gt({
-    if (input$rps == "All") {
+    # if (input$rps == "All") {
       if (input$province == "All" & input$hospital == "All") {
         gt_rf
       } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
@@ -711,47 +711,47 @@ server <- function(input, output, session) {
       } else if (input$hospital == "Tha Song Yang") {
         gt_rf_t3
       }
-    } else if (input$rps == "Yes") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_rf_rps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_rf_rps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_rf_rps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_rf_rps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_rf_rps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_rf_rps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_rf_rps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_rf_rps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_rf_rps_t3
-      }
-    } else if (input$rps == "No") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_rf_norps
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_rf_norps_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_rf_norps_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_rf_norps_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_rf_norps_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_rf_norps_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_rf_norps_t1
-      } else if (input$hospital == "Umphang") {
-        gt_rf_norps_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_rf_norps_t3
-      }
-    }
+    # } else if (input$rps == "Yes") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_rf_rps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_rf_rps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_rf_rps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_rf_rps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_rf_rps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_rf_rps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_rf_rps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_rf_rps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_rf_rps_t3
+    #   }
+    # } else if (input$rps == "No") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_rf_norps
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_rf_norps_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_rf_norps_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_rf_norps_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_rf_norps_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_rf_norps_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_rf_norps_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_rf_norps_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_rf_norps_t3
+    #   }
+    # }
   })
 
   output$VaccineSunburst <- renderPlotly({
