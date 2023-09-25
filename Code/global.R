@@ -12,9 +12,9 @@ source('./function.R')
 #############
 # Data Load #
 #############
-githubURL <- "https://github.com/khunnui/CovidFeverData/raw/main/Data/CFDashboard.RData"
-load(url(githubURL))
-# load('C:/COVIDDashboard/CovidFeverData/Data/CFDashboard.RData')
+#githubURL <- "https://github.com/khunnui/CovidFeverData/raw/main/Data/CFDashboard.RData"
+#load(url(githubURL))
+ load('C:/COVIDDashboard/CovidFeverData/Data/CFDashboard.RData')
 
 ##########
 # Colors #

@@ -285,6 +285,12 @@ body <- dashboardBody(
             width = 12,
             gt_output("Sign")
         )
+      ),
+      fluidRow(
+        box(title = "Clinical Signs and Symptoms among PCR+ Patients compare between Baseline and Follow up",
+            width = 12,
+            gt_output("SignBF")
+        )
       )
     ),
     tabItem(

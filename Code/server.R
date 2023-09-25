@@ -626,6 +626,20 @@ server <- function(input, output, session) {
     # }
   })
   
+  output$SignBF <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_ss_bf %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_ss_bf %>% filter(province == input$province)
+    } else {
+      df <- df_ss_bf
+    }
+    tbl_summary(data = df,
+                by = visit,
+                digits = list(all_categorical() ~ c(0, 1))) %>%
+      as_gt()
+  })
+  
   output$Underly <- render_gt({
     # if (input$rps == "All") {
       if (input$province == "All" & input$hospital == "All") {
