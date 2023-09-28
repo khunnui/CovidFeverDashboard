@@ -280,34 +280,20 @@ body <- dashboardBody(
         valueBoxOutput("intub", width = 3),
         valueBoxOutput("death", width = 3)
       ),
-#      fluidRow(
-#       box(title = "Clinical Signs and Symptoms among Febrile Patients",
-#             width = 12,
-#           gt_output("Sign")
-#       )
-#     ),
-      
-#      fluidRow(
-#       box(title = "Clinical Signs and Symptoms among PCR+ Patients compare between Baseline and Follow up",
-#           width = 12,
-#           gt_output("SignBF")
-#       )
-#     )
-fluidRow(
-  tabBox(
-    id = "tabset_ss",
-    width = 12,
-    tabPanel("All patients",
-             h4("Clinical Signs and Symptoms among Febrile Patients", align = "center"),
-             gt_output("Sign")
-    ),
-    tabPanel("PCR+ patients",
-             h4("Clinical Signs and Symptoms among PCR + Febrile Patients", align = "center"),
-             gt_output("SignBF")
-    )
-  )
-)
-
+      fluidRow(
+        tabBox(
+          id = "tabset_ss",
+          width = 12,
+          tabPanel("All patients",
+                   h4("Clinical Signs and Symptoms among Febrile Patients", align = "center"),
+                   gt_output("Sign")
+          ),
+          tabPanel("PCR+ patients",
+                   h4("Clinical Signs and Symptoms among PCR + Febrile Patients", align = "center"),
+                   gt_output("SignBF")
+          )
+        )
+      )
     ),
     tabItem(
       tabName = "underlying",
@@ -352,98 +338,93 @@ fluidRow(
     ),
     tabItem(
       tabName = "detect",
-        fluidRow(
-          box(
-            title = "SARS-CoV-2 Detection by Sample Type", 
-            width = 6,
-            plotlyOutput("DetectBar")
-           ),
-          box(
-            title = "% PCR Positive by Sample Type",
-            width = 6,
-            plotlyOutput("DetectPie")
-          )
+      fluidRow(
+        box(
+          title = "SARS-CoV-2 Detection by Sample Type",
+          width = 6,
+          plotlyOutput("DetectBar")
+        ),
+        box(
+          title = "% PCR Positive by Sample Type",
+          width = 6,
+          plotlyOutput("DetectPie")
         )
+      )
     ),
     tabItem(
       tabName = "lab",
       fluidRow( 
-        h4("Laboratory characteristics and co-infections in febrile patients with and without SARS-CoV-2 ", align = "center"),
+        h4("Laboratory characteristics and co-infections in febrile patients with and without SARS-CoV-2", align = "center"),
         tabBox(
           id = "tabset_lab",
           width = 12,
           tabPanel("CBC & Blood Chemistry",
-                   #h4("", align = "center"),
                    gt_output("labcbc")
           ),
           tabPanel("Culture",
-                  # h4(" ", align = "center"),
                    gt_output("labcul")
           )
         )
       )
     ),
-    tabItem(tabName = "sero",
-            fluidRow(
-              box(
-                title = "Seroprevalence Among Febrile Patients",
-                width = 12,
-                align="center",
-                gt_output("sero1a"),
-                
-              )
-            ),
-            
-            fluidRow(
-              box(
-                title = "Characteristics of Febrile Patients with Serology Positive",
-                width = 12,
-                align="center",
-                
-                
-                radioButtons(
-                  "serox",
-                  label = "",
-                  inline = TRUE,
-                  choices = list("All" = 1, "PCR+" = 2, "PCR-" =3), 
-                  selected = 1
-                ),
-                gt_output("sero1b")
-                
-              )
-            ),
-            fluidRow(
-              box(
-                title = "Serology Response Among COVID-19 Patients",
-                width = 12,
-                align="center",
-                gt_output("sero2a"),
-                
-              )
-            ),
-            fluidRow(
-              box(
-                title = "IgG-S* Among COVID-19 Patients, Compared Between Baseline and 4-6 Weeks Followup ",
-                width = 12,
-                align="center",
-                gt_output("sero2b"),
-                "*IgG-S = Anti spike protein IgG (AU/ml)."
-              )
-            ),
+    tabItem(
+      tabName = "sero",
+      fluidRow(
+        box(
+          title = "Seroprevalence Among Febrile Patients",
+          width = 12,
+          align = "center",
+          gt_output("sero1a")
+        )
+      ),
+      fluidRow(
+        box(
+          title = "Characteristics of Febrile Patients with Serology Positive",
+          width = 12,
+          align = "center",
+          radioButtons(
+            "serox",
+            label = "",
+            inline = TRUE,
+            choices = list("All" = 1, "PCR+" = 2, "PCR-" =3), 
+            selected = 1
+          ),
+          gt_output("sero1b")
+        )
+      ),
+      fluidRow(
+        box(
+          title = "Serology Response Among COVID-19 Patients",
+          width = 12,
+          align = "center",
+          gt_output("sero2a"),
+        )
+      ),
+      fluidRow(
+        box(
+          title = "IgG-S* Among COVID-19 Patients, Compared Between Baseline and 4-6 Weeks Followup",
+          width = 12,
+          align = "center",
+          gt_output("sero2b"),
+          "*IgG-S = Anti spike protein IgG (AU/ml)."
+        )
+      )
     ),
-    tabItem(tabName = "KAP",
-            fluidRow(
-              box(
-                title = "Knowledge, Attitude and Practices",
-                width = 12,
-                div(
-                  style = "text-align: center; font-family: Verdana; font-size: 14px",
-                  textOutput("titletext")
-                ),
-                plotlyOutput("kap1", height = 360),
-                plotlyOutput("kap2", height = 232)
-              )
-            ))
+    tabItem(
+      tabName = "KAP",
+      fluidRow(
+        box(
+          title = "Knowledge, Attitude and Practices",
+          width = 12,
+          div(
+            style = "text-align: center; font-family: Verdana; font-size: 14px",
+            textOutput("titletext")
+          ),
+          plotlyOutput("kap1", height = 360),
+          plotlyOutput("kap2", height = 232)
+        )
+      )
+    )
   ),
   useShinyjs()
 )
