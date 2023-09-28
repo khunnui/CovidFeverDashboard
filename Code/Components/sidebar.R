@@ -17,7 +17,7 @@ sidebar <- dashboardSidebar(
     )
   ),
   sidebarMenu(
-    menuItem("Serology TestingOverview", tabName = "overview"),
+    menuItem("Overview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
     menuItem("Diagnosis", tabName = "diag"),
