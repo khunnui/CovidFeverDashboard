@@ -280,18 +280,34 @@ body <- dashboardBody(
         valueBoxOutput("intub", width = 3),
         valueBoxOutput("death", width = 3)
       ),
-      fluidRow(
-        box(title = "Clinical Signs and Symptoms among Febrile Patients",
-            width = 12,
-            gt_output("Sign")
-        )
-      ),
-      fluidRow(
-        box(title = "Clinical Signs and Symptoms among PCR+ Patients compare between Baseline and Follow up",
-            width = 12,
-            gt_output("SignBF")
-        )
-      )
+#      fluidRow(
+#       box(title = "Clinical Signs and Symptoms among Febrile Patients",
+#             width = 12,
+#           gt_output("Sign")
+#       )
+#     ),
+      
+#      fluidRow(
+#       box(title = "Clinical Signs and Symptoms among PCR+ Patients compare between Baseline and Follow up",
+#           width = 12,
+#           gt_output("SignBF")
+#       )
+#     )
+fluidRow(
+  tabBox(
+    id = "tabset_ss",
+    width = 12,
+    tabPanel("All patients",
+             h4("Clinical Signs and Symptoms among Febrile Patients", align = "center"),
+             gt_output("Sign")
+    ),
+    tabPanel("PCR+ patients",
+             h4("Clinical Signs and Symptoms among PCR + Febrile Patients", align = "center"),
+             gt_output("SignBF")
+    )
+  )
+)
+
     ),
     tabItem(
       tabName = "underlying",
@@ -340,16 +356,32 @@ body <- dashboardBody(
           box(
             title = "SARS-CoV-2 Detection by Sample Type", 
             width = 6,
-            plotlyOutput("DetectBar"),
-            checkboxInput("DataEntered",label="Show only enrolled data entered",value=FALSE)
-          ),
+            plotlyOutput("DetectBar")
+           ),
           box(
             title = "% PCR Positive by Sample Type",
             width = 6,
-            plotlyOutput("DetectPie"),
-            checkboxInput("DataEntered2",label="Show only enrolled data entered",value=FALSE)
+            plotlyOutput("DetectPie")
           )
         )
+    ),
+    tabItem(
+      tabName = "lab",
+      fluidRow( 
+        h4("Laboratory characteristics and co-infections in febrile patients with and without SARS-CoV-2 ", align = "center"),
+        tabBox(
+          id = "tabset_lab",
+          width = 12,
+          tabPanel("CBC & Blood Chemistry",
+                   #h4("", align = "center"),
+                   gt_output("labcbc")
+          ),
+          tabPanel("Culture",
+                  # h4(" ", align = "center"),
+                   gt_output("labcul")
+          )
+        )
+      )
     ),
     tabItem(tabName = "sero",
             fluidRow(

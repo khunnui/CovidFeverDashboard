@@ -17,7 +17,7 @@ sidebar <- dashboardSidebar(
     )
   ),
   sidebarMenu(
-    menuItem("Overview", tabName = "overview"),
+    menuItem("Serology TestingOverview", tabName = "overview"),
     menuItem("Screening", tabName = "screen"),
     menuItem("Enrollment", tabName = "enrol"),
     menuItem("Diagnosis", tabName = "diag"),
@@ -27,6 +27,7 @@ sidebar <- dashboardSidebar(
     menuItem("Vaccination", tabName = "vac"),
     menuItem("ATK Used", tabName = "atk"),
     menuItem("SARS-CoV-2 Detection", tabName = "detect"),
+    menuItem("Laboratory", tabName = "lab"),
     menuItem("Serology Testing", tabName = "sero"),
     menuItem("KAP", tabName = "KAP")
   ),

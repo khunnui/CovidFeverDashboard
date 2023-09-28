@@ -826,18 +826,13 @@ server <- function(input, output, session) {
   }) 
   
   output$DetectBar <- renderPlotly({
-    if (input$hospital != "All" & input$DataEntered == FALSE) {
+    if (input$hospital != "All" ) {
       df <- df_lab %>%    filter(hospital == input$hospital)
-    } else if (input$hospital != "All" & input$DataEntered == TRUE) {
-      df <- df_labenr %>% filter(hospital == input$hospital)
-    } else if (input$province != "All" & input$DataEntered == FALSE) {
+    } else if (input$province != "All" ) {
       df <- df_lab %>%    filter(province == input$province)
-    } else if (input$province != "All" & input$DataEntered == TRUE) {
-      df <- df_labenr %>% filter(province == input$province)
-    } else if (input$DataEntered == FALSE) {
+    } else  {
       df <- df_lab
-    } else {
-      df <- df_labenr
+    
     }
     if (input$rps == "Yes") {
       df <- df %>% filter(rps == TRUE)
@@ -890,19 +885,14 @@ server <- function(input, output, session) {
   })
   
   output$DetectPie <- renderPlotly({
-    if (input$hospital != "All" & input$DataEntered2 == FALSE) {
+    if (input$hospital != "All" ) {
       df <- df_labpos %>% filter(hospital == input$hospital)
-    } else if (input$hospital != "All" & input$DataEntered2 == TRUE) {
-      df <- df_labposenr %>% filter(hospital == input$hospital)
-    } else if (input$province != "All"  & input$DataEntered2 == FALSE) {
+    } else if (input$province != "All"  ) {
       df <- df_labpos %>% filter(province == input$province)
-    } else if (input$province != "All"  & input$DataEntered2 == TRUE) {
-      df <- df_labposenr %>% filter(province == input$province)
-    } else if (input$DataEntered2 == FALSE) {
+    } else  {
       df <- df_labpos
-    } else    {
-      df <- df_labposenr
     }
+    
     if (input$rps == "Yes") {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
@@ -910,7 +900,118 @@ server <- function(input, output, session) {
     }
     pie2(df, specimens, tt(), 90)
   })  
-
+  
+  #lab
+  output$labcbc <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_cbcbio %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_cbcbio %>% filter(province == input$province)
+    } else {
+      df <- df_cbcbio
+    }
+    tcbc<-tbl_summary(data = df %>% 
+                        select (finalresult, s4hematocrit,s4plateletx10,s4wbccountx10,s4neutrophil,s4lymphocyte,s4monocyte,s4eosinophil,s4basophil),
+                      by = finalresult,
+                      digits = list(all_categorical() ~ c(0, 1)),
+                      missing = "no",
+                      label = list( 
+                        s4hematocrit ~ "Hematocrit",
+                        s4plateletx10 ~'Platelet',
+                        s4wbccountx10 ~ 'WBC',
+                        s4neutrophil ~'Neutrophil',
+                        s4lymphocyte ~'Lymphocyte',
+                        s4monocyte ~'Monocyte',
+                        s4eosinophil ~'Eosinophil',
+                        s4basophil ~'Basophil')
+    )%>%
+      add_overall() %>%
+      #modify_caption("**Laboratory characteristics and co-infections in febrile patients with and without SARS-CoV-2**") %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))  %>% 
+      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR")
+      
+    
+    tbio<-tbl_summary(data = df %>% 
+                        select (finalresult, s4bun, s4creatinine,  s4ast, s4alt, s4albumin,s4lactate, s4procal, s4creprotein),
+                      by = finalresult,
+                      digits = list(all_categorical() ~ c(0, 1)),
+                      missing = "no",
+                      label = list(   
+                        s4bun  ~ "Blood urea nitrogen (mg/dL)",
+                        s4creatinine ~'Creatinine (mg/dL)',
+                        s4ast  ~ 'Aspartate aminotransferase (iu/L)',
+                        s4alt  ~'Alanine aminotransferase (iu/L)',
+                        s4albumin~'Albumin (g/dL)',
+                        s4lactate~'Lactate (mmol/L)',
+                        s4procal ~'Procalcitonin (mg/mL)',
+                        s4creprotein~'C-reactive protein (mg/L)')
+    )%>%
+      add_overall() %>%
+      #modify_caption("****") %>%
+      modify_header(update = list(label = "",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))  
+    # modify_spanning_header(stat_1:stat_2 ~ "**Blood chemistry**") 
+    tbl_stack(list(tcbc,tbio), group_header = c("Complete Blood Count","Blood Chemistry")) %>% 
+    as_gt()  %>% 
+    tab_options(table.border.bottom.style = 'none') %>% 
+      tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_spanners()
+      ) %>% 
+    tab_style(
+      style = cell_text(weight = "bold"),
+      locations = cells_row_groups()
+    ) 
+  })
+  
+  output$labcul <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_cul %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_cul %>% filter(province == input$province)
+    } else {
+      df <- df_cul
+    }
+    
+    tcul<-tbl_summary(data = df,
+                      by = finalresult,
+                      digits = list(all_categorical() ~ c(0, 1)),
+                      missing = "no",
+                      label = list(   
+                        o1  ~ 'AEROBIC GRAM POSITIVE COCCI',
+                        o2  ~	'BURKHOLDERIA PSEUDOMALLEI',
+                        o3  ~'CORYNEBACTERIUM SPP.',
+                        o4  ~'ENTEROBACTER CLOACAE',
+                        o5  ~'ENTEROBACTER SPECIES',
+                        o6  ~	'ENTEROCOCCUS FAECALIS',
+                        o7  ~'ESCHERICHIA COLI',
+                        o8  ~'KLEBSIELLA PNEUMONIAE',
+                        o9  ~'KLEBSIELLA SPECIES',
+                        o10  ~'PSEUDOMONAS AERUGINOSA',
+                        o11  ~'SHIGELLA SPECIES',
+                        o12  ~'STAPHYLOCOCCUS coagulase negative',
+                        o13  ~'STREPTOCOCCUS GROUP B (AGALACTIAE)',
+                        o14  ~'Yeast',
+                        o15  ~'Mixed Growth',
+                        o16  ~'Other'
+                      )
+    )%>%
+      add_overall() %>%
+      italicize_labels() %>% 
+      #modify_caption("**Positive Culture**") %>%
+      modify_header(update = list(label = "**Organisms**",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))  %>% 
+      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>% 
+      as_gt()  %>% 
+      tab_options(table.border.bottom.style = 'none') %>% 
+      tab_style(
+        style = cell_text(weight = "bold"),
+        locations = cells_column_spanners()
+      ) 
+  })
+  
+# sero
   output$sero1a <- render_gt({
     if (input$hospital != "All") {
       df <- df_sero1a %>% filter(hospital == input$hospital)
