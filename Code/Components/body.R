@@ -324,6 +324,13 @@ body <- dashboardBody(
           plotlyOutput("VaccineSunburst"),
           "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
         )
+      ),
+      fluidRow(
+        box(
+          title = "COVID-19 Vaccination and PCR Results เปรียบเทียบระยะเวลาจากที่ได้เข็มสุดท้ายจนถึงก่อนป่วย ระหว่างกลุ่ม PCR +ve/PCR-ve",
+          width = 12,
+          gt_output("vac2")
+        )
       )
     ),
     tabItem(

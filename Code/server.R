@@ -809,6 +809,27 @@ server <- function(input, output, session) {
         margin = list(l = 30, r = 30, t= 30))
   }) 
   
+  output$vac2 <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_vac2 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_vac2 %>% filter(province == input$province)
+    } else {
+      df <- df_vac2
+    }
+    tbl_summary(data = df %>% select(-c('province', 'hospital','rps')),
+                by = finalresult,
+                digits = list(all_categorical() ~ c(0, 1)), 
+                missing = 'no') %>%
+            
+      add_overall() %>%
+      modify_header(update = list(label = "",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>% 
+      as_gt() %>% 
+      tab_options(table.border.bottom.style = 'none')
+  })
+  
   output$atkPie <- renderPlotly({
     if (input$hospital != "All") {
       df <- df_atk %>% filter(hospital == input$hospital)
