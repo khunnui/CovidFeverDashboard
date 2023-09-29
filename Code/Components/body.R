@@ -321,12 +321,15 @@ body <- dashboardBody(
         box(
           title = "COVID-19 Vaccination and PCR Result",
           width = 6,
-          plotlyOutput("VaccineSunburst")
+          plotlyOutput("VaccineSunburst"),
+          height = 600,
+         "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
         ),
         box(
           title = "Time from COVID-19 Vaccination to Fever Onset by PCR status",
           width = 6,
           gt_output("vac2")
+          , height = 600
         )
       )
     ),
