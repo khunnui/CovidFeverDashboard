@@ -320,19 +320,33 @@ body <- dashboardBody(
       fluidRow(
         box(
           title = "COVID-19 Vaccination and PCR Result",
-          width = 12,
-          plotlyOutput("VaccineSunburst"),
-          "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
-        )
-      ),
-      fluidRow(
+          width = 6,
+          plotlyOutput("VaccineSunburst")
+        ),
         box(
-          title = "COVID-19 Vaccination and PCR Results เปรียบเทียบระยะเวลาจากที่ได้เข็มสุดท้ายจนถึงก่อนป่วย ระหว่างกลุ่ม PCR +ve/PCR-ve",
-          width = 12,
+          title = "Time from COVID-19 Vaccination to Fever Onset by PCR status",
+          width = 6,
           gt_output("vac2")
         )
       )
     ),
+    # tabItem(
+    #   tabName = "vac",
+    #   fluidRow(
+    #     box(
+    #       title = "COVID-19 Vaccination and PCR Result",
+    #       width = 6,
+    #       plotlyOutput("VaccineSunburst"),
+    #       "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
+    #     )
+    #   ),
+    #    box(
+    #       title = "Time from COVID-19 Vaccination to Fever Onset by PCR status",
+    #       width = 6,
+    #       gt_output("vac2")
+    #     )
+    #   
+    # ),
     tabItem(
       tabName = "atk",
       fluidRow(
