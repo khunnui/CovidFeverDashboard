@@ -1268,6 +1268,7 @@ server <- function(input, output, session) {
       ) %>%
       bar_scale(kap, color_scale2)
   })
+  
   output$kap3 <- render_gt({
     if (input$hospital != "All") {
       df <- df_kap3 %>% filter(hospital == input$hospital)
