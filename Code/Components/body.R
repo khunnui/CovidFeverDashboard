@@ -333,23 +333,7 @@ body <- dashboardBody(
         )
       )
     ),
-    # tabItem(
-    #   tabName = "vac",
-    #   fluidRow(
-    #     box(
-    #       title = "COVID-19 Vaccination and PCR Result",
-    #       width = 6,
-    #       plotlyOutput("VaccineSunburst"),
-    #       "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
-    #     )
-    #   ),
-    #    box(
-    #       title = "Time from COVID-19 Vaccination to Fever Onset by PCR status",
-    #       width = 6,
-    #       gt_output("vac2")
-    #     )
-    #   
-    # ),
+    
     tabItem(
       tabName = "atk",
       fluidRow(
@@ -437,15 +421,23 @@ body <- dashboardBody(
     tabItem(
       tabName = "KAP",
       fluidRow(
-        box(
-          title = "Knowledge, Attitude and Practices",
+        tabBox(
+          id = "tabset_kap",
           width = 12,
-          div(
-            style = "text-align: center; font-family: Verdana; font-size: 14px",
-            textOutput("titletext")
+          tabPanel("Knowledge and Attitude",
+                   h4("Knowledge and Attitude", align = "center"),
+                   plotlyOutput("kap1", height = 360),
+                   h4("Comparison between delta variant (Jun-Dec 2021) and omicron variant pandemic (Jan 2022-May 2023)", align = "center"),
+                   gt_output("kap3"),
+                   plotlyOutput("kap1a", height = 600)
           ),
-          plotlyOutput("kap1", height = 360),
-          plotlyOutput("kap2", height = 232)
+          tabPanel("Practices",
+                   h4("Practices", align = "center"),
+                   plotlyOutput("kap2", height = 232),
+                   h4("Comparison between delta variant (Jun-Dec 2021) and omicron variant pandemic (Jan 2022-May 2023)", align = "center"),
+                   gt_output("kap4"),
+                   plotlyOutput("kap2a", height =500)
+          )
         )
       )
     )

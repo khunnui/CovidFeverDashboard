@@ -1174,14 +1174,43 @@ server <- function(input, output, session) {
       mutate(
         kap = factor(recode(
           kap,
-          's3604' = 'Only people who are sick and who shows symptoms can\nspread the disease',
-          's3615' = 'I sought care today later than I usual\nbecause of COVID-19',
-          's3616' = 'I was afraid of being placed under quarantine after\nclose contact with COVID-19 patient',
-          's3617' = 'I was afraid to seek care today or previously out of\nfear of being tested for COVID-19/isolated in hospital',
+          's3604' = 'Only sick people with symptoms can spread the disease',
+          's3615' = 'Sought care later than usual because of COVID-19',
+          's3616' = 'Afraid of being quarantined after close contact with COVID-19 patient',
+          's3617' = 'Afraid to seek care out of fear of being tested/isolated',
           's3618' = 'Always wearing mask in public is a good thing to do',
-          's3619' = 'Always practicing social distancing from other people\nis a good thing to do',
-          's3620' = 'Patients should disclose their exposure to COVID-19\nand their symptoms'
+          's3619' = 'Always practicing social distancing is a good thing to do',
+          's3620' = 'Patients should disclose their exposure to COVID-19 and their symptoms'
         ))
+      ) %>%
+      bar_scale(kap, color_scale1)
+  })
+  output$kap1a <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_kap1 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap1 %>% filter(province == input$province)
+    } else {
+      df <- df_kap1
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df %>%
+      mutate(
+        kap = factor(recode(
+          kap,
+          's3604' = 'Only sick people with symptoms can spread the disease',
+          's3615' = 'Sought care later than usual because of COVID-19',
+          's3616' = 'Afraid of being quarantined after close contact with COVID-19 patient',
+          's3617' = 'Afraid to seek care out of fear of being tested/isolated',
+          's3618' = 'Always wearing mask in public is a good thing to do',
+          's3619' = 'Always practicing social distancing is a good thing to do',
+          's3620' = 'Patients should disclose their exposure to COVID-19 and their symptoms'
+        )),
+        kap = paste(kap, variant, sep = '\n')
       ) %>%
       bar_scale(kap, color_scale1)
   })
@@ -1204,12 +1233,103 @@ server <- function(input, output, session) {
         kap = factor(recode(
           kap,
           's3610' = 'During the past 2 weeks, did you wear a mask at home?',
-          's3613' = 'Did you wear a mask when you went outside of your\nresidence in crowded areas?',
-          's3621' = 'Do you practice social distancing from other persons\nin your household?',
-          's3622' = 'Do you practice social distancing from other persons\noutside of your residence?'
+          's3613' = 'Did you wear a mask when you went outside in crowded areas?',
+          's3621' = 'Do you practice social distancing in your household?',
+          's3622' = 'Do you practice social distancing outside of your residence?'
+          
         ))
       ) %>%
       bar_scale(kap, color_scale2)
+  })
+  output$kap2a <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_kap2 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap2 %>% filter(province == input$province)
+    } else {
+      df <- df_kap2
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df %>%
+      mutate(
+        kap = factor(recode(
+          kap,
+          's3610' = 'During the past 2 weeks, did you wear a mask at home?',
+          's3613' = 'Did you wear a mask when you went outside in crowded areas?',
+          's3621' = 'Do you practice social distancing in your household?',
+          's3622' = 'Do you practice social distancing outside of your residence?'
+          
+        )),
+        kap = paste(kap, variant, sep = '\n')
+      ) %>%
+      bar_scale(kap, color_scale2)
+  })
+  output$kap3 <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_kap3 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap3 %>% filter(province == input$province)
+    } else {
+      df <- df_kap3
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df %>% select(s3604:s3620, variant)  
+    
+    tbl_summary(
+      data = df,
+      include = c(s3604:s3620),
+      by = variant,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
+      bold_labels() %>%
+      add_p() %>%
+      bold_p() %>%
+      modify_header(update = list( label = "", 
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
+      
+      as_gt() %>% 
+      tab_options(table.border.bottom.style = 'none')
+  })
+  
+  output$kap4 <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_kap4 %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_kap4 %>% filter(province == input$province)
+    } else {
+      df <- df_kap4
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df %>% select(s3610:s3622, variant)  
+    
+    tbl_summary(
+      data = df,
+      include = c(s3610:s3622),
+      by = variant,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
+      bold_labels() %>%
+      add_p() %>%
+      bold_p() %>%
+      modify_header(update = list( label = "", 
+                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
+      
+      as_gt() %>% 
+      tab_options(table.border.bottom.style = 'none')
   })
   
 }
