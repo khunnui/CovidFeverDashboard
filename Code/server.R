@@ -817,16 +817,17 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac2
     }
-    tbl_summary(data = df %>% select(-c('province', 'hospital','rps')),
-                by = finalresult,
-                digits = list(all_categorical() ~ c(0, 1)), 
-                missing = 'no') %>%
-            
+    tbl_summary(
+      data = df %>% select(-c('province', 'hospital', 'rps')),
+      by = finalresult,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
-      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>% 
-      as_gt() %>% 
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+      as_gt() %>%
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -948,7 +949,7 @@ server <- function(input, output, session) {
     ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR")
     tbio <- tbl_summary(
       data = df %>%
@@ -969,18 +970,15 @@ server <- function(input, output, session) {
     ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))  
-    tbl_stack(list(tcbc, tbio), group_header = c("Complete Blood Count", "Blood Chemistry")) %>% 
-    as_gt() %>% 
-    tab_options(table.border.bottom.style = 'none') %>% 
-      tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_spanners()
-      ) %>% 
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_row_groups()
-    ) 
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))
+    tbl_stack(list(tcbc, tbio),
+              group_header = c("Complete Blood Count", "Blood Chemistry")) %>%
+      as_gt() %>%
+      tab_options(table.border.bottom.style = 'none') %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_column_spanners()) %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_row_groups())
   })
   
   output$labcul <- render_gt({
@@ -992,22 +990,20 @@ server <- function(input, output, session) {
       df <- df_cul
     }
     tcul <- tbl_summary(
-      data = df,
+      data = df  %>% select(-c('province', 'hospital', 'rps')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = "no"
     ) %>%
       add_overall() %>%
-      italicize_labels() %>% 
+      italicize_labels() %>%
       modify_header(update = list(label = "**Organisms**",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
-      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>% 
-      as_gt() %>% 
-      tab_options(table.border.bottom.style = 'none') %>% 
-      tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_spanners()
-      )
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>%
+      as_gt() %>%
+      tab_options(table.border.bottom.style = 'none') %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_column_spanners())
   })
   
 # sero
