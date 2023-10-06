@@ -7,5 +7,5 @@
 library(shinydashboard)
 
 header <- dashboardHeader(
-  title = "CovidFever Dashboard",
+  title = "COVID-Fever Dashboard",
   titleWidth = 240)
