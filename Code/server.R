@@ -818,16 +818,17 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac2
     }
-    tbl_summary(data = df %>% select(-c('province', 'hospital','rps')),
-                by = finalresult,
-                digits = list(all_categorical() ~ c(0, 1)), 
-                missing = 'no') %>%
-            
+    tbl_summary(
+      data = df %>% select(-c('province', 'hospital', 'rps')),
+      by = finalresult,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
-      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>% 
-      as_gt() %>% 
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+      as_gt() %>%
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -949,7 +950,7 @@ server <- function(input, output, session) {
     ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR")
     tbio <- tbl_summary(
       data = df %>%
@@ -970,18 +971,15 @@ server <- function(input, output, session) {
     ) %>%
       add_overall() %>%
       modify_header(update = list(label = "",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))  
-    tbl_stack(list(tcbc, tbio), group_header = c("Complete Blood Count", "Blood Chemistry")) %>% 
-    as_gt() %>% 
-    tab_options(table.border.bottom.style = 'none') %>% 
-      tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_spanners()
-      ) %>% 
-    tab_style(
-      style = cell_text(weight = "bold"),
-      locations = cells_row_groups()
-    ) 
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}"))
+    tbl_stack(list(tcbc, tbio),
+              group_header = c("Complete Blood Count", "Blood Chemistry")) %>%
+      as_gt() %>%
+      tab_options(table.border.bottom.style = 'none') %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_column_spanners()) %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_row_groups())
   })
   
   output$labcul <- render_gt({
@@ -993,22 +991,20 @@ server <- function(input, output, session) {
       df <- df_cul
     }
     tcul <- tbl_summary(
-      data = df,
+      data = df  %>% select(-c('province', 'hospital', 'rps')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = "no"
     ) %>%
       add_overall() %>%
-      italicize_labels() %>% 
+      italicize_labels() %>%
       modify_header(update = list(label = "**Organisms**",
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
-      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>% 
-      as_gt() %>% 
-      tab_options(table.border.bottom.style = 'none') %>% 
-      tab_style(
-        style = cell_text(weight = "bold"),
-        locations = cells_column_spanners()
-      )
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>%
+      as_gt() %>%
+      tab_options(table.border.bottom.style = 'none') %>%
+      tab_style(style = cell_text(weight = "bold"),
+                locations = cells_column_spanners())
   })
   
 # sero
@@ -1173,19 +1169,31 @@ server <- function(input, output, session) {
     }
     df %>%
       mutate(
-        kap = factor(recode(
+        kap = factor(
           kap,
-          's3604' = 'Only sick people with symptoms can spread the disease',
-          's3615' = 'Sought care later than usual because of COVID-19',
-          's3616' = 'Afraid of being quarantined after close contact with COVID-19 patient',
-          's3617' = 'Afraid to seek care out of fear of being tested/isolated',
-          's3618' = 'Always wearing mask in public is a good thing to do',
-          's3619' = 'Always practicing social distancing is a good thing to do',
-          's3620' = 'Patients should disclose their exposure to COVID-19 and their symptoms'
-        ))
+          levels = c(
+            's3604',
+            's3615',
+            's3616',
+            's3617',
+            's3618',
+            's3619',
+            's3620'
+          ),
+          labels = c(
+            'Only sick people with symptoms can spread the disease',
+            'Sought care later than usual because of COVID-19',
+            'Afraid of being quarantined after close contact with COVID-19 patient',
+            'Afraid to seek care out of fear of being tested/isolated',
+            'Always wearing mask in public is a good thing to do',
+            'Always practicing social distancing is a good thing to do',
+            'Patients should disclose their exposure and symptoms'
+          )
+        )
       ) %>%
       bar_scale(kap, color_scale1)
   })
+
   output$kap1a <- renderPlotly({
     if (input$hospital != "All") {
       df <- df_kap1 %>% filter(hospital == input$hospital)
@@ -1201,17 +1209,41 @@ server <- function(input, output, session) {
     }
     df %>%
       mutate(
-        kap = factor(recode(
-          kap,
-          's3604' = 'Only sick people with symptoms can spread the disease',
-          's3615' = 'Sought care later than usual because of COVID-19',
-          's3616' = 'Afraid of being quarantined after close contact with COVID-19 patient',
-          's3617' = 'Afraid to seek care out of fear of being tested/isolated',
-          's3618' = 'Always wearing mask in public is a good thing to do',
-          's3619' = 'Always practicing social distancing is a good thing to do',
-          's3620' = 'Patients should disclose their exposure to COVID-19 and their symptoms'
-        )),
-        kap = paste(kap, variant, sep = '\n')
+        kap = factor(
+          paste0(kap, variant),
+          levels = c(
+            's3604Jun-Dec 2021',
+            's3604Jan 2022 - May 2023',
+            's3615Jun-Dec 2021',
+            's3615Jan 2022 - May 2023',
+            's3616Jun-Dec 2021',
+            's3616Jan 2022 - May 2023',
+            's3617Jun-Dec 2021',
+            's3617Jan 2022 - May 2023',
+            's3618Jun-Dec 2021',
+            's3618Jan 2022 - May 2023',
+            's3619Jun-Dec 2021',
+            's3619Jan 2022 - May 2023',
+            's3620Jun-Dec 2021',
+            's3620Jan 2022 - May 2023'
+          ),
+          labels = c(
+            'Only sick people with symptoms can spread the disease<br>Jun-Dec 2021',
+            'Only sick people with symptoms can spread the disease<br>Jan 2022 - May 2023',
+            'Sought care later than usual because of COVID-19<br>Jun-Dec 2021',
+            'Sought care later than usual because of COVID-19<br>Jan 2022 - May 2023',
+            'Afraid of being quarantined after close contact with COVID-19 patient<br>Jun-Dec 2021',
+            'Afraid of being quarantined after close contact with COVID-19 patient<br>Jan 2022 - May 2023',
+            'Afraid to seek care out of fear of being tested/isolated<br>Jun-Dec 2021',
+            'Afraid to seek care out of fear of being tested/isolated<br>Jan 2022 - May 2023',
+            'Always wearing mask in public is a good thing to do<br>Jun-Dec 2021',
+            'Always wearing mask in public is a good thing to do<br>Jan 2022 - May 2023',
+            'Always practicing social distancing is a good thing to do<br>Jun-Dec 2021',
+            'Always practicing social distancing is a good thing to do<br>Jan 2022 - May 2023',
+            'Patients should disclose their exposure and symptoms<br>Jun-Dec 2021',
+            'Patients should disclose their exposure and symptoms<br>Jan 2022 - May 2023'
+          )
+        )
       ) %>%
       bar_scale(kap, color_scale1)
   })
@@ -1231,17 +1263,25 @@ server <- function(input, output, session) {
     }
     df %>%
       mutate(
-        kap = factor(recode(
+        kap = factor(
           kap,
-          's3610' = 'During the past 2 weeks, did you wear a mask at home?',
-          's3613' = 'Did you wear a mask when you went outside in crowded areas?',
-          's3621' = 'Do you practice social distancing in your household?',
-          's3622' = 'Do you practice social distancing outside of your residence?'
-          
-        ))
+          levels = c(
+            's3610',
+            's3613',
+            's3621',
+            's3622'
+          ),
+          labels = c(
+            'Did you wear a mask at home?',
+            'Did you wear a mask when you went in crowded areas?',
+            'Do you practice social distancing in your household?',
+            'Do you practice social distancing outside of your residence?'
+          )
+        )
       ) %>%
       bar_scale(kap, color_scale2)
   })
+  
   output$kap2a <- renderPlotly({
     if (input$hospital != "All") {
       df <- df_kap2 %>% filter(hospital == input$hospital)
@@ -1257,16 +1297,30 @@ server <- function(input, output, session) {
     }
     df %>%
       mutate(
-        kap = factor(recode(
-          kap,
-          's3610' = 'During the past 2 weeks, did you wear a mask at home?',
-          's3613' = 'Did you wear a mask when you went outside in crowded areas?',
-          's3621' = 'Do you practice social distancing in your household?',
-          's3622' = 'Do you practice social distancing outside of your residence?'
-          
-        )),
-        kap = paste(kap, variant, sep = '\n')
-      ) %>%
+        kap = factor(
+          paste0(kap, variant),
+          levels = c(
+            's3610Jun-Dec 2021',
+            's3610Jan 2022 - May 2023',
+            's3613Jun-Dec 2021',
+            's3613Jan 2022 - May 2023',
+            's3621Jun-Dec 2021',
+            's3621Jan 2022 - May 2023',
+            's3622Jun-Dec 2021',
+            's3622Jan 2022 - May 2023'
+          ),
+          labels = c(
+            'Did you wear a mask at home?<br>Jun-Dec 2021',
+            'Did you wear a mask at home?<br>Jan 2022 - May 2023',
+            'Did you wear a mask when you went in crowded areas?<br>Jun-Dec 2021',
+            'Did you wear a mask when you went in crowded areas?<br>Jan 2022 - May 2023',
+            'Do you practice social distancing in your household?<br>Jun-Dec 2021',
+            'Do you practice social distancing in your household?<br>Jan 2022 - May 2023',
+            'Do you practice social distancing outside of your residence?<br>Jun-Dec 2021',
+            'Do you practice social distancing outside of your residence?<br>Jan 2022 - May 2023'
+          )
+        )
+      ) %>% 
       bar_scale(kap, color_scale2)
   })
   
@@ -1283,8 +1337,7 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    df %>% select(s3604:s3620, variant)  
-    
+    df %>% select(s3604:s3620, variant)
     tbl_summary(
       data = df,
       include = c(s3604:s3620),
@@ -1295,10 +1348,9 @@ server <- function(input, output, session) {
       bold_labels() %>%
       add_p() %>%
       bold_p() %>%
-      modify_header(update = list( label = "", 
-                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
-      
-      as_gt() %>% 
+      modify_header(update = list(label = "",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      as_gt() %>%
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -1315,8 +1367,7 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    df %>% select(s3610:s3622, variant)  
-    
+    df %>% select(s3610:s3622, variant)
     tbl_summary(
       data = df,
       include = c(s3610:s3622),
@@ -1327,10 +1378,9 @@ server <- function(input, output, session) {
       bold_labels() %>%
       add_p() %>%
       bold_p() %>%
-      modify_header(update = list( label = "", 
-                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>% 
-      
-      as_gt() %>% 
+      modify_header(update = list(label = "",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      as_gt() %>%
       tab_options(table.border.bottom.style = 'none')
   })
   
