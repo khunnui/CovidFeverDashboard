@@ -31,7 +31,8 @@ server <- function(input, output, session) {
     }
   })
   
-  shinyjs::html("dateHeader", paste0(" Data as of ", ddate))
+ # shinyjs::html("dateHeader", paste0(" Data as of ", ddate))
+  shinyjs::html("dateHeader", "go to <a href='https://dghp.shinyapps.io/Long-COVID/'> Long COVID dashboard </a>")
 
   output$titletext <- renderText({
     if (input$hospital != "All") {
