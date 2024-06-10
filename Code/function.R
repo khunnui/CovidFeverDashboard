@@ -108,7 +108,7 @@ bar_age <- function(df, tt) {
   
 }
 
-bar_scale <- function(df, column, colors) {
+bar_scale <- function(df, column, colors,tt) {
 
   # An R function with a parameter that accepts a data.frame column can't evaluate
   # the column argument until it is first 'quoted', followed by an 'unquote' within
@@ -128,7 +128,8 @@ bar_scale <- function(df, column, colors) {
     colors = colors,
     hoverinfo = 'x'
   ) %>% 
-    layout(barmode = 'stack',
+    layout( title = list(text = tt, font = list(family = "Verdana", size = 14)),
+          barmode = 'stack',
            bargap = 0.3,
            xaxis = list(title = '',
                         tickformat = '.0%'),

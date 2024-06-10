@@ -8,6 +8,7 @@ library(plotly)
 library(DT)
 library(svglite)
 library(gtsummary)
+library(dplyr)
 
 # library(cowplot)
 theme_gtsummary_compact()
@@ -416,69 +417,114 @@ server <- function(input, output, session) {
   })
 
   output$Diag <- render_gt({
-    # if (input$rps == "All") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_dx
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_dx_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_dx_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_dx_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_dx_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_dx_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_dx_t1
-      } else if (input$hospital == "Umphang") {
-        gt_dx_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_dx_t3
-      }
-    # } else if (input$rps == "Yes") {
-    #   if (input$province == "All" & input$hospital == "All") {
-    #     gt_dx_rps
-    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-    #     gt_dx_rps_n
-    #   } else if (input$hospital == "Nakorn Phanom") {
-    #     gt_dx_rps_n1
-    #   } else if (input$hospital == "Sri Songkhram") {
-    #     gt_dx_rps_n2
-    #   } else if (input$hospital == "That Phanom") {
-    #     gt_dx_rps_n3
-    #   } else if (input$province == "Tak" & input$hospital == "All") {
-    #     gt_dx_rps_t
-    #   } else if (input$hospital == "Mae Sot") {
-    #     gt_dx_rps_t1
-    #   } else if (input$hospital == "Umphang") {
-    #     gt_dx_rps_t2
-    #   } else if (input$hospital == "Tha Song Yang") {
-    #     gt_dx_rps_t3
-    #   }
-    # } else if (input$rps == "No") {
-    #   if (input$province == "All" & input$hospital == "All") {
-    #     gt_dx_norps
-    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-    #     gt_dx_norps_n
-    #   } else if (input$hospital == "Nakorn Phanom") {
-    #     gt_dx_norps_n1
-    #   } else if (input$hospital == "Sri Songkhram") {
-    #     gt_dx_norps_n2
-    #   } else if (input$hospital == "That Phanom") {
-    #     gt_dx_norps_n3
-    #   } else if (input$province == "Tak" & input$hospital == "All") {
-    #     gt_dx_norps_t
-    #   } else if (input$hospital == "Mae Sot") {
-    #     gt_dx_norps_t1
-    #   } else if (input$hospital == "Umphang") {
-    #     gt_dx_norps_t2
-    #   } else if (input$hospital == "Tha Song Yang") {
-    #     gt_dx_norps_t3
-    #   }
-    # }
+    if (input$hospital != "All") {
+      df <- df_dx %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_dx %>% filter(province == input$province)
+    } else {
+      df <- df_dx
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    
+    # Calculate counts for each variable and sort them
+    overall_counts <- df %>%
+      select(-c('province', 'hospital', 'rps')) %>%
+      summarise(across(everything(), ~ sum(!is.na(.)), .names = "count_{col}")) %>%
+      pivot_longer(everything(), names_to = "variable", values_to = "count") %>%
+      arrange(desc(count)) %>%
+      mutate(variable = gsub("count_", "", variable)) %>%
+      pull(variable)
+    
+    # Create the summary table using the sorted variables
+     tbl_summary(
+      data = df %>% select(all_of(overall_counts), finalresult),
+      by = finalresult,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
+      add_overall() %>%
+       modify_table_body(
+         fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
+       ) %>%
+      modify_header(update = list(label =" ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+      
+      as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>%
+      tab_options(table.border.bottom.style = 'none')
   })
   
+  #    if (input$rps == "All") {
+  #     if (input$province == "All" & input$hospital == "All") {
+  #       gt_dx
+  #     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+  #       gt_dx_n
+  #     } else if (input$hospital == "Nakorn Phanom") {
+  #       gt_dx_n1
+  #     } else if (input$hospital == "Sri Songkhram") {
+  #       gt_dx_n2
+  #     } else if (input$hospital == "That Phanom") {
+  #       gt_dx_n3
+  #     } else if (input$province == "Tak" & input$hospital == "All") {
+  #       gt_dx_t
+  #     } else if (input$hospital == "Mae Sot") {
+  #       gt_dx_t1
+  #     } else if (input$hospital == "Umphang") {
+  #       gt_dx_t2
+  #     } else if (input$hospital == "Tha Song Yang") {
+  #       gt_dx_t3
+  #     }
+  #    } else if (input$rps == "Yes") {
+  #      if (input$province == "All" & input$hospital == "All") {
+  #        gt_dx_rps
+  #      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+  #        gt_dx_rps_n
+  #      } else if (input$hospital == "Nakorn Phanom") {
+  #        gt_dx_rps_n1
+  #      } else if (input$hospital == "Sri Songkhram") {
+  #        gt_dx_rps_n2
+  #      } else if (input$hospital == "That Phanom") {
+  #        gt_dx_rps_n3
+  #      } else if (input$province == "Tak" & input$hospital == "All") {
+  #        gt_dx_rps_t
+  #      } else if (input$hospital == "Mae Sot") {
+  #        gt_dx_rps_t1
+  #      } else if (input$hospital == "Umphang") {
+  #        gt_dx_rps_t2
+  #      } else if (input$hospital == "Tha Song Yang") {
+  #        gt_dx_rps_t3
+  #      }
+  #    } else if (input$rps == "No") {
+  #      if (input$province == "All" & input$hospital == "All") {
+  #       gt_dx_norps
+  #     } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+  #        gt_dx_norps_n
+  #      } else if (input$hospital == "Nakorn Phanom") {
+  #        gt_dx_norps_n1
+  #      } else if (input$hospital == "Sri Songkhram") {
+  #        gt_dx_norps_n2
+  #      } else if (input$hospital == "That Phanom") {
+  #        gt_dx_norps_n3
+  #      } else if (input$province == "Tak" & input$hospital == "All") {
+  #        gt_dx_norps_t
+  #      } else if (input$hospital == "Mae Sot") {
+  #        gt_dx_norps_t1
+  #      } else if (input$hospital == "Umphang") {
+  #        gt_dx_norps_t2
+  #      } else if (input$hospital == "Tha Song Yang") {
+  #        gt_dx_norps_t3
+  #      }
+  #    }
+  # })
+  # 
   output$posBoxSign <- renderValueBox({
     if (input$hospital != "All") {
       df <- df_enrm %>% filter(hospital == input$hospital)
@@ -563,69 +609,41 @@ server <- function(input, output, session) {
   })
   
   output$Sign <- render_gt({
-    # if (input$rps == "All") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_ss
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_ss_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_ss_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_ss_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_ss_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_ss_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_ss_t1
-      } else if (input$hospital == "Umphang") {
-        gt_ss_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_ss_t3
-      }
-    # } else if (input$rps == "Yes") {
-    #   if (input$province == "All" & input$hospital == "All") {
-    #     gt_ss_rps
-    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-    #     gt_ss_rps_n
-    #   } else if (input$hospital == "Nakorn Phanom") {
-    #     gt_ss_rps_n1
-    #   } else if (input$hospital == "Sri Songkhram") {
-    #     gt_ss_rps_n2
-    #   } else if (input$hospital == "That Phanom") {
-    #     gt_ss_rps_n3
-    #   } else if (input$province == "Tak" & input$hospital == "All") {
-    #     gt_ss_rps_t
-    #   } else if (input$hospital == "Mae Sot") {
-    #     gt_ss_rps_t1
-    #   } else if (input$hospital == "Umphang") {
-    #     gt_ss_rps_t2
-    #   } else if (input$hospital == "Tha Song Yang") {
-    #     gt_ss_rps_t3
-    #   }
-    # } else if (input$rps == "No") {
-    #   if (input$province == "All" & input$hospital == "All") {
-    #     gt_ss_norps
-    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-    #     gt_ss_norps_n
-    #   } else if (input$hospital == "Nakorn Phanom") {
-    #     gt_ss_norps_n1
-    #   } else if (input$hospital == "Sri Songkhram") {
-    #     gt_ss_norps_n2
-    #   } else if (input$hospital == "That Phanom") {
-    #     gt_ss_norps_n3
-    #   } else if (input$province == "Tak" & input$hospital == "All") {
-    #     gt_ss_norps_t
-    #   } else if (input$hospital == "Mae Sot") {
-    #     gt_ss_norps_t1
-    #   } else if (input$hospital == "Umphang") {
-    #     gt_ss_norps_t2
-    #   } else if (input$hospital == "Tha Song Yang") {
-    #     gt_ss_norps_t3
-    #   }
-    # }
+    
+    if (input$hospital != "All") {
+      df <- df_ss %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_ss %>% filter(province == input$province)
+    } else {
+      df <- df_ss
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    
+    tbl_summary(
+      data = df %>% select(-c('province', 'hospital', 'rps')),
+      by = finalresult,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
+      add_overall() %>%
+      modify_table_body(
+        fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
+      ) %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+      as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>%
+      tab_options(table.border.bottom.style = 'none')
   })
-  
+ 
   output$SignBF <- render_gt({
     if (input$hospital != "All") {
       df <- df_ss_bf %>% filter(hospital == input$hospital)
@@ -634,34 +652,82 @@ server <- function(input, output, session) {
     } else {
       df <- df_ss_bf
     }
-    tbl_summary(data = df,
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    tbl_summary(data = df %>% select(-c('rps')),
                 by = visit,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
+      add_overall() %>%
+      modify_table_body(
+        fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
+      ) %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       as_gt() %>% 
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>%   
       tab_options(table.border.bottom.style = 'none')
   })
   
   output$Underly <- render_gt({
+    if (input$hospital != "All") {
+      df <- df_un %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_un %>% filter(province == input$province)
+    } else {
+      df <- df_un
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    
+    tbl_summary(
+      data = df %>% select(-c('province', 'hospital', 'rps')),
+      by = finalresult,
+      digits = list(all_categorical() ~ c(0, 1)),
+      missing = 'no'
+    ) %>%
+      add_overall() %>%
+      modify_table_body(
+        fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
+      ) %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+      modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+      as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>%   
+      tab_options(table.border.bottom.style = 'none')
+  })
     # if (input$rps == "All") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_un
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_un_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_un_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_un_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_un_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_un_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_un_t1
-      } else if (input$hospital == "Umphang") {
-        gt_un_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_un_t3
-      }
+      # if (input$province == "All" & input$hospital == "All") {
+      #   gt_un
+      # } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+      #   gt_un_n
+      # } else if (input$hospital == "Nakorn Phanom") {
+      #   gt_un_n1
+      # } else if (input$hospital == "Sri Songkhram") {
+      #   gt_un_n2
+      # } else if (input$hospital == "That Phanom") {
+      #   gt_un_n3
+      # } else if (input$province == "Tak" & input$hospital == "All") {
+      #   gt_un_t
+      # } else if (input$hospital == "Mae Sot") {
+      #   gt_un_t1
+      # } else if (input$hospital == "Umphang") {
+      #   gt_un_t2
+      # } else if (input$hospital == "Tha Song Yang") {
+      #   gt_un_t3
+      # }
     # } else if (input$rps == "Yes") {
     #   if (input$province == "All" & input$hospital == "All") {
     #     gt_un_rps
@@ -703,29 +769,59 @@ server <- function(input, output, session) {
     #     gt_un_norps_t3
     #   }
     # }
-  })
+ # })
   
   output$Risk <- render_gt({
-    # if (input$rps == "All") {
-      if (input$province == "All" & input$hospital == "All") {
-        gt_rf
-      } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
-        gt_rf_n
-      } else if (input$hospital == "Nakorn Phanom") {
-        gt_rf_n1
-      } else if (input$hospital == "Sri Songkhram") {
-        gt_rf_n2
-      } else if (input$hospital == "That Phanom") {
-        gt_rf_n3
-      } else if (input$province == "Tak" & input$hospital == "All") {
-        gt_rf_t
-      } else if (input$hospital == "Mae Sot") {
-        gt_rf_t1
-      } else if (input$hospital == "Umphang") {
-        gt_rf_t2
-      } else if (input$hospital == "Tha Song Yang") {
-        gt_rf_t3
+      if (input$hospital != "All") {
+        df <- df_rf %>% filter(hospital == input$hospital)
+      } else if (input$province != "All") {
+        df <- df_rf %>% filter(province == input$province)
+      } else {
+        df <- df_rf
       }
+      if (input$rps == "Yes") {
+        df <- df %>% filter(rps == TRUE)
+      } else if (input$rps == "No") {
+        df <- df %>% filter(rps == FALSE)
+      }
+      
+      tbl_summary(
+        data = df %>% select(-c('province', 'hospital', 'rps')),
+        by = finalresult,
+        digits = list(all_categorical() ~ c(0, 1)),
+        missing = 'no'
+      ) %>%
+        add_overall() %>%
+        modify_header(update = list(label =  " ",
+                                    all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
+        modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
+        as_gt() %>%
+        tab_header(
+          title = "",
+          subtitle = tt()
+        ) %>% 
+        tab_options(table.border.bottom.style = 'none')
+    })
+    # # if (input$rps == "All") {
+    #   if (input$province == "All" & input$hospital == "All") {
+    #     gt_rf
+    #   } else if (input$province == "Nakorn Phanom" & input$hospital == "All") {
+    #     gt_rf_n
+    #   } else if (input$hospital == "Nakorn Phanom") {
+    #     gt_rf_n1
+    #   } else if (input$hospital == "Sri Songkhram") {
+    #     gt_rf_n2
+    #   } else if (input$hospital == "That Phanom") {
+    #     gt_rf_n3
+    #   } else if (input$province == "Tak" & input$hospital == "All") {
+    #     gt_rf_t
+    #   } else if (input$hospital == "Mae Sot") {
+    #     gt_rf_t1
+    #   } else if (input$hospital == "Umphang") {
+    #     gt_rf_t2
+    #   } else if (input$hospital == "Tha Song Yang") {
+    #     gt_rf_t3
+    #   }
     # } else if (input$rps == "Yes") {
     #   if (input$province == "All" & input$hospital == "All") {
     #     gt_rf_rps
@@ -767,7 +863,7 @@ server <- function(input, output, session) {
     #     gt_rf_norps_t3
     #   }
     # }
-  })
+ # })
 
   output$VaccineSunburst <- renderPlotly({
     if (input$hospital != "All") {
@@ -818,6 +914,12 @@ server <- function(input, output, session) {
     } else {
       df <- df_vac2
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    
     tbl_summary(
       data = df %>% select(-c('province', 'hospital', 'rps')),
       by = finalresult,
@@ -825,10 +927,14 @@ server <- function(input, output, session) {
       missing = 'no'
     ) %>%
       add_overall() %>%
-      modify_header(update = list(label = "",
+      modify_header(update = list(label =  " ",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
       as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -931,6 +1037,11 @@ server <- function(input, output, session) {
     } else {
       df <- df_cbc
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
     tcbc <- tbl_summary(
       data = df %>%
         select (
@@ -949,7 +1060,7 @@ server <- function(input, output, session) {
       missing = "no"
     ) %>%
       add_overall() %>%
-      modify_header(update = list(label = "",
+      modify_header(update = list(label = tt(),
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR")
     tbio <- tbl_summary(
@@ -970,11 +1081,15 @@ server <- function(input, output, session) {
       missing = "no"
     ) %>%
       add_overall() %>%
-      modify_header(update = list(label = "",
+      modify_header(update = list(label = tt(),
                                   all_stat_cols() ~ "**{level}**<br>N = {n}"))
     tbl_stack(list(tcbc, tbio),
               group_header = c("Complete Blood Count", "Blood Chemistry")) %>%
       as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none') %>%
       tab_style(style = cell_text(weight = "bold"),
                 locations = cells_column_spanners()) %>%
@@ -990,6 +1105,11 @@ server <- function(input, output, session) {
     } else {
       df <- df_cul
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
     tcul <- tbl_summary(
       data = df  %>% select(-c('province', 'hospital', 'rps')),
       by = finalresult,
@@ -1002,6 +1122,10 @@ server <- function(input, output, session) {
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR") %>%
       as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none') %>%
       tab_style(style = cell_text(weight = "bold"),
                 locations = cells_column_spanners())
@@ -1016,7 +1140,12 @@ server <- function(input, output, session) {
     } else {
       df <- df_sero1a
     }
-    tbl_summary(data = df %>% select(-c('province', 'hospital')),
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    tbl_summary(data = df %>% select(-c('province', 'hospital','rps')),
                 by = finalresult,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
@@ -1024,6 +1153,10 @@ server <- function(input, output, session) {
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>% 
       as_gt() %>% 
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
     
@@ -1035,12 +1168,17 @@ server <- function(input, output, session) {
     } else {
       df <- df_sero1b
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
     if (input$serox == "2") {
       df <- df %>% filter(finalresult == 'Positive')
     } else if (input$serox == "3") {
       df <- df %>% filter(finalresult == 'Negative')
     }
-    df <- df %>% select(-c('province', 'hospital', 'finalresult'))
+    df <- df %>% select(-c('province', 'hospital', 'finalresult','rps'))
     # Call functions to create columns
     t1bo    <- df %>% select(-c(igminterpret, igginterpret, iggquantiinterpret)) %>% create_t1bo()
     t1bigm  <- df %>% select(-c(igginterpret, iggquantiinterpret)) %>% create_t1b(igminterpret)
@@ -1049,7 +1187,13 @@ server <- function(input, output, session) {
     # Merge all columns side by side
     tbl_merge(list(t1bo, t1bigm, t1biggn, t1biggs),
               tab_spanner = c('**Overall**', '**IgM**', '**IgG-N**', '**IgG-S**')) %>%
+    modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       as_gt() %>% 
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -1061,7 +1205,12 @@ server <- function(input, output, session) {
     } else {
       df <- df_sero2a
     }
-    df <- df %>% select(-c('province', 'hospital'))
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df <- df %>% select(-c('province', 'hospital','rps'))
     list(
       df,
       df %>% filter(igm_o == 'Positive'),
@@ -1078,12 +1227,18 @@ server <- function(input, output, session) {
       map( ~ tbl_summary(.x, type = all_continuous() ~ "continuous2")) %>%
       map( ~ bold_labels(.x)) %>%
       tbl_merge(tab_spanner = FALSE) %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(list(
         c(stat_0_2, stat_0_5, stat_0_8) ~ "Overall<br>+ve",
         c(stat_0_3, stat_0_6, stat_0_9) ~ "1st sample<br>+ve",
         c(stat_0_4, stat_0_7, stat_0_10) ~ "Last sample<br>+ve"
       )) %>%
       as_gt() %>% 
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_spanner(
         columns = c(stat_0_1),
         label = "Total",
@@ -1120,7 +1275,12 @@ server <- function(input, output, session) {
     } else {
       df <- df_sero2b
     }
-    df <- df %>% select(-c('province', 'hospital'))
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df <- df %>% select(-c('province', 'hospital','rps'))
     tn <- df %>% 
       select(-c(iggsq_11:iggsq_91,tigsfold)) %>% 
       tbl_summary() %>% 
@@ -1150,7 +1310,13 @@ server <- function(input, output, session) {
         '**Fold change**'
       )
     ) %>%
+      modify_header(update = list(label = " ",
+                                  all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       as_gt() %>% 
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -1191,7 +1357,8 @@ server <- function(input, output, session) {
           )
         )
       ) %>%
-      bar_scale(kap, color_scale1)
+      
+      bar_scale(kap, color_scale1,tt())
   })
 
   output$kap1a <- renderPlotly({
@@ -1245,7 +1412,7 @@ server <- function(input, output, session) {
           )
         )
       ) %>%
-      bar_scale(kap, color_scale1)
+      bar_scale(kap, color_scale1,tt())
   })
   
   output$kap2 <- renderPlotly({
@@ -1279,7 +1446,8 @@ server <- function(input, output, session) {
           )
         )
       ) %>%
-      bar_scale(kap, color_scale2)
+      
+      bar_scale(kap, color_scale2,tt())
   })
   
   output$kap2a <- renderPlotly({
@@ -1321,7 +1489,7 @@ server <- function(input, output, session) {
           )
         )
       ) %>% 
-      bar_scale(kap, color_scale2)
+      bar_scale(kap, color_scale2,tt())
   })
   
   output$kap3 <- render_gt({
@@ -1351,6 +1519,10 @@ server <- function(input, output, session) {
       modify_header(update = list(label = "",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
   
@@ -1381,6 +1553,10 @@ server <- function(input, output, session) {
       modify_header(update = list(label = "",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       as_gt() %>%
+      tab_header(
+        title = "",
+        subtitle = tt()
+      ) %>% 
       tab_options(table.border.bottom.style = 'none')
   })
   
