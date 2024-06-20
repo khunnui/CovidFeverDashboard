@@ -108,6 +108,11 @@ server <- function(input, output, session) {
     } else {
       df <- df_scr
     }
+     if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
     plot_ly(
       data = df %>%
         group_by(scrdate) %>%
@@ -136,16 +141,31 @@ server <- function(input, output, session) {
   
   output$ScreeningAge <- renderDT({
     if (input$hospital != "All") {
-      df <- df_scrage2 %>% filter(hospital == input$hospital) %>% 
+      df <- df_scragestat %>% filter(hospital == input$hospital) %>% 
         select(-hospital)
     } else if (input$province != "All") {
-      df <- df_scrage1 %>% filter(province == input$province) %>% 
+      df <- df_scragestat %>% filter(province == input$province) %>% 
         select(-province)
     } else {
-      df <- df_scrage0
+      df <- df_scragestat
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    df <- df %>% 
+      summarize(
+        n = n(),
+        min = min(s1age_year, na.rm = TRUE),
+        q1 = quantile(s1age_year, 0.25, na.rm = TRUE),
+        median = median(s1age_year, na.rm = TRUE),
+        mean = round(mean(s1age_year, na.rm = TRUE), 1),
+        q3 = quantile(s1age_year, 0.75, na.rm = TRUE),
+        max = max(s1age_year, na.rm = TRUE)
+      ) %>% 
+      
     datatable(
-      df,
       caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; font-family: Verdana; font-size: 14px;",
                                         tt()),
       rownames = FALSE,
@@ -166,6 +186,11 @@ server <- function(input, output, session) {
     } else {
       df <- df_scrage
     }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
     bar_age(df, "")
   })
   
@@ -176,6 +201,11 @@ server <- function(input, output, session) {
       df <- df_scrgender %>% filter(province == input$province)
     } else {
       df <- df_scrgender
+    }
+     if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
     }
     pie1(df, s1gender, tt(), color_gender)
   })
