@@ -165,7 +165,7 @@ server <- function(input, output, session) {
         max = max(s1age_year, na.rm = TRUE)
       ) %>% 
       
-    datatable(
+    datatable(df,
       caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; font-family: Verdana; font-size: 14px;",
                                         tt()),
       rownames = FALSE,
