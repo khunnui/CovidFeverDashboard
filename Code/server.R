@@ -524,6 +524,7 @@ server <- function(input, output, session) {
       missing = 'no'
     ) %>%
       add_overall() %>%
+       add_p() %>% 
        modify_table_body(
          fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
        ) %>%
@@ -721,6 +722,7 @@ server <- function(input, output, session) {
       missing = 'no'
     ) %>%
       add_overall() %>%
+      add_p() %>% 
       modify_table_body(
         fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
       ) %>%
@@ -755,6 +757,7 @@ server <- function(input, output, session) {
                 by = visit,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
+      add_p() %>% 
       modify_table_body(
         fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
       ) %>%
@@ -791,6 +794,7 @@ server <- function(input, output, session) {
       missing = 'no'
     ) %>%
       add_overall() %>%
+      add_p() %>% 
       modify_table_body(
         fun = ~ dplyr::arrange(.x, desc(readr::parse_number(stat_0)))
       ) %>%
@@ -890,6 +894,7 @@ server <- function(input, output, session) {
         missing = 'no'
       ) %>%
         add_overall() %>%
+        add_p() %>% 
         modify_header(update = list(label =  " ",
                                     all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
         modify_spanning_header(stat_1:stat_2 ~ "**PCR Result**") %>%
