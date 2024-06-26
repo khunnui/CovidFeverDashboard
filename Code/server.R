@@ -24,11 +24,18 @@ server <- function(input, output, session) {
       tt <- ""
     }
     if (input$rps == "Yes") {
-      tt <- paste0(tt, " (RPS Only)")
+      tt <- paste0(tt, ifelse(tt=="", "RPS",", RPS"))
     } else if (input$rps == "No") {
-      tt <- paste0(tt, " (Non-RPS Only)")
+      tt <- paste0(tt,ifelse(tt=="", "Non-RPS",", Non-RPS"))
     } else {
-      tt <- paste0(tt, " ")
+      tt <- paste0(tt, "")
+    }
+    if (input$nationality == "Thai") {
+      tt <- paste0(tt, ifelse(tt=="", "Thai Patients", ", Thai Patients"))
+    } else if (input$nationality == "Non-Thai") {
+      tt <- paste0(tt, ifelse(tt=="", "Non-Thai Patients", ", Non-Thai Patients"))
+    } else {
+      tt <- paste0(tt, "")
     }
   })
   
@@ -113,6 +120,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     plot_ly(
       data = df %>%
         group_by(scrdate) %>%
@@ -139,6 +149,7 @@ server <- function(input, output, session) {
       )
   })
   
+  # missing ###########
   output$ScreeningAge <- renderDT({
     if (input$hospital != "All") {
       df <- df_scragestat %>% filter(hospital == input$hospital) %>% 
@@ -154,6 +165,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df <- df %>% 
       summarize(
         n = n(),
@@ -165,7 +179,7 @@ server <- function(input, output, session) {
         max = max(s1age_year, na.rm = TRUE)
       ) %>% 
       
-    datatable(df,
+    datatable(
       caption = htmltools::tags$caption(style = "caption-side: top; text-align: center; font-family: Verdana; font-size: 14px;",
                                         tt()),
       rownames = FALSE,
@@ -191,6 +205,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     bar_age(df, "")
   })
   
@@ -206,6 +223,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     pie1(df, s1gender, tt(), color_gender)
   })
@@ -246,6 +266,10 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df1 <- df1 %>% filter(rps == FALSE)
       df2 <- df2 %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df1 <- df1 %>% filter(nationality == input$nationality)
+      df2 <- df2 %>% filter(nationality == input$nationality)
     }
     plot_ly() %>%
       add_trace(
@@ -323,6 +347,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Eligible",
@@ -343,6 +370,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     valueBox(
       format(sum(df$n), big.mark= ","), 
       "Enrolled",
@@ -362,6 +392,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df <- filter(df, finalresult == "Positive")
     valueBox(
@@ -384,6 +417,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df <- filter(df, finalresult == "Positive")
     valueBox(
       format(sum(df$n), big.mark= ","), 
@@ -405,6 +441,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     bar_age(df, tt())
   })
   
@@ -421,6 +460,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     pie1(df, s1gender, tt(), color_gender)
   })
   
@@ -436,6 +478,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df %>%
       group_by(s34occupation) %>% # Group by specified column
@@ -459,10 +504,12 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     # Calculate counts for each variable and sort them
     overall_counts <- df %>%
-      select(-c('province', 'hospital', 'rps')) %>%
+      select(-c('province', 'hospital', 'rps','nationality')) %>%
       summarise(across(everything(), ~ sum(!is.na(.)), .names = "count_{col}")) %>%
       pivot_longer(everything(), names_to = "variable", values_to = "count") %>%
       arrange(desc(count)) %>%
@@ -568,6 +615,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df <- filter(df, finalresult == "Positive")
     valueBox(
      tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
@@ -589,6 +639,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Hospitalized",
@@ -608,6 +661,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df <- filter(df, s5intub == 2)
     valueBox(
@@ -629,6 +685,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df <- filter(df, s5dischargetype == 4)
     valueBox(
@@ -652,9 +711,11 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    } 
     tbl_summary(
-      data = df %>% select(-c('province', 'hospital', 'rps')),
+      data = df %>% select(-c('province', 'hospital', 'rps', 'nationality')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = 'no'
@@ -687,7 +748,10 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    tbl_summary(data = df %>% select(-c('rps')),
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    tbl_summary(data = df %>% select(-c('rps','nationality')),
                 by = visit,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
@@ -717,9 +781,11 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     tbl_summary(
-      data = df %>% select(-c('province', 'hospital', 'rps')),
+      data = df %>% select(-c('province', 'hospital', 'rps', 'nationality')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = 'no'
@@ -814,9 +880,11 @@ server <- function(input, output, session) {
       } else if (input$rps == "No") {
         df <- df %>% filter(rps == FALSE)
       }
-      
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
       tbl_summary(
-        data = df %>% select(-c('province', 'hospital', 'rps')),
+        data = df %>% select(-c('province', 'hospital', 'rps','nationality')),
         by = finalresult,
         digits = list(all_categorical() ~ c(0, 1)),
         missing = 'no'
@@ -908,6 +976,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df %>% 
       group_by(vac, finalresult) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
@@ -949,9 +1020,11 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     tbl_summary(
-      data = df %>% select(-c('province', 'hospital', 'rps')),
+      data = df %>% select(-c('province', 'hospital', 'rps','nationality')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = 'no'
@@ -981,6 +1054,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     pie1(df, atkresult, tt(), color_atk)
   }) 
   
@@ -996,6 +1072,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     plot_ly(
       df %>%
@@ -1055,6 +1134,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     pie2(df, specimens, tt(), 90)
   })  
   
@@ -1071,6 +1153,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     tcbc <- tbl_summary(
       data = df %>%
@@ -1090,7 +1175,7 @@ server <- function(input, output, session) {
       missing = "no"
     ) %>%
       add_overall() %>%
-      modify_header(update = list(label = tt(),
+      modify_header(update = list(label = " ",
                                   all_stat_cols() ~ "**{level}**<br>N = {n}")) %>%
       modify_spanning_header(stat_0:stat_2 ~ "SARS-CoV-2 RT-PCR")
     tbio <- tbl_summary(
@@ -1140,8 +1225,11 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     tcul <- tbl_summary(
-      data = df  %>% select(-c('province', 'hospital', 'rps')),
+      data = df  %>% select(-c('province', 'hospital', 'rps','nationality')),
       by = finalresult,
       digits = list(all_categorical() ~ c(0, 1)),
       missing = "no"
@@ -1175,7 +1263,10 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    tbl_summary(data = df %>% select(-c('province', 'hospital','rps')),
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    tbl_summary(data = df %>% select(-c('province', 'hospital','rps','nationality')),
                 by = finalresult,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
@@ -1203,12 +1294,15 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     if (input$serox == "2") {
       df <- df %>% filter(finalresult == 'Positive')
     } else if (input$serox == "3") {
       df <- df %>% filter(finalresult == 'Negative')
     }
-    df <- df %>% select(-c('province', 'hospital', 'finalresult','rps'))
+    df <- df %>% select(-c('province', 'hospital', 'finalresult','rps','nationality'))
     # Call functions to create columns
     t1bo    <- df %>% select(-c(igminterpret, igginterpret, iggquantiinterpret)) %>% create_t1bo()
     t1bigm  <- df %>% select(-c(igginterpret, iggquantiinterpret)) %>% create_t1b(igminterpret)
@@ -1240,7 +1334,10 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    df <- df %>% select(-c('province', 'hospital','rps'))
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    df <- df %>% select(-c('province', 'hospital','rps','nationality'))
     list(
       df,
       df %>% filter(igm_o == 'Positive'),
@@ -1310,7 +1407,10 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
-    df <- df %>% select(-c('province', 'hospital','rps'))
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    df <- df %>% select(-c('province', 'hospital','rps','nationality'))
     tn <- df %>% 
       select(-c(iggsq_11:iggsq_91,tigsfold)) %>% 
       tbl_summary() %>% 
@@ -1363,6 +1463,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df %>%
       mutate(
         kap = factor(
@@ -1403,6 +1506,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df %>%
       mutate(
@@ -1458,6 +1564,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df %>%
       mutate(
         kap = factor(
@@ -1492,6 +1601,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df %>%
       mutate(
@@ -1535,6 +1647,9 @@ server <- function(input, output, session) {
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
     }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
     df %>% select(s3604:s3620, variant)
     tbl_summary(
       data = df,
@@ -1568,6 +1683,9 @@ server <- function(input, output, session) {
       df <- df %>% filter(rps == TRUE)
     } else if (input$rps == "No") {
       df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
     }
     df %>% select(s3610:s3622, variant)
     tbl_summary(

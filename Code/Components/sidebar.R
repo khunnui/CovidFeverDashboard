@@ -43,10 +43,14 @@ sidebar <- dashboardSidebar(
             choices = c("All", as.character(unique(df_scrgender$hospital)))
           ),
           selectInput(
+              inputId = "nationality",
+              label = "Nationality:",
+              choices = c("All", "Thai","Non-Thai")
+          ),     
+          selectInput(
             inputId = "rps",
             label = "RPS:",
             choices = c("All", "Yes", "No"),
-            
           ),
   HTML("<ul>
                   <li>RPS = Cough, or Dyspnea, or Sputum Production </li>

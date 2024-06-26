@@ -1,0 +1,12 @@
+name: Code
+title: Code
+username: dghp
+account: dghp
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12156397
+bundleId: 8721916
+url: https://dghp.shinyapps.io/Code/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
