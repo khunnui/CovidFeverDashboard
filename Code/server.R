@@ -643,6 +643,7 @@ server <- function(input, output, session) {
     if (input$nationality != "All") {
       df <- df %>% filter(nationality == input$nationality)
     }
+    df <- filter(df, s5isadmit == 'Yes')
     valueBox(
       tags$p(format(sum(df$n), big.mark= ","), style = "font-size: 75%;"),
       "Hospitalized",
@@ -753,7 +754,8 @@ server <- function(input, output, session) {
     if (input$nationality != "All") {
       df <- df %>% filter(nationality == input$nationality)
     }
-    tbl_summary(data = df %>% select(-c('rps','nationality')),
+    
+    tbl_summary(data = df %>% select(-c('province', 'hospital','rps','nationality')),
                 by = visit,
                 digits = list(all_categorical() ~ c(0, 1))) %>%
       add_overall() %>%
