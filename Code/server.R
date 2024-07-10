@@ -987,7 +987,8 @@ server <- function(input, output, session) {
       df <- df %>% filter(nationality == input$nationality)
     }
     df %>% 
-      group_by(vac, finalresult) %>% # Group by specified column
+      #group_by(vac, finalresult) %>% # Group by specified column
+      group_by(vac) %>% # Group by specified column
       summarise(count = sum(n)) %>% 
       sunburst_df(value_column = "count", add_root = FALSE) %>% 
       mutate(colors = case_when(
@@ -1046,6 +1047,67 @@ server <- function(input, output, session) {
         subtitle = tt()
       ) %>% 
       tab_options(table.border.bottom.style = 'none')
+  })
+  
+  output$vacfull <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_vac %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_vac %>% filter(province == input$province)
+    } else {
+      df <- df_vac
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    df %>% filter(vac == 'Fully vaccinated')
+    pie1(df, finalresult, tt(), color_vacfull)
+  })
+  
+  output$vacpart <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_vac %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_vac %>% filter(province == input$province)
+    } else {
+      df <- df_vac
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    df <- df %>% filter(vac=='Partially vaccinated')
+    
+    pie1(df, finalresult, tt(), color_vacpart)
+  })
+  
+  output$unvac <- renderPlotly({
+    if (input$hospital != "All") {
+      df <- df_vac %>% filter(hospital == input$hospital)
+    } else if (input$province != "All") {
+      df <- df_vac %>% filter(province == input$province)
+    } else {
+      df <- df_vac
+    }
+    if (input$rps == "Yes") {
+      df <- df %>% filter(rps == TRUE)
+    } else if (input$rps == "No") {
+      df <- df %>% filter(rps == FALSE)
+    }
+    if (input$nationality != "All") {
+      df <- df %>% filter(nationality == input$nationality)
+    }
+    df <- df %>% filter(vac == 'Unvaccinated')
+    pie1(df, finalresult, tt(), color_unvac)
   })
   
   output$atkPie <- renderPlotly({

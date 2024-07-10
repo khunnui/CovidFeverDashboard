@@ -41,12 +41,15 @@ body <- dashboardBody(
             h4("Objectives")
           ),
           HTML("<ul>
-                  <li>Detect and describe the proportion, clinical characteristics, risk factors of SARS-CoV-2 infection among febrile patients without respiratory symptoms </li>
-                  <li>Assess knowledge, attitudes, and practices (KAP) among febrile patients to better understand health seeking behavior, and potential barriers to care</li>
-                  <li>Determine the utility of saliva and anterior nasal swabs as suitable specimens compared to nasopharyngeal swab + oropharyngeal swab for the detection of SARS-CoV-2 RNA.</li>
-                  <li>Determine if a pooled PCR testing strategy is cost-effective </li>
-                  <li>Assess clinical and laboratory characteristics, including temporal patterns of antibody response, and outcomes among patients hospitalized with COVID-19.</li>
-                  <li>Determine the seroprevalence of antibodies against SARS-CoV-2 in febrile patients </li>
+                  <li>Detect and describe the proportion, clinical characteristics, risk factors of COVID-19 among febrile patients with/without respiratory symptoms.</li>
+                  <li>Assess knowledge, attitudes, and practices (KAP) among febrile patients to better understand health seeking behavior.</li>
+                  <li>Determine the utility of saliva and anterior nasal swabs as suitable specimens compared to NP/OP swab for the detection of SARS-CoV-2 RNA.</li>
+                  <li>Determine if a pooled PCR testing strategy is cost-effective.  </li>
+                  <li>Assess temporal patterns of antibody response, and outcomes among COVID-19 cases.</li>
+                  <li>Determine the seroprevalence of antibodies against SARS-CoV-2 in febrile patients. </li>
+                  <li>Understand the etiology of co-infections with other respiratory pathogens. </li>
+                  <li>Describe the proportion of COVID-19 among those with/without COVID-19 vaccination. </li>
+                  <li>Describe the proportion of patients with post-COVID condition.</li>
                 </ul>"
           )
         ),
@@ -324,16 +327,35 @@ body <- dashboardBody(
           title = "COVID-19 Vaccination and PCR Result",
           width = 6,
           plotlyOutput("VaccineSunburst"),
-          height = 600,
-         "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
-        ),
+          height = 450
+          ),
         box(
           title = "Time from COVID-19 Vaccination to Fever Onset by PCR status",
           width = 6,
           gt_output("vac2")
-          , height = 600
+          , height = 450
+        )
+      ),
+      fluidRow(
+        box(
+          title = "Fully Vaccinated",
+          width = 4,
+          plotlyOutput("vacfull", height = 270),
+          "* Patients were considered fully vaccinated if they had completed 2 doses of Sinovac, Sinopharm, Pfizer-BioNTech, or Astrazeneca or 1 dose of Johnson and Johnson as a primary vaccination series at least 1 month prior to presentation"
+          
+        ),
+        box(
+          title = "Partially Vaccinated",
+          width = 4,
+          plotlyOutput("vacpart", height = 270)
+        ),
+        box(
+          title = "Unvaccinated",
+          width = 4,
+          plotlyOutput("unvac", height = 270)
         )
       )
+      
     ),
     
     tabItem(
