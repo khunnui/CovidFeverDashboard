@@ -251,7 +251,7 @@ body <- dashboardBody(
           plotlyOutput("EnrollmentAge", height = 270)
         ),
         box(
-          title = "Sex",
+          title = "Sex ",
           width = 4,
           plotlyOutput("EnrollmentGender", height = 270)
         ),
