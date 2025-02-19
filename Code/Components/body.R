@@ -209,7 +209,7 @@ body <- dashboardBody(
         column(
           width = 6,
           box(
-            title = "Sex",
+            title = " Sex ",
             width = NULL,
             plotlyOutput("ScreeningGender")
           )
